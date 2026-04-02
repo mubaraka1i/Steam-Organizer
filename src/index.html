@@ -1,15 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TODO</title>
-  <link rel="icon" href="https://fav.mhciael.com/❓">
+  <title>Sign In</title>
+  <link rel="stylesheet" href="styles/color.css">
+  <link rel="icon" href="https://fav.farm/🚦">
 </head>
-
 <body>
-  <h1>TODO</h1>
+    <div class="login-box">
+        <h4>Login</h4>
+        <!-- The form element sends data to a server-side script -->
+        <form action="action_page.php" method="post">
+            
+            <div class="input-group">
+                <label for="username">Account name</label>
+                <!-- Input for the username (text type) -->
+                <input type="text" id="username" name="username" placeholder="" required>
+            </div>
+            
+            <!-- Submit button -->
+            <button type="submit">Login</button>
+        </form>
+    </div>
 </body>
-
 </html>
+
