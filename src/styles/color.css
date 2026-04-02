@@ -1,0 +1,92 @@
+/* #4c5844 - Green */
+/* #3f4738 - Dark Green */
+/* #a1ae9a- Light Green (Text) */
+/* #968732 - Yellow (Text) */
+/* #eff6ee - White (Text) */
+/* #808080 - Gray Accent (Border) */
+/* #282e22 - Pine Green Accent (Border) */
+
+body, button, input, label, .window-title {
+    font-family: system-ui, 'Segoe UI', 'Courier New', monospace;
+    font-size: 12px;
+}
+
+body {
+    background-color: #4c5844;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 90vh;
+}
+
+.login-box {
+    background-color: #4c5844;
+    padding: 20px 50px;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-bottom: 1px solid #282e22;
+    border-right: 1px solid #282e22;
+}
+
+/* Label and input side by side */
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+label {
+    color: #a1ae9a;
+}
+
+input[type="text"] {
+    color: #eff6ee;
+    background-color: #3f4738;
+    border-top: 1px solid #282e22;
+    border-left: 1px solid #282e22;
+    border-bottom: 1px solid #808080;
+    border-right: 1px solid #808080;
+    padding: 2px 4px;
+    width: 300px;
+}
+
+/* Button under the input box, aligned to where the INPUT starts (not the label) */
+button[type="submit"] {
+    background-color: #4c5844;
+    color: #eff6ee;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-bottom: 1px solid #282e22;
+    border-right: 1px solid #282e22;
+    cursor: pointer;
+    font-size: 12px;
+    text-align: left;
+    padding: 4px 10px;
+    width: 150px;
+    margin-left: 91px;  /* This pushes button to align under the input box */
+    display: block;
+}
+
+.window-title {
+    color: #eff6ee;
+    font-size: 12px;
+    margin-bottom: 10px;
+    background-color: #4c5844;
+    padding: 4px 8px;
+    margin: -20px -30px 15px -30px;
+}
+
+.login-box {
+    position: relative;
+}
+
+.login-box::before {
+    content: "🚉";
+    position: absolute;
+    top: 2px;
+    left: 6px;
+    font-size: 14px;
+    color: #eff6ee;
+}

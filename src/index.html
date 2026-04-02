@@ -3,24 +3,18 @@
 <head>
   <title>Sign In</title>
   <link rel="stylesheet" href="styles/color.css">
-  <link rel="icon" href="https://fav.farm/🚦">
+  <link rel="icon" href="https://fav.farm/🚉">
 </head>
 <body>
     <div class="login-box">
-        <h4>Login</h4>
-        <!-- The form element sends data to a server-side script -->
+        <p class="window-title">GuideRail Login</p>
         <form action="action_page.php" method="post">
-            
             <div class="input-group">
                 <label for="username">Account name</label>
-                <!-- Input for the username (text type) -->
-                <input type="text" id="username" name="username" placeholder="" required>
+                <input type="text" required oninvalid="event.preventDefault();" name="username" id="username">
             </div>
-            
-            <!-- Submit button -->
             <button type="submit">Login</button>
         </form>
     </div>
 </body>
 </html>
-
