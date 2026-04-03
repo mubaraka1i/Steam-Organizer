@@ -7,9 +7,14 @@
 /* #282e22 - Pine Green Accent (Border) */
 
 body, button, input, label, .window-title {
-    font-family: system-ui, 'Segoe UI', 'Courier New', monospace;
+    font-family: Tahoma, Arial, sans-serif;
     font-size: 12px;
 }
+
+.window-title {
+    font-weight: 400;
+}
+
 
 body {
     background-color: #4c5844;
@@ -65,7 +70,7 @@ button[type="submit"] {
     text-align: left;
     padding: 4px 10px;
     width: 150px;
-    margin-left: 91px;  /* This pushes button to align under the input box */
+    margin-left: 84px;  /* This pushes button to align under the input box */
     display: block;
 }
 
@@ -92,7 +97,7 @@ button[type="submit"]:active { /* Inverted border colors on click for a pressed 
 .login-box::before { 
     content: "🚉";
     position: absolute;
-    top: 2px;
+    top: -3px;
     left: 6px;
     font-size: 14px;
     color: #eff6ee;
