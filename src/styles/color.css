@@ -69,6 +69,13 @@ button[type="submit"] {
     display: block;
 }
 
+button[type="submit"]:active { /* Inverted border colors on click for a pressed effect */
+    border-top: 1px solid #282e22;
+    border-left: 1px solid #282e22;
+    border-bottom: 1px solid #808080;
+    border-right: 1px solid #808080;
+}
+
 .window-title {
     color: #eff6ee;
     font-size: 12px;
@@ -82,7 +89,7 @@ button[type="submit"] {
     position: relative;
 }
 
-.login-box::before {
+.login-box::before { 
     content: "🚉";
     position: absolute;
     top: 2px;
