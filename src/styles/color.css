@@ -6,7 +6,7 @@
 /* #808080 - Gray Accent (Border) */
 /* #282e22 - Pine Green Accent (Border) */
 
-body, button, input, label, .window-title {
+body, button, input, label, .window-title, .footer-links, .footer-links a, .divider {
     font-family: Tahoma, Arial, sans-serif;
     font-size: 12px;
 }
@@ -101,4 +101,28 @@ button[type="submit"]:active { /* Inverted border colors on click for a pressed 
     left: 6px;
     font-size: 14px;
     color: #eff6ee;
+}
+
+.footer-links {
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 10;
+}
+
+.footer-links a {
+    color: #968732;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.divider {
+    color: #968732;
+    margin: 0 8px;
 }
