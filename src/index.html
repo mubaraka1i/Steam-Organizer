@@ -1,26 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Sign In</title>
+  <title>GuideRail - Sign In</title>
   <link rel="stylesheet" href="styles/color.css">
-  <link rel="icon" href="https://fav.farm/🚉">
+  <link rel="icon" href="https://fav.farm/🚉" aria-hidden="true">
   <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
-  <!-- Reference for Page:--> <a href="images/login.png"></a>
 </head>
 <body>
     <div class="login-box">
-        <p class="window-title">GuideRail Login</p>
+        <h1 class="window-title">GuideRail Login</h1>
         <form action="action_page.php" method="post">
             <div class="input-group">
                 <label for="username">Steam URL/ID</label>
-                <input type="text" required oninvalid="event.preventDefault();" name="username" id="username">
+                <input type="text" required aria-describedby="username-help" oninvalid="event.preventDefault();" name="username" id="username">
+                <span id="username-help" class="sr-only">Enter your Steam username or profile URL</span>
             </div>
             <button type="submit">Login</button>
         </form>
     </div>
     <div class="footer-links">
-        <a href="#">About</a>
-        <span class="divider">|</span>
+        <a href="about.html">About</a>
+        <span class="divider" aria-hidden="true">|</span>
         <a href="mailto:contact@guiderail.com">Contact</a>
     </div>
 </body>

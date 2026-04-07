@@ -1,4 +1,4 @@
-# Guide Rail
+# GuideRail
 
 ## Your Steam Backlog, On Track
 
@@ -11,7 +11,7 @@
 
 The average Steam user has more games than they can imagine. Without structure, a large library makes it hard to choose which path to take next — creating anxiety because of all these games stacked up.
 
-**Guide Rail turns a Steam library into a map to help players visualize, organize, and actually make progress on their backlog.**
+**GuideRail turns a Steam library into a map to help players visualize, organize, and actually make progress on their backlog.**
 
 Games become stations to start your journey. Progress gest turned into distance traveled. The software manages the backlog, making it less stressing, and helps players answer the simplest question: *what should I play next?*
 
@@ -19,15 +19,15 @@ Games become stations to start your journey. Progress gest turned into distance 
 
 ## Users
 
-Guide Rail is for PC gamers on Steam — casual players who buy games on sale and forget them, dedicated players juggling multiple titles, and returning players who lost track of something they started.
+GuideRail is for PC gamers on Steam — casual players who buy games on sale and forget them, dedicated players juggling multiple titles, and returning players who lost track of something they started.
 
-Users need clarity and a low-friction starting point. Guide Rail requires only a Steam username to get going. No account, no setup. The library imports automatically and is immediately presented in a structured, visual format anyone can understand.
+Users need clarity and a low-friction starting point. GuideRail requires only a Steam username to get going. No account, no setup. The library imports automatically and is immediately presented in a structured, visual format anyone can understand.
 
 ---
 
 ## Features
 
-Users of Guide Rail will:
+Users of GuideRail will:
 
 1. **Import their Steam library** by entering a username — the app fetches all games, playtimes, and metadata via the Steam Web API
 2. **View the OnTrack Railway Map** — games organized into a Main Line (active), Branch Lines (multiplayer), Sidetracks (paused/abandoned), and a Rail Yard (unplayed, sorted by length)
@@ -35,7 +35,7 @@ Users of Guide Rail will:
 4. **Manage game notes and status (CRUD)** — add personal notes, set status (Playing, Paused, Abandoned, Completed), and create custom categories
 5. **Import/Export** — back up all annotations as JSON and restore from backup
 
-*Example: A user imports 200 games. Guide Rail places 3 in-progress games on the Main Line, surfaces 5 short games as weekend picks, and calculates that finishing the backlog will take until 2039 at their current pace.*
+*Example: A user imports 200 games. GuideRail places 3 in-progress games on the Main Line, surfaces 5 short games as weekend picks, and calculates that finishing the backlog will take until 2039 at their current pace.*
 
 ---
 
