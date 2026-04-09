@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>GuideRail - Profile</title>
+  <link rel="stylesheet" href="styles/color.css">
+  <style>
+    .profile-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #3f4738;
+      border-top: 1px solid #808080;
+      border-left: 1px solid #808080;
+      border-bottom: 1px solid #282e22;
+      border-right: 1px solid #282e22;
+      padding: 20px;
+    }
+    .profile-container h1 {
+      color: #eff6ee;
+      margin-top: 0;
+      border-bottom: 1px solid #282e22;
+      padding-bottom: 10px;
+    }
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border: 1px solid #808080;
+    }
+    .profile-info {
+      color: #a1ae9a;
+      font-size: 12px;
+    }
+    .profile-info p {
+      margin: 5px 0;
+    }
+    .username {
+      color: #eff6ee;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 0;
+    }
+    .logout-btn {
+      background-color: #4c5844;
+      color: #eff6ee;
+      border-top: 1px solid #808080;
+      border-left: 1px solid #808080;
+      border-bottom: 1px solid #282e22;
+      border-right: 1px solid #282e22;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-family: Tahoma, Arial, sans-serif;
+      font-size: 12px;
+      margin-top: 15px;
+    }
+    .logout-btn:active {
+      border-top: 1px solid #282e22;
+      border-left: 1px solid #282e22;
+      border-bottom: 1px solid #808080;
+      border-right: 1px solid #808080;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <h1>🚉 GuideRail Profile</h1>
+    
+    <div class="profile-header">
+      <img id="avatar" class="profile-avatar" alt="User avatar">
+      <div class="profile-info">
+        <p class="username" id="username"></p>
+        <p>Account Created: <span id="created"></span></p>
+        <p>Last Online: <span id="lastlogoff"></span></p>
+        <p>Steam ID: <span id="steamid"></span></p>
+      </div>
+    </div>
+
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    function logout() {
+      localStorage.removeItem('guideRail_profile');
+      window.location.href = 'index.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const profileData = localStorage.getItem('guideRail_profile');
+      
+      if (!profileData) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      const profile = JSON.parse(profileData);
+
+      // Display profile info
+      document.getElementById('username').textContent = profile.personaname;
+      document.getElementById('avatar').src = profile.avatarfull;
+      document.getElementById('steamid').textContent = profile.steamid;
+      
+      const created = new Date(profile.timecreated * 1000).toLocaleDateString();
+      document.getElementById('created').textContent = created;
+      
+      const lastlog = new Date(profile.lastlogoff * 1000).toLocaleString();
+      document.getElementById('lastlogoff').textContent = lastlog;
+    });
+  </script>
+</body>
+</html>
