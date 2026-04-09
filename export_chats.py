@@ -37,6 +37,8 @@ def get_workspace_storage_dir() -> Path:
 def find_workspace_hash_dir(storage_dir: Path) -> Path:
     """Find the workspaceStorage directory for the current workspace."""
     cwd_str = str(WS_ROOT.resolve())
+    if cwd_str.startswith("C:\\"):
+        cwd_str = cwd_str[2:].replace("\\", "/")
     for d in storage_dir.iterdir():
         meta = d / "workspace.json"
         if not meta.exists():
@@ -295,7 +297,7 @@ def parse_session(file_path: Path) -> tuple[list[dict], str | None, dict]:
             title = v.strip()
 
         # Capture result metadata (timings + model details)
-        elif kind == 1 and len(k) == 3 and k[0] == "requests" and k[2] == "result":
+        elif kind == 1 and groups and len(k) == 3 and k[0] == "requests" and k[2] == "result":
             groups[-1]["timings"] = v.get("timings", {})
             groups[-1]["details"] = v.get("details", {})
 
@@ -327,7 +329,7 @@ def parse_session(file_path: Path) -> tuple[list[dict], str | None, dict]:
                 parse_response(request["response"], group["responses"], group["callIds"])
 
         # Continue request parsing
-        elif kind == 2 and k[0] == "requests" and isinstance(v, list):
+        elif kind == 2 and groups and k[0] == "requests" and isinstance(v, list):
             parse_response(v, groups[-1]["responses"], groups[-1]["callIds"])
 
     return groups, title, metadata
