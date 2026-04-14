@@ -127,6 +127,50 @@ async function handleResolve(req, res) {
   }
 }
 
+async function handleGames(req, res) {
+  setCorsHeaders(res);
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
+
+  if (req.method !== 'POST') {
+    res.writeHead(405, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Method Not Allowed' }));
+    return;
+  }
+
+  let body = '';
+  for await (const chunk of req) {
+    body += chunk;
+  }
+
+  const params = new URLSearchParams(body);
+  const steamid = params.get('steamid');
+
+  if (!steamid) {
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Missing steamid' }));
+    return;
+  }
+
+  try {
+    const apiUrl = `${STEAM_API_BASE}/IPlayerService/GetOwnedGames/v1/?key=${STEAM_API_KEY}&steamid=${encodeURIComponent(steamid)}&include_appinfo=1&include_played_free_games=1`;
+    console.log('Fetching owned games:', steamid);
+
+    const steamResponse = await fetch(apiUrl);
+    const data = await steamResponse.json();
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify(data));
+  } catch (error) {
+    console.error('Error:', error);
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: error.message }));
+  }
+}
+
 async function requestHandler(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const pathname = url.pathname;
@@ -140,6 +184,11 @@ async function requestHandler(req, res) {
 
   if (pathname === '/resolve') {
     await handleResolve(req, res);
+    return;
+  }
+
+  if (pathname === '/games') {
+    await handleGames(req, res);
     return;
   }
 

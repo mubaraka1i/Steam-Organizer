@@ -18,18 +18,69 @@ body, button, input, label, .window-title, .footer-links, .footer-links a, .divi
     font-size: 13px;
 }
 
-.window-title {
-    font-weight: 400;
+* {
+    box-sizing: border-box;
 }
 
-
 body {
+    margin: 0;
     background-color: #4c5844;
-    overflow: hidden;
+    color: #a1ae9a;
+    min-height: 100vh;
     display: flex;
+    flex-direction: column;
+}
+
+.site-header {
+    width: 100%;
+    border-bottom: 1px solid #282e22;
+    background-color: #3f4738;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    gap: 14px;
+}
+
+.site-title {
+    margin: 0;
+    color: #eff6ee;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.site-nav {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.site-nav a {
+    color: #eff6ee;
+    text-decoration: none;
+    padding: 4px 8px;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-bottom: 1px solid #282e22;
+    border-right: 1px solid #282e22;
+    background-color: #4c5844;
+}
+
+.site-nav a[aria-current="page"] {
+    color: #968732;
+}
+
+.site-main {
+    width: 100%;
+    flex: 1;
+    padding: 16px;
+    display: flex;
     justify-content: center;
-    height: 90vh;
+}
+
+.site-footer {
+    width: 100%;
+    margin-top: auto;
 }
 
 .auth-stack {
@@ -85,7 +136,7 @@ button[type="submit"] {
     text-align: left;
     padding: 6px 14px;
     width: 170px;
-    margin-left: 100px;  /* This pushes button to align under the input box */
+    margin-left: 92px;  /* Slightly left so it aligns with the input start */
     display: block;
 }
 
@@ -97,6 +148,7 @@ button[type="submit"]:active { /* Inverted border colors on click for a pressed 
 }
 
 .window-title {
+    font-weight: 400;
     color: #eff6ee;
     font-size: 15px;
     margin-bottom: 12px;
@@ -107,6 +159,14 @@ button[type="submit"]:active { /* Inverted border colors on click for a pressed 
 
 .login-box {
     position: relative;
+}
+
+.login-page {
+    overflow: hidden;
+}
+
+.login-page .site-main {
+    align-items: center;
 }
 
 .loading-panel {
@@ -176,12 +236,10 @@ button[type="submit"]:active { /* Inverted border colors on click for a pressed 
 }
 
 .footer-links {
-    position: fixed;
-    bottom: 10px;
-    left: 0;
-    right: 0;
+    padding: 10px;
     text-align: center;
-    z-index: 10;
+    border-top: 1px solid #282e22;
+    background-color: #3f4738;
 }
 
 .footer-links a {
@@ -214,7 +272,8 @@ button[type="submit"]:active { /* Inverted border colors on click for a pressed 
 
 /* Focus indicators for accessibility */
 input[type="text"]:focus,
-button[type="submit"]:focus {
+button[type="submit"]:focus,
+.site-nav a:focus {
     outline: 2px solid #eff6ee;
     outline-offset: 2px;
 }
@@ -245,19 +304,21 @@ button[type="submit"]:focus {
 
 /* Needs to be above the login box in the stacking order to be visible */
 .error-container {
-    position: fixed;
-    top: 20px;
+    position: absolute;
+    top: 82px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 20;
 }
 
 @media (max-width: 600px) {
-    body {
+    .site-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .login-page {
         overflow: auto;
-        padding: 12px;
-        height: auto;
-        min-height: 100vh;
     }
 
     .login-box {
@@ -288,5 +349,14 @@ button[type="submit"]:focus {
         margin-left: 0;
         width: 100%;
         text-align: center;
+    }
+
+    .site-main {
+        padding: 10px;
+    }
+
+    .error-container {
+        top: 118px;
+        width: calc(100% - 24px);
     }
 }

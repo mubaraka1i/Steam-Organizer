@@ -3,170 +3,58 @@
 <head>
   <title>GuideRail - Profile</title>
   <link rel="stylesheet" href="styles/color.css">
-  <style>
-    .profile-container {
-      max-width: 600px;
-      margin: 40px auto;
-      background-color: #3f4738;
-      border-top: 1px solid #808080;
-      border-left: 1px solid #808080;
-      border-bottom: 1px solid #282e22;
-      border-right: 1px solid #282e22;
-      padding: 20px;
-    }
-    .profile-container h1 {
-      color: #eff6ee;
-      margin-top: 0;
-      border-bottom: 1px solid #282e22;
-      padding-bottom: 10px;
-    }
-    .profile-header {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-bottom: 20px;
-    }
-    .profile-avatar {
-      width: 100px;
-      height: 100px;
-      border: 1px solid #808080;
-    }
-    .profile-info {
-      color: #a1ae9a;
-      font-size: 12px;
-    }
-    .profile-info p {
-      margin: 5px 0;
-    }
-    .username {
-      color: #eff6ee;
-      font-size: 16px;
-      font-weight: bold;
-      margin: 0;
-    }
-    .logout-btn {
-      background-color: #4c5844;
-      color: #eff6ee;
-      border-top: 1px solid #808080;
-      border-left: 1px solid #808080;
-      border-bottom: 1px solid #282e22;
-      border-right: 1px solid #282e22;
-      padding: 6px 14px;
-      cursor: pointer;
-      font-family: Tahoma, Arial, sans-serif;
-      font-size: 12px;
-      margin-top: 15px;
-    }
-    .logout-btn:active {
-      border-top: 1px solid #282e22;
-      border-left: 1px solid #282e22;
-      border-bottom: 1px solid #808080;
-      border-right: 1px solid #808080;
-    }
-
-    .import-btn {
-  background-color: #4c5844;
-  color: #eff6ee;
-  border-top: 1px solid #808080;
-  border-left: 1px solid #808080;
-  border-bottom: 1px solid #282e22;
-  border-right: 1px solid #282e22;
-  padding: 6px 14px;
-  cursor: pointer;
-  font-size: 12px;
-  margin-top: 10px;
-}
-
-.status-message {
-  margin-top: 10px;
-  font-size: 12px;
-}
-
-.status-message.loading {
-  color: #968732;
-}
-
-.status-message.success {
-  color: #a1ae9a;
-}
-  </style>
+  <link rel="stylesheet" href="styles/profile.css">
 </head>
 <body>
-  <div class="profile-container">
-    <h1>🚉 GuideRail Profile</h1>
-    
-    <div class="profile-header">
-      <img id="avatar" class="profile-avatar" alt="User avatar">
-      <div class="profile-info">
-        <p class="username" id="username"></p>
-        <p>Account Created: <span id="created"></span></p>
-        <p>Last Online: <span id="lastlogoff"></span></p>
-        <p>Steam ID: <span id="steamid"></span></p>
-      </div>
-    </div>
+  <header class="site-header">
+    <h1 class="site-title"><span aria-hidden="true">🚉</span> GuideRail</h1>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="profile.html" aria-current="page">Profile</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
 
-    <button class="logout-btn" onclick="logout()">Logout</button>
+  <main class="site-main profile-page-main">
+    <section class="profile-container" aria-labelledby="profile-heading">
+      <h2 id="profile-heading" class="panel-title">Profile Overview</h2>
 
-<div style="margin-top: 20px;">
-  <button class="import-btn">Import Games</button>
-  <div id="status" class="status-message"></div>
-</div>
-  </div>
+      <article class="profile-header" aria-label="Steam profile summary">
+        <img id="avatar" class="profile-avatar" alt="Steam profile avatar">
+        <div class="profile-info">
+          <h3 class="username" id="username"></h3>
+          <p>Account Created: <span id="created"></span></p>
+          <p>Last Online: <span id="lastlogoff"></span></p>
+          <p>Steam ID: <span id="steamid"></span></p>
+        </div>
+      </article>
 
-  <script>
-    function logout() {
-      localStorage.removeItem('guideRail_profile');
-      window.location.href = 'index.html';
-    }
+      <section class="import-panel" aria-labelledby="import-heading">
+        <h3 id="import-heading">Library Import</h3>
+        <p>Fetch your Steam owned games and store the result locally for offline viewing.</p>
+        <button id="import-btn" class="import-btn" type="button">Import Games</button>
+        <p id="status" class="status-message" role="status" aria-live="polite"></p>
+      </section>
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const profileData = localStorage.getItem('guideRail_profile');
-      
-      if (!profileData) {
-        window.location.href = 'index.html';
-        return;
-      }
+      <section class="games-section" aria-labelledby="games-heading">
+        <h3 id="games-heading">Owned Games</h3>
+        <div id="games-grid" class="games-grid" role="list"></div>
+      </section>
 
-      const profile = JSON.parse(profileData);
+      <button id="logout-btn" class="logout-btn" type="button">Logout</button>
+    </section>
+  </main>
 
-      // Display profile info
-      document.getElementById('username').textContent = profile.personaname;
-      document.getElementById('avatar').src = profile.avatarfull;
-      document.getElementById('steamid').textContent = profile.steamid;
-      
-      const created = new Date(profile.timecreated * 1000).toLocaleDateString();
-      document.getElementById('created').textContent = created;
-      
-      const lastlog = new Date(profile.lastlogoff * 1000).toLocaleString();
-      document.getElementById('lastlogoff').textContent = lastlog;
-    });
+  <footer class="site-footer">
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Login</a>
+      <span class="divider" aria-hidden="true">|</span>
+      <a href="about.html">About</a>
+      <span class="divider" aria-hidden="true">|</span>
+      <a href="mailto:contact@guiderail.com">Contact</a>
+    </nav>
+  </footer>
 
-function setStatus(message, type) {
-  const status = document.getElementById('status');
-  status.textContent = message;
-  status.className = `status-message ${type}`;
-}
-
-function simulateLoading() {
-  setStatus("Loading games...", "loading"); // USING THIS AS A PLACEHOLDER FOR ACTUAL STEAM API 
-
-  setTimeout(() => {
-    setStatus("Games loaded successfully!", "success");
-  }, 1500);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.querySelector('.import-btn');
-
-  if (btn) {
-    btn.addEventListener('click', simulateLoading);
-  }
-});
-
-
-    
-  </script>
-
-  
+  <script src="scripts/profile.js"></script>
 </body>
 </html>

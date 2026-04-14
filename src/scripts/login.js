@@ -28,6 +28,7 @@ function parseSteamInput(input) {
 }
 
 const API_PROXY = 'http://127.0.0.1:8000';
+const PROXY_DOWN_MESSAGE = 'Proxy server is not running. Start the local proxy at port 8000.';
 const loadingMessages = [
   'Validating Steam input...',
   'Resolving vanity URL via /resolve...',
@@ -131,15 +132,22 @@ async function resolveSteamID(vanityUrl) {
       body: `vanityurl=${encodeURIComponent(vanityUrl)}`
     });
 
+    if (!response.ok) {
+      if (response.status === 400) {
+        return { steamid: null, reason: 'not_found' };
+      }
+      return { steamid: null, reason: 'proxy_error' };
+    }
+
     const data = await response.json();
     if (data.success && data.steamid) {
-      return data.steamid;
+      return { steamid: data.steamid, reason: null };
     }
     console.error('Resolve error:', data);
-    return null;
+    return { steamid: null, reason: 'not_found' };
   } catch (error) {
     console.error('Error resolving vanity URL:', error);
-    return null;
+    return { steamid: null, reason: 'proxy_unreachable' };
   }
 }
 
@@ -152,15 +160,19 @@ async function getSteamProfile(steamID) {
       body: `steamid=${encodeURIComponent(steamID)}`
     });
 
+    if (!response.ok) {
+      return { profile: null, reason: 'proxy_error' };
+    }
+
     const data = await response.json();
     if (data.response && data.response.players && data.response.players.length > 0) {
-      return data.response.players[0];
+      return { profile: data.response.players[0], reason: null };
     }
     console.error('Profile response error:', data);
-    return null;
+    return { profile: null, reason: 'profile_unavailable' };
   } catch (error) {
     console.error('Error fetching profile:', error);
-    return null;
+    return { profile: null, reason: 'proxy_unreachable' };
   }
 }
 
@@ -195,8 +207,14 @@ async function handleLogin(event) {
     // If vanity URL, resolve it first
     if (parsed.type === 'vanity') {
       setLoadingStage(1, 28);
-      steamID = await resolveSteamID(parsed.value);
+      const resolution = await resolveSteamID(parsed.value);
+      steamID = resolution.steamid;
+
       if (!steamID) {
+        if (resolution.reason === 'proxy_unreachable' || resolution.reason === 'proxy_error') {
+          showError(PROXY_DOWN_MESSAGE);
+          return;
+        }
         showError('Could not resolve Steam username. Make sure the profile exists and is public.');
         return;
       }
@@ -210,8 +228,12 @@ async function handleLogin(event) {
     button.textContent = 'Fetching profile...';
 
     // Fetch profile
-    const profile = await getSteamProfile(steamID);
-    if (!profile) {
+    const profileResult = await getSteamProfile(steamID);
+    if (!profileResult.profile) {
+      if (profileResult.reason === 'proxy_unreachable' || profileResult.reason === 'proxy_error') {
+        showError(PROXY_DOWN_MESSAGE);
+        return;
+      }
       showError('Could not fetch Steam profile. Make sure the profile is public and the proxy server is running.');
       return;
     }
@@ -220,7 +242,7 @@ async function handleLogin(event) {
     completeLoading();
 
     // Success! Store and redirect
-    localStorage.setItem('guideRail_profile', JSON.stringify(profile));
+    localStorage.setItem('guideRail_profile', JSON.stringify(profileResult.profile));
     setTimeout(() => {
       resetLoading();
       window.location.href = 'profile.html';
@@ -252,6 +274,16 @@ document.addEventListener('DOMContentLoaded', () => {
   resetLoading();
 
   const form = document.querySelector('form');
+  const usernameInput = document.getElementById('username');
+
+  if (usernameInput) {
+    usernameInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+      }
+    });
+  }
+
   if (form) {
     form.addEventListener('submit', handleLogin);
   }

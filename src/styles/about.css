@@ -3,9 +3,7 @@
 body {
     background-color: #4c5844;
     color: #a1ae9a;
-    padding-bottom: 80px;
     overflow: auto;
-    height: auto;
 }
 
 .content-container {
@@ -126,6 +124,12 @@ body {
 .bottom-section {
     text-align: center;
     background-color: #282e22;
+}
+
+.api-note {
+    color: #a1ae9a;
+    font-size: 11px;
+    margin-top: 20px;
 }
 
 /* Responsive design for smaller screens */
