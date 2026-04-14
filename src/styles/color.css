@@ -32,6 +32,13 @@ body {
     height: 90vh;
 }
 
+.auth-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: fit-content;
+}
+
 .login-box {
     background-color: #4c5844;
     padding: 25px 60px;
@@ -102,6 +109,63 @@ button[type="submit"]:active { /* Inverted border colors on click for a pressed 
     position: relative;
 }
 
+.loading-panel {
+    margin-top: 14px;
+    background: #4c5844;
+    padding: 10px 12px;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-bottom: 1px solid #282e22;
+    border-right: 1px solid #282e22;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.loading-title {
+    color: #eff6ee;
+    margin: 0 0 8px;
+}
+
+.loading-status,
+.loading-percent {
+    color: #a1ae9a;
+    margin: 0 0 6px;
+}
+
+.loading-percent {
+    margin: 6px 0 0;
+}
+
+.loading-track {
+    background: #3f4738;
+    border-top: 1px solid #282e22;
+    border-left: 1px solid #282e22;
+    border-bottom: 1px solid #808080;
+    border-right: 1px solid #808080;
+    height: 16px;
+    width: 100%;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    box-sizing: border-box;
+    gap: 2px;
+}
+
+.loading-bars {
+    display: flex;
+    gap: 2px;
+    width: 100%;
+    height: 100%;
+}
+
+.loading-bar {
+    flex: 1;
+    height: 100%;
+    background: #3f4738;
+    transition: background-color 0.1s linear;
+}
+
 .login-box::before { 
     content: "🚉";
     position: absolute;
@@ -163,11 +227,11 @@ button[type="submit"]:focus {
 /* Login error message */
 .login-error {
     display: none;
-    color: #968732;
-    font-size: 12px;
-    margin-top: 12px;
+    color: #d62828;
+    font-size: 16px;
+    margin-top: 16px;
     text-align: center;
-    animation: flash 0.6s infinite;
+    animation: flash 2s infinite;
 }
 
 @keyframes flash {
@@ -175,7 +239,7 @@ button[type="submit"]:focus {
         opacity: 1;
     }
     50%, 100% {
-        opacity: 0.3;
+        opacity: 0.6;
     }
 }
 
@@ -186,4 +250,43 @@ button[type="submit"]:focus {
     left: 50%;
     transform: translateX(-50%);
     z-index: 20;
+}
+
+@media (max-width: 600px) {
+    body {
+        overflow: auto;
+        padding: 12px;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .login-box {
+        width: min(100%, 560px);
+        padding: 22px 16px;
+    }
+
+    .auth-stack {
+        width: min(100%, 560px);
+    }
+
+    .window-title {
+        margin: -22px -8px 15px -8px;
+    }
+
+    .input-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    button[type="submit"] {
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+    }
 }

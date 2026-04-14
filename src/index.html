@@ -10,16 +10,26 @@
     <div class="error-container" aria-live="assertive">
         <div id="login-error" class="login-error"></div>
     </div>
-    <div class="login-box">
-        <h1 class="window-title">GuideRail Login</h1>
-        <form>
-            <div class="input-group">
-                <label for="username">Steam URL/ID</label>
-                <input type="text" required aria-describedby="username-help" name="username" id="username">
-                <span id="username-help" class="sr-only">Enter your Steam username or profile URL</span>
+    <div class="auth-stack">
+        <div class="login-box">
+            <h1 class="window-title">GuideRail Login</h1>
+            <form>
+                <div class="input-group">
+                    <label for="username">Steam URL/ID</label>
+                    <input type="text" required aria-describedby="username-help" name="username" id="username">
+                    <span id="username-help" class="sr-only">Enter your Steam username or profile URL</span>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+        <section class="loading-panel" id="login-loading" aria-live="polite" aria-atomic="true" hidden>
+            <p class="loading-title">Loading...</p>
+            <p class="loading-status" id="statusText">Verifying and downloading resources...</p>
+            <div class="loading-track" role="progressbar" aria-label="Login progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <div id="barsContainer" class="loading-bars"></div>
             </div>
-            <button type="submit">Login</button>
-        </form>
+            <p class="loading-percent" id="percentText">0% complete</p>
+        </section>
     </div>
     <div class="footer-links">
         <a href="about.html">About</a>
