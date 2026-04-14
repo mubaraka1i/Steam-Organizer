@@ -63,6 +63,32 @@
       border-bottom: 1px solid #808080;
       border-right: 1px solid #808080;
     }
+
+    .import-btn {
+  background-color: #4c5844;
+  color: #eff6ee;
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-bottom: 1px solid #282e22;
+  border-right: 1px solid #282e22;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+.status-message {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.status-message.loading {
+  color: #968732;
+}
+
+.status-message.success {
+  color: #a1ae9a;
+}
   </style>
 </head>
 <body>
@@ -80,6 +106,11 @@
     </div>
 
     <button class="logout-btn" onclick="logout()">Logout</button>
+
+<div style="margin-top: 20px;">
+  <button class="import-btn">Import Games</button>
+  <div id="status" class="status-message"></div>
+</div>
   </div>
 
   <script>
@@ -109,6 +140,33 @@
       const lastlog = new Date(profile.lastlogoff * 1000).toLocaleString();
       document.getElementById('lastlogoff').textContent = lastlog;
     });
+
+function setStatus(message, type) {
+  const status = document.getElementById('status');
+  status.textContent = message;
+  status.className = `status-message ${type}`;
+}
+
+function simulateLoading() {
+  setStatus("Loading games...", "loading"); // USING THIS AS A PLACEHOLDER FOR ACTUAL STEAM API 
+
+  setTimeout(() => {
+    setStatus("Games loaded successfully!", "success");
+  }, 1500);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.querySelector('.import-btn');
+
+  if (btn) {
+    btn.addEventListener('click', simulateLoading);
+  }
+});
+
+
+    
   </script>
+
+  
 </body>
 </html>
