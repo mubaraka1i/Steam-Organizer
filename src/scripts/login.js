@@ -123,6 +123,19 @@ function resetLoading() {
   hideLoading();
 }
 
+function clearErrorState(inputField) {
+  const errorDiv = document.getElementById('login-error');
+  if (errorDiv) {
+    errorDiv.textContent = '';
+    errorDiv.hidden = true;
+  }
+
+  if (inputField) {
+    inputField.removeAttribute('aria-invalid');
+    inputField.setAttribute('aria-describedby', 'username-help');
+  }
+}
+
 // Resolve vanity URL to Steam ID
 async function resolveSteamID(vanityUrl) {
   try {
@@ -185,14 +198,13 @@ async function handleLogin(event) {
   const button = document.querySelector('button[type="submit"]');
   const errorDiv = document.getElementById('login-error');
 
-  // Reset error
-  errorDiv.style.display = 'none';
-  errorDiv.textContent = '';
+  // Reset any previous error before validating a new attempt.
+  clearErrorState(inputField);
 
   // Parse input
   const parsed = parseSteamInput(input);
   if (!parsed) {
-    showError('Please enter a valid Steam URL or Steam ID.');
+    showError('Enter a valid Steam profile URL, custom URL, or 17-digit Steam ID.', inputField);
     return;
   }
 
@@ -212,10 +224,10 @@ async function handleLogin(event) {
 
       if (!steamID) {
         if (resolution.reason === 'proxy_unreachable' || resolution.reason === 'proxy_error') {
-          showError(PROXY_DOWN_MESSAGE);
+          showError(PROXY_DOWN_MESSAGE, inputField);
           return;
         }
-        showError('Could not resolve Steam username. Make sure the profile exists and is public.');
+        showError('Could not find that Steam username. Check the URL/ID and confirm the profile is public.', inputField);
         return;
       }
 
@@ -231,10 +243,10 @@ async function handleLogin(event) {
     const profileResult = await getSteamProfile(steamID);
     if (!profileResult.profile) {
       if (profileResult.reason === 'proxy_unreachable' || profileResult.reason === 'proxy_error') {
-        showError(PROXY_DOWN_MESSAGE);
+        showError(PROXY_DOWN_MESSAGE, inputField);
         return;
       }
-      showError('Could not fetch Steam profile. Make sure the profile is public and the proxy server is running.');
+      showError('Could not load this Steam profile. Verify it is public and try again.', inputField);
       return;
     }
 
@@ -249,23 +261,31 @@ async function handleLogin(event) {
     }, 220);
   } catch (error) {
     console.error('Login error:', error);
-    showError('Unable to contact Steam login service. Start the local proxy at port 8000.');
+    showError('Unable to contact the login service. Start the local proxy on port 8000 and retry.', inputField);
   } finally {
     button.disabled = false;
     inputField.disabled = false;
     button.textContent = 'Login';
 
     // Keep completed state visible on success, otherwise hide/reset.
-    if (document.getElementById('login-error').style.display === 'block') {
+    if (!errorDiv.hidden) {
       resetLoading();
     }
   }
 }
 
-function showError(message) {
+function showError(message, inputField) {
   const errorDiv = document.getElementById('login-error');
   errorDiv.textContent = message;
-  errorDiv.style.display = 'block';
+  errorDiv.hidden = false;
+
+  if (inputField) {
+    inputField.setAttribute('aria-invalid', 'true');
+    inputField.setAttribute('aria-describedby', 'username-help login-error');
+    inputField.focus();
+  }
+
+  errorDiv.focus();
 }
 
 // Setup on page load

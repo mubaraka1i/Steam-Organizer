@@ -17,9 +17,9 @@
     </header>
 
     <main class="site-main" id="main-content">
-        <section class="error-container" aria-live="assertive">
-            <h2 class="sr-only">Login errors</h2>
-            <div id="login-error" class="login-error"></div>
+        <section class="error-container" aria-labelledby="login-error-heading">
+            <h2 id="login-error-heading" class="sr-only">Login errors</h2>
+            <div id="login-error" class="login-error" role="alert" aria-atomic="true" tabindex="-1" hidden></div>
         </section>
 
         <section class="auth-stack" aria-labelledby="login-heading">

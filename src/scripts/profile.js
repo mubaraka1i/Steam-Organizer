@@ -12,7 +12,8 @@ function formatDate(unixSeconds) {
 function logout() {
   localStorage.removeItem(PROFILE_STORAGE_KEY);
   localStorage.removeItem(GAMES_STORAGE_KEY);
-  window.location.href = 'index.html';
+  renderGames([]);
+  window.location.replace('index.html');
 }
 
 function setStatus(message, type) {
@@ -96,7 +97,7 @@ async function importGames(steamid) {
     setStatus(`Imported ${data.response.games.length} games successfully.`, 'success');
   } catch (error) {
     console.error('Import error:', error);
-    setStatus('Could not load games. Check internet/proxy and try again.', 'error');
+    setStatus('Could not load games. Check if account is public or check internet/proxy and try again.', 'error');
   } finally {
     importBtn.disabled = false;
   }
@@ -120,7 +121,7 @@ function restoreStoredGames() {
 function bootstrapProfile() {
   const rawProfile = localStorage.getItem(PROFILE_STORAGE_KEY);
   if (!rawProfile) {
-    window.location.href = 'index.html';
+    window.location.replace('index.html');
     return;
   }
 
