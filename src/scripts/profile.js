@@ -1,6 +1,7 @@
 const API_PROXY = 'http://127.0.0.1:8000';
 const PROFILE_STORAGE_KEY = 'guideRail_profile';
 const GAMES_STORAGE_KEY = 'guideRail_games';
+const API_KEY_STORAGE_KEY = 'guideRail_api_key';
 
 let storedGames = [];
 let searchRenderTimeout = null;
@@ -165,7 +166,12 @@ function scheduleGamesRefresh() {
     renderGames(storedGames);
   }, 90);
 }
-async function importGames(steamid) {
+async function importGames(steamid, apiKey) {
+  if (!apiKey) {
+    setStatus('No Steam API key found. Go back to Home and enter your key first.', 'error');
+    return;
+  }
+
   const importBtn = document.getElementById('import-btn');
   importBtn.disabled = true;
   setStatus('Loading games from Steam API...', 'loading');
@@ -174,7 +180,7 @@ async function importGames(steamid) {
     const response = await fetch(`${API_PROXY}/games`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `steamid=${encodeURIComponent(steamid)}`
+      body: `steamid=${encodeURIComponent(steamid)}&apikey=${encodeURIComponent(apiKey)}`
     });
 
     if (!response.ok) {
@@ -236,6 +242,13 @@ function bootstrapProfile() {
   setFilterStateFromControls();
   restoreStoredGames();
 
+  const importBtn = document.getElementById('import-btn');
+  const apiKey = (localStorage.getItem(API_KEY_STORAGE_KEY) || '').trim();
+  if (!apiKey) {
+    setStatus('No Steam API key found. Go to Home and add one to enable imports.', 'error');
+    importBtn.disabled = true;
+  }
+
   document.getElementById('game-search').addEventListener('input', () => {
     setFilterStateFromControls();
     scheduleGamesRefresh();
@@ -250,7 +263,8 @@ function bootstrapProfile() {
   });
 
   document.getElementById('import-btn').addEventListener('click', () => {
-    importGames(profile.steamid);
+    const currentApiKey = (localStorage.getItem(API_KEY_STORAGE_KEY) || '').trim();
+    importGames(profile.steamid, currentApiKey);
   });
   document.getElementById('logout-btn').addEventListener('click', logout);
 }

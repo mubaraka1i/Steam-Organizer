@@ -3,7 +3,6 @@ const fs = require('fs/promises');
 const path = require('path');
 const { URL } = require('url');
 
-const STEAM_API_KEY = 'BF44EA6E3DCAF310220CAE2BC9829C96';
 const STEAM_API_BASE = 'https://api.steampowered.com';
 const PUBLIC_DIR = path.resolve(__dirname);
 const PORT = 8000;
@@ -19,6 +18,23 @@ function setCorsHeaders(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+}
+
+async function parseFormBody(req) {
+  let body = '';
+  for await (const chunk of req) {
+    body += chunk;
+  }
+  return new URLSearchParams(body);
+}
+
+function getApiKey(params) {
+  return (params.get('apikey') || '').trim();
+}
+
+function sendBadRequest(res, message) {
+  res.writeHead(400, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ error: message }));
 }
 
 async function sendFile(res, filePath) {
@@ -48,22 +64,22 @@ async function handleApi(req, res) {
     return;
   }
 
-  let body = '';
-  for await (const chunk of req) {
-    body += chunk;
-  }
-
-  const params = new URLSearchParams(body);
+  const params = await parseFormBody(req);
   const steamid = params.get('steamid');
+  const apiKey = getApiKey(params);
 
   if (!steamid) {
-    res.writeHead(400, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Missing steamid' }));
+    sendBadRequest(res, 'Missing steamid');
+    return;
+  }
+
+  if (!apiKey) {
+    sendBadRequest(res, 'Missing apikey');
     return;
   }
 
   try {
-    const apiUrl = `${STEAM_API_BASE}/ISteamUser/GetPlayerSummaries/v2/?key=${STEAM_API_KEY}&steamids=${encodeURIComponent(steamid)}`;
+    const apiUrl = `${STEAM_API_BASE}/ISteamUser/GetPlayerSummaries/v2/?key=${encodeURIComponent(apiKey)}&steamids=${encodeURIComponent(steamid)}`;
     console.log('Fetching profile:', steamid);
 
     const steamResponse = await fetch(apiUrl);
@@ -92,22 +108,22 @@ async function handleResolve(req, res) {
     return;
   }
 
-  let body = '';
-  for await (const chunk of req) {
-    body += chunk;
-  }
-
-  const params = new URLSearchParams(body);
+  const params = await parseFormBody(req);
   const vanityurl = params.get('vanityurl');
+  const apiKey = getApiKey(params);
 
   if (!vanityurl) {
-    res.writeHead(400, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Missing vanityurl' }));
+    sendBadRequest(res, 'Missing vanityurl');
+    return;
+  }
+
+  if (!apiKey) {
+    sendBadRequest(res, 'Missing apikey');
     return;
   }
 
   try {
-    const apiUrl = `${STEAM_API_BASE}/ISteamUser/ResolveVanityURL/v1/?key=${STEAM_API_KEY}&vanityurl=${encodeURIComponent(vanityurl)}`;
+    const apiUrl = `${STEAM_API_BASE}/ISteamUser/ResolveVanityURL/v1/?key=${encodeURIComponent(apiKey)}&vanityurl=${encodeURIComponent(vanityurl)}`;
     console.log('Resolving vanity URL:', vanityurl);
 
     const steamResponse = await fetch(apiUrl);
@@ -141,22 +157,22 @@ async function handleGames(req, res) {
     return;
   }
 
-  let body = '';
-  for await (const chunk of req) {
-    body += chunk;
-  }
-
-  const params = new URLSearchParams(body);
+  const params = await parseFormBody(req);
   const steamid = params.get('steamid');
+  const apiKey = getApiKey(params);
 
   if (!steamid) {
-    res.writeHead(400, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Missing steamid' }));
+    sendBadRequest(res, 'Missing steamid');
+    return;
+  }
+
+  if (!apiKey) {
+    sendBadRequest(res, 'Missing apikey');
     return;
   }
 
   try {
-    const apiUrl = `${STEAM_API_BASE}/IPlayerService/GetOwnedGames/v1/?key=${STEAM_API_KEY}&steamid=${encodeURIComponent(steamid)}&include_appinfo=1&include_played_free_games=1`;
+    const apiUrl = `${STEAM_API_BASE}/IPlayerService/GetOwnedGames/v1/?key=${encodeURIComponent(apiKey)}&steamid=${encodeURIComponent(steamid)}&include_appinfo=1&include_played_free_games=1`;
     console.log('Fetching owned games:', steamid);
 
     const steamResponse = await fetch(apiUrl);

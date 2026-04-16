@@ -27,6 +27,11 @@
                 <h2 id="login-heading" class="window-title">GuideRail Login</h2>
                 <form novalidate>
                     <div class="input-group">
+                        <label for="api-key">Steam API Key</label>
+                        <input type="text" aria-required="true" aria-describedby="api-key-help" name="api-key" id="api-key" autocomplete="off" spellcheck="false">
+                        <span id="api-key-help" class="sr-only">Enter your Steam Web API key. This key is stored only in your browser.</span>
+                    </div>
+                    <div class="input-group">
                         <label for="username">Steam URL/ID</label>
                         <input type="text" aria-required="true" aria-describedby="username-help" name="username" id="username">
                         <span id="username-help" class="sr-only">Enter your Steam username or profile URL</span>

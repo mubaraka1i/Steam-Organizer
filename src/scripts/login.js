@@ -29,6 +29,7 @@ function parseSteamInput(input) {
 
 const PROFILE_STORAGE_KEY = 'guideRail_profile';
 const GAMES_STORAGE_KEY = 'guideRail_games';
+const API_KEY_STORAGE_KEY = 'guideRail_api_key';
 const API_PROXY = 'http://127.0.0.1:8000';
 const PROXY_DOWN_MESSAGE = 'Proxy server is not running. Start the local proxy at port 8000.';
 const loadingMessages = [
@@ -134,17 +135,42 @@ function clearErrorState(inputField) {
 
   if (inputField) {
     inputField.removeAttribute('aria-invalid');
-    inputField.setAttribute('aria-describedby', 'username-help');
+    const defaultHelpId = inputField.id === 'api-key' ? 'api-key-help' : 'username-help';
+    inputField.setAttribute('aria-describedby', defaultHelpId);
   }
 }
 
+function positionErrorContainer() {
+  const header = document.querySelector('.site-header');
+  const main = document.querySelector('.site-main');
+  const loginBox = document.querySelector('.login-box');
+  const errorContainer = document.querySelector('.error-container');
+
+  if (!header || !main || !loginBox || !errorContainer) {
+    return;
+  }
+
+  const headerBottom = header.getBoundingClientRect().bottom;
+  const loginTop = loginBox.getBoundingClientRect().top;
+  const mainTop = main.getBoundingClientRect().top;
+  const midpoint = headerBottom + ((loginTop - headerBottom) / 2);
+
+  // Center the alert box around the midpoint without letting it go above main content.
+  const top = Math.max(0, midpoint - mainTop - (errorContainer.offsetHeight / 2));
+  errorContainer.style.top = `${Math.round(top)}px`;
+}
+
+function normalizeApiKey(value) {
+  return (value || '').trim();
+}
+
 // Resolve vanity URL to Steam ID
-async function resolveSteamID(vanityUrl) {
+async function resolveSteamID(vanityUrl, apiKey) {
   try {
     const response = await fetch(`${API_PROXY}/resolve`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `vanityurl=${encodeURIComponent(vanityUrl)}`
+      body: `vanityurl=${encodeURIComponent(vanityUrl)}&apikey=${encodeURIComponent(apiKey)}`
     });
 
     if (!response.ok) {
@@ -167,12 +193,12 @@ async function resolveSteamID(vanityUrl) {
 }
 
 // Fetch user profile from Steam
-async function getSteamProfile(steamID) {
+async function getSteamProfile(steamID, apiKey) {
   try {
     const response = await fetch(`${API_PROXY}/api`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `steamid=${encodeURIComponent(steamID)}`
+      body: `steamid=${encodeURIComponent(steamID)}&apikey=${encodeURIComponent(apiKey)}`
     });
 
     if (!response.ok) {
@@ -196,12 +222,20 @@ async function handleLogin(event) {
   event.preventDefault();
 
   const inputField = document.getElementById('username');
+  const apiKeyField = document.getElementById('api-key');
   const input = inputField.value;
+  const apiKey = normalizeApiKey(apiKeyField?.value);
   const button = document.querySelector('button[type="submit"]');
   const errorDiv = document.getElementById('login-error');
 
   // Reset any previous error before validating a new attempt.
   clearErrorState(inputField);
+  clearErrorState(apiKeyField);
+
+  if (!apiKey) {
+    showError('Enter your Steam API key before logging in.', apiKeyField, 'api-key-help');
+    return;
+  }
 
   // Parse input
   const parsed = parseSteamInput(input);
@@ -213,7 +247,11 @@ async function handleLogin(event) {
   startLoading();
   button.disabled = true;
   inputField.disabled = true;
+  if (apiKeyField) {
+    apiKeyField.disabled = true;
+  }
   button.textContent = 'Validating...';
+  localStorage.setItem(API_KEY_STORAGE_KEY, apiKey);
 
   try {
     let steamID = parsed.value;
@@ -221,7 +259,7 @@ async function handleLogin(event) {
     // If vanity URL, resolve it first
     if (parsed.type === 'vanity') {
       setLoadingStage(1, 28);
-      const resolution = await resolveSteamID(parsed.value);
+      const resolution = await resolveSteamID(parsed.value, apiKey);
       steamID = resolution.steamid;
 
       if (!steamID) {
@@ -242,7 +280,7 @@ async function handleLogin(event) {
     button.textContent = 'Fetching profile...';
 
     // Fetch profile
-    const profileResult = await getSteamProfile(steamID);
+    const profileResult = await getSteamProfile(steamID, apiKey);
     if (!profileResult.profile) {
       if (profileResult.reason === 'proxy_unreachable' || profileResult.reason === 'proxy_error') {
         showError(PROXY_DOWN_MESSAGE, inputField);
@@ -283,6 +321,9 @@ async function handleLogin(event) {
   } finally {
     button.disabled = false;
     inputField.disabled = false;
+    if (apiKeyField) {
+      apiKeyField.disabled = false;
+    }
     button.textContent = 'Login';
 
     // Keep completed state visible on success, otherwise hide/reset.
@@ -292,14 +333,17 @@ async function handleLogin(event) {
   }
 }
 
-function showError(message, inputField) {
+function showError(message, inputField, helpId = 'username-help') {
   const errorDiv = document.getElementById('login-error');
   errorDiv.textContent = message;
   errorDiv.hidden = false;
 
+  // Wait one frame so the element has a measurable height before positioning.
+  window.requestAnimationFrame(positionErrorContainer);
+
   if (inputField) {
     inputField.setAttribute('aria-invalid', 'true');
-    inputField.setAttribute('aria-describedby', 'username-help login-error');
+    inputField.setAttribute('aria-describedby', `${helpId} login-error`);
     inputField.focus();
   }
 
@@ -310,9 +354,18 @@ function showError(message, inputField) {
 document.addEventListener('DOMContentLoaded', () => {
   initializeLoadingBars();
   resetLoading();
+  positionErrorContainer();
 
   const form = document.querySelector('form');
   const usernameInput = document.getElementById('username');
+  const apiKeyInput = document.getElementById('api-key');
+
+  if (apiKeyInput) {
+    const storedApiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
+    if (storedApiKey) {
+      apiKeyInput.value = storedApiKey;
+    }
+  }
 
   if (usernameInput) {
     usernameInput.addEventListener('keydown', (event) => {
@@ -327,6 +380,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+window.addEventListener('resize', () => {
+  const errorDiv = document.getElementById('login-error');
+  if (errorDiv && !errorDiv.hidden) {
+    positionErrorContainer();
+  }
+});
+
 window.addEventListener('pageshow', () => {
   resetLoading();
+  positionErrorContainer();
 });

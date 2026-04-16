@@ -111,6 +111,11 @@ label {
     color: #a1ae9a;
 }
 
+.login-box .input-group label {
+    width: 92px;
+    flex: 0 0 92px;
+}
+
 input[type="text"] {
     color: #eff6ee;
     background-color: #3f4738;
@@ -136,7 +141,7 @@ button[type="submit"] {
     text-align: left;
     padding: 6px 14px;
     width: 170px;
-    margin-left: 92px;  /* Slightly left so it aligns with the input start */
+    margin-left: 102px;  /* 92px label + 10px gap to match input start */
     display: block;
 }
 
@@ -168,6 +173,7 @@ button[type="submit"]:active { /* Inverted border colors on click for a pressed 
 .login-page .site-main {
     flex-direction: column;
     align-items: center;
+    position: relative;
 }
 
 .loading-panel {
@@ -299,7 +305,12 @@ button[type="submit"]:focus,
 /* Needs to be above the login box in the stacking order to be visible */
 .error-container {
     width: min(100%, 560px);
-    margin: 0 auto 12px;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
 }
 
 .login-error:focus {
@@ -336,6 +347,11 @@ button[type="submit"]:focus,
         gap: 6px;
     }
 
+    .login-box .input-group label {
+        width: auto;
+        flex: 0 1 auto;
+    }
+
     input[type="text"] {
         width: 100%;
         box-sizing: border-box;
@@ -353,5 +369,6 @@ button[type="submit"]:focus,
 
     .error-container {
         width: 100%;
+        top: 0;
     }
 }
