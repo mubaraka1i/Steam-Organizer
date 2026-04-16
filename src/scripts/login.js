@@ -27,6 +27,8 @@ function parseSteamInput(input) {
   return null;
 }
 
+const PROFILE_STORAGE_KEY = 'guideRail_profile';
+const GAMES_STORAGE_KEY = 'guideRail_games';
 const API_PROXY = 'http://127.0.0.1:8000';
 const PROXY_DOWN_MESSAGE = 'Proxy server is not running. Start the local proxy at port 8000.';
 const loadingMessages = [
@@ -254,7 +256,23 @@ async function handleLogin(event) {
     completeLoading();
 
     // Success! Store and redirect
-    localStorage.setItem('guideRail_profile', JSON.stringify(profileResult.profile));
+    const previousProfileRaw = localStorage.getItem(PROFILE_STORAGE_KEY);
+    let previousSteamID = null;
+
+    if (previousProfileRaw) {
+      try {
+        const previousProfile = JSON.parse(previousProfileRaw);
+        previousSteamID = previousProfile?.steamid || null;
+      } catch {
+        previousSteamID = null;
+      }
+    }
+
+    if (previousSteamID && previousSteamID !== profileResult.profile.steamid) {
+      localStorage.removeItem(GAMES_STORAGE_KEY);
+    }
+
+    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profileResult.profile));
     setTimeout(() => {
       resetLoading();
       window.location.href = 'profile.html';

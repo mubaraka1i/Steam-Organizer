@@ -80,6 +80,57 @@ body {
     margin: 0 0 10px;
 }
 
+.games-section-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.games-summary {
+    margin: 4px 0 0;
+    color: #a1ae9a;
+    font-size: 12px;
+}
+
+.games-controls {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    width: min(100%, 540px);
+}
+
+.control-field {
+    display: grid;
+    gap: 4px;
+    font-size: 11px;
+    color: #eff6ee;
+}
+
+.control-field input,
+.control-field select {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #4c5844;
+    color: #eff6ee;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-bottom: 1px solid #282e22;
+    border-right: 1px solid #282e22;
+    padding: 6px 8px;
+    font: inherit;
+}
+
+.control-field input:focus,
+.control-field select:focus,
+.import-btn:focus,
+.logout-btn:focus {
+    outline: 2px solid #968732;
+    outline-offset: 2px;
+}
+
 .import-btn,
 .logout-btn {
     background-color: #4c5844;
@@ -133,6 +184,7 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 12px;
+    margin-top: 4px;
 }
 
 .game-card {
@@ -192,5 +244,10 @@ body {
     .games-grid {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: 8px;
+    }
+
+    .games-controls {
+        grid-template-columns: 1fr;
+        width: 100%;
     }
 }
