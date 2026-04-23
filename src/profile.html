@@ -8,6 +8,7 @@
 </head>
 <body>
   <header class="site-header">
+    <button id="theme-toggle" type="button">Toggle Theme</button>
     <h1 class="site-title"><span aria-hidden="true">🚉</span> GuideRail</h1>
     <nav class="site-nav" aria-label="Main navigation">
       <a href="index.html">Home</a>
@@ -35,6 +36,7 @@
         <p>Fetch your Steam owned games and store the result locally for offline viewing.</p>
         <button id="import-btn" class="import-btn" type="button">Import Games</button>
         <p id="status" class="status-message" role="status" aria-live="polite"></p>
+        <button id="export-btn" type="button">Export Games</button>
       </section>
 
       <section class="games-section" aria-labelledby="games-heading">
@@ -70,7 +72,6 @@
         </div>
         <div id="games-grid" class="games-grid" role="list"></div>
       </section>
-
       <button id="logout-btn" class="logout-btn" type="button">Logout</button>
     </section>
   </main>

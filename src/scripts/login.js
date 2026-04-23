@@ -1,3 +1,11 @@
+
+const THEME_KEY = 'guideRail_theme';
+
+function applyTheme(theme) {
+  document.body.classList.toggle('light-theme', theme === 'blue');
+}
+
+
 // Parse Steam URL/ID to extract the actual Steam ID or vanity URL
 function parseSteamInput(input) {
   input = input.trim();
@@ -352,6 +360,8 @@ function showError(message, inputField, helpId = 'username-help') {
 
 // Setup on page load
 document.addEventListener('DOMContentLoaded', () => {
+  const savedTheme = localStorage.getItem(THEME_KEY) || 'green';
+applyTheme(savedTheme);
   initializeLoadingBars();
   resetLoading();
   positionErrorContainer();
@@ -378,6 +388,17 @@ document.addEventListener('DOMContentLoaded', () => {
   if (form) {
     form.addEventListener('submit', handleLogin);
   }
+  const toggleBtn = document.getElementById('theme-toggle'); 
+  
+  if (toggleBtn) {
+  toggleBtn.addEventListener('click', () => {
+    const current = localStorage.getItem(THEME_KEY) || 'green';
+    const next = current === 'green' ? 'blue' : 'green';
+
+    localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
+  });
+}
 });
 
 window.addEventListener('resize', () => {
@@ -391,3 +412,4 @@ window.addEventListener('pageshow', () => {
   resetLoading();
   positionErrorContainer();
 });
+

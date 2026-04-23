@@ -269,4 +269,41 @@ function bootstrapProfile() {
   document.getElementById('logout-btn').addEventListener('click', logout);
 }
 
-document.addEventListener('DOMContentLoaded', bootstrapProfile);
+document.addEventListener('DOMContentLoaded', () => {
+  bootstrapProfile();
+  document.getElementById('export-btn').addEventListener('click', () => {
+    const data = localStorage.getItem('guideRail_games');
+
+    if (!data) {
+      alert('No games to export.');
+      return;
+    }
+
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'guiderail-games.json';
+    a.click();
+
+    URL.revokeObjectURL(url);
+  });
+  const THEME_KEY = 'guideRail_theme';
+
+  function applyTheme(theme) {
+    document.body.classList.toggle('light-theme', theme === 'light');
+  }
+
+  const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
+  applyTheme(savedTheme);
+
+  document.getElementById('theme-toggle').addEventListener('click', () => {
+    const current = localStorage.getItem(THEME_KEY) || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+
+    localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
+  });
+
+});

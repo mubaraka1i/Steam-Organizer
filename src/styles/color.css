@@ -13,7 +13,14 @@
  * #eff6ee on #3f4738: 11.8:1 ✓
  */
 
-body, button, input, label, .window-title, .footer-links, .footer-links a, .divider {
+body,
+button,
+input,
+label,
+.window-title,
+.footer-links,
+.footer-links a,
+.divider {
     font-family: Tahoma, Arial, sans-serif;
     font-size: 13px;
 }
@@ -141,11 +148,32 @@ button[type="submit"] {
     text-align: left;
     padding: 6px 14px;
     width: 170px;
-    margin-left: 102px;  /* 92px label + 10px gap to match input start */
+    margin-left: 102px;
+    /* 92px label + 10px gap to match input start */
     display: block;
 }
 
-button[type="submit"]:active { /* Inverted border colors on click for a pressed effect */
+button {
+    background-color: #4c5844;
+    color: #eff6ee;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-bottom: 1px solid #282e22;
+    border-right: 1px solid #282e22;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 6px 14px;
+}
+
+button:active {
+    border-top: 1px solid #282e22;
+    border-left: 1px solid #282e22;
+    border-bottom: 1px solid #808080;
+    border-right: 1px solid #808080;
+}
+
+button[type="submit"]:active {
+    /* Inverted border colors on click for a pressed effect */
     border-top: 1px solid #282e22;
     border-left: 1px solid #282e22;
     border-bottom: 1px solid #808080;
@@ -233,7 +261,7 @@ button[type="submit"]:active { /* Inverted border colors on click for a pressed 
     transition: background-color 0.1s linear;
 }
 
-.login-box::before { 
+.login-box::before {
     content: "🚉";
     position: absolute;
     top: -2px;
@@ -371,4 +399,91 @@ button[type="submit"]:focus,
         width: 100%;
         top: 0;
     }
+
+    /* Blue new steam theme */
+}
+
+.light-theme {
+   background-color: #1b2838;
+    color: #c7d5e0;
+}
+
+.light-theme .site-header {
+    background-color: #171a21;
+    border-bottom: 1px solid #000;
+}
+
+.light-theme .site-title {
+    color: #ffffff;
+}
+
+.light-theme .site-nav a {
+    background-color: #1b2838;
+    color: #c7d5e0;
+    border-color: #000;
+}
+
+.light-theme .site-nav a[aria-current="page"] {
+    color: #66c0f4;
+}
+
+.light-theme .login-box,
+.light-theme .loading-panel,
+.light-theme .profile-container {
+    background-color: #2a475e;
+    border-color: #000;
+}
+
+.light-theme .import-panel,
+.light-theme .games-section,
+.light-theme .games-section-header,
+.light-theme .games-grid {
+    background-color: #2a475e;
+    color: #c7d5e0;
+}
+
+.light-theme input[type="text"],
+.light-theme select {
+    background-color: #2a475e;
+color: #c7d5e0;
+
+border-top: 1px solid #1b2838;
+border-left: 1px solid #1b2838;
+
+border-bottom: 1px solid #66c0f4;
+border-right: 1px solid #66c0f4;
+
+padding: 6px;
+}
+
+.light-theme button {
+  background-color: #2a475e;
+color: #c7d5e0;
+
+border-top: 1px solid #66c0f4;
+border-left: 1px solid #66c0f4;
+
+border-bottom: 1px solid #1b2838;
+border-right: 1px solid #1b2838;
+}
+button:hover {
+    background-color: #3f4738;
+}
+.light-theme button:active {
+    border-top: 1px solid #1b2838;
+    border-left: 1px solid #1b2838;
+
+    border-bottom: 1px solid #66c0f4;
+    border-right: 1px solid #66c0f4;
+}
+.light-theme button:hover {
+    background-color: #417a9b;
+}
+
+.light-theme .footer-links {
+    background-color: #171a21;
+}
+
+.light-theme .footer-links a {
+    color: #66c0f4;
 }
