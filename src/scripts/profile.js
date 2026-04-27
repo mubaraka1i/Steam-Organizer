@@ -1,7 +1,33 @@
-const API_PROXY = 'http://127.0.0.1:8000';
+const THEME_KEY = 'guideRail_theme';
+
+
+function applyTheme(theme) {
+  
+  document.body.classList.toggle('light-theme', theme === 'light');
+}
+
+
+function initTheme() {
+  const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
+  applyTheme(savedTheme);
+
+  const btn = document.getElementById('theme-toggle');
+
+  
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const current = localStorage.getItem(THEME_KEY) || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme(next);
+    });
+  }
+}const API_PROXY = 'http://127.0.0.1:8000';
 const PROFILE_STORAGE_KEY = 'guideRail_profile';
 const GAMES_STORAGE_KEY = 'guideRail_games';
 const API_KEY_STORAGE_KEY = 'guideRail_api_key';
+
 
 let storedGames = [];
 let searchRenderTimeout = null;
@@ -270,40 +296,27 @@ function bootstrapProfile() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  bootstrapProfile();
-  document.getElementById('export-btn').addEventListener('click', () => {
-    const data = localStorage.getItem('guideRail_games');
+  initTheme();
+  if (document.getElementById('username')) {
+    bootstrapProfile();
 
-    if (!data) {
-      alert('No games to export.');
-      return;
-    }
+    document.getElementById('export-btn').addEventListener('click', () => {
+      const data = localStorage.getItem('guideRail_games');
 
-    const blob = new Blob([data], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
+      if (!data) {
+        alert('No games to export.');
+        return;
+      }
 
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'guiderail-games.json';
-    a.click();
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
 
-    URL.revokeObjectURL(url);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'guiderail-games.json';
+      a.click();
+
+      URL.revokeObjectURL(url);
   });
-  const THEME_KEY = 'guideRail_theme';
-
-  function applyTheme(theme) {
-    document.body.classList.toggle('light-theme', theme === 'light');
-  }
-
-  const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
-  applyTheme(savedTheme);
-
-  document.getElementById('theme-toggle').addEventListener('click', () => {
-    const current = localStorage.getItem(THEME_KEY) || 'dark';
-    const next = current === 'dark' ? 'light' : 'dark';
-
-    localStorage.setItem(THEME_KEY, next);
-    applyTheme(next);
-  });
-
+}
 });

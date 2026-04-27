@@ -431,7 +431,12 @@ button[type="submit"]:focus,
 .light-theme .loading-panel,
 .light-theme .profile-container {
     background-color: #2a475e;
-    border-color: #000;
+    border-top: 1px solid #66c0f4;
+    border-left: 1px solid #66c0f4;
+
+    
+    border-bottom: 1px solid #0e141b;
+    border-right: 1px solid #0e141b;
 }
 
 .light-theme .import-panel,
@@ -439,6 +444,12 @@ button[type="submit"]:focus,
 .light-theme .games-section-header,
 .light-theme .games-grid {
     background-color: #2a475e;
+    color: #c7d5e0;
+}
+.light-theme .profile-container,
+.light-theme .profile-container p,
+.light-theme .profile-info,
+.light-theme .profile-info p {
     color: #c7d5e0;
 }
 
@@ -453,7 +464,7 @@ border-left: 1px solid #1b2838;
 border-bottom: 1px solid #66c0f4;
 border-right: 1px solid #66c0f4;
 
-padding: 6px;
+
 }
 
 .light-theme button {
@@ -486,4 +497,113 @@ button:hover {
 
 .light-theme .footer-links a {
     color: #66c0f4;
+}
+.light-theme .window-title {
+    background-color: #2a475e;
+    color: #ffffff;
+}
+.light-theme .section,
+.light-theme .section p,
+.light-theme .section li,
+.light-theme .feature-list li {
+    color: #c7d5e0;
+}
+
+.light-theme strong {
+    color: #ffffff;
+}
+
+.light-theme em {
+    color: #66c0f4;
+}
+
+.light-theme {
+    color: #c7d5e0;
+}
+
+.light-theme .section p,
+.light-theme .section li,
+.light-theme .feature-list li {
+    color: #c7d5e0;
+}
+
+.light-theme .tagline {
+    color: #c7d5e0;
+}
+
+
+
+
+.light-theme .section-title,
+.light-theme .section h2 {
+    color: #ffffff;
+}
+
+
+.light-theme .section strong {
+    color: #ffffff;
+}
+
+
+.light-theme .section em {
+    color: #66c0f4;
+}
+
+
+.light-theme .feature-list li::marker,
+.light-theme .feature-list li::before {
+    color: #66c0f4;
+}
+
+.light-theme label {
+    color: #c7d5e0;
+}
+
+.light-theme .section-title,
+.light-theme .tagline,
+.light-theme .feature-box h3 {
+    color: #ffffff;
+}
+
+
+.light-theme .section,
+.light-theme .feature-box {
+    background-color: #2a475e;
+
+    border-top: 1px solid #66c0f4;
+    border-left: 1px solid #66c0f4;
+
+    border-bottom: 1px solid #1b2838;
+    border-right: 1px solid #1b2838;
+
+    color: #c7d5e0;
+}
+
+
+.light-theme .content-container {
+    background-color: #1b2838; 
+    border: none;
+}
+.light-theme .header-section {
+    background-color: #1b2838;
+
+    border-top: 1px solid #66c0f4;
+    border-left: 1px solid #66c0f4;
+
+    border-bottom: 1px solid #0e141b;
+    border-right: 1px solid #0e141b;
+
+   
+    padding: 20;
+    
+.light-theme .header-section h1 {
+    background-color: #2a475e;
+
+    
+    padding: 5px 10px 5px 5px;
+
+    font-size: 15px;
+    margin: -25px -35px 15px -35px;
+}
+
 }
