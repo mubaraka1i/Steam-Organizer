@@ -3,12 +3,12 @@ const THEME_KEY = 'guideRail_theme';
 
 function applyTheme(theme) {
   
-  document.body.classList.toggle('light-theme', theme === 'light');
+  document.body.classList.toggle('light-theme', theme === 'blue');
 }
 
 
 function initTheme() {
-  const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
+  const savedTheme = localStorage.getItem(THEME_KEY) || 'green';
   applyTheme(savedTheme);
 
   const btn = document.getElementById('theme-toggle');
@@ -16,8 +16,8 @@ function initTheme() {
   
   if (btn) {
     btn.addEventListener('click', () => {
-      const current = localStorage.getItem(THEME_KEY) || 'dark';
-      const next = current === 'dark' ? 'light' : 'dark';
+      const current = localStorage.getItem(THEME_KEY) || 'green';
+      const next = current === 'green' ? 'blue' : 'green';
 
       localStorage.setItem(THEME_KEY, next);
       applyTheme(next);
