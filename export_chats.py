@@ -6,6 +6,7 @@ This script reconstructs chat sessions in a format similar to VS Code's
 "Copy All", but with improved structure, metadata, and timing information.
 """
 
+import argparse
 import json
 import os
 import re
@@ -13,6 +14,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 WS_ROOT = Path.cwd()   # The script is run from the workspace root
 WS_HASH = Path.cwd()   # Will be found by searching workspaceStorage
@@ -39,6 +41,7 @@ def find_workspace_hash_dir(storage_dir: Path) -> Path:
     cwd_str = str(WS_ROOT.resolve())
     if cwd_str.startswith("C:\\"):
         cwd_str = cwd_str[2:].replace("\\", "/")
+        cwd_str = quote(cwd_str)
     for d in storage_dir.iterdir():
         meta = d / "workspace.json"
         if not meta.exists():
@@ -181,7 +184,10 @@ def parse_response(items: list, responses: list, call_ids: set) -> None:
             if not msg:
                 data = item.get("toolSpecificData")
                 if data and data["kind"] == "terminal":
-                    msg = f"Ran `{data['confirmation']['commandLine']}`"
+                    if "confirmation" in data:
+                        msg = f"Ran `{data['confirmation']['commandLine']}`"
+                    elif "alternativeRecommendation" in data:
+                        msg = data["alternativeRecommendation"]
             if msg and isinstance(msg, str):
                 emoji = detect_event_type(msg)
                 text = make_paths_relative(msg)
@@ -199,11 +205,20 @@ def parse_response(items: list, responses: list, call_ids: set) -> None:
             data = item["data"]
             for q in item["questions"]:
                 qText = q["message"]
-                a = data[q["id"]]
-                if "selectedValue" in a:
+                a = data.get(q["id"], {})
+                if not isinstance(a, dict):
+                    aText = str(a)
+                elif "selectedValue" in a:
                     aText = a["selectedValue"]
-                else:
+                elif "selectedValues" in a:
                     aText = a["selectedValues"]
+                elif "freeformValue" in a:
+                    aText = a["freeformValue"]
+                else:
+                    aText = "(no answer captured)"
+
+                if isinstance(aText, list):
+                    aText = ", ".join(str(v) for v in aText)
                 responses.append(f"> Q: {qText}<br>\n> **A: {aText}**")
 
         # Link displayed as filename
@@ -215,7 +230,8 @@ def parse_response(items: list, responses: list, call_ids: set) -> None:
                 name = make_relative(ref["path"])
             else:
                 name = make_relative(ref["uri"]["path"])
-            responses[-1] += name
+            if responses:
+                responses[-1] += name
 
         # General text responses
         else:
@@ -288,7 +304,10 @@ def parse_session(file_path: Path) -> tuple[list[dict], str | None, dict]:
             except Exception:
                 pass
             try:
-                metadata["account"] = v["inputState"]["selectedModel"]["metadata"]["auth"]["accountLabel"]
+                if "inputState" in v:
+                    metadata["account"] = v["inputState"]["selectedModel"]["metadata"]["auth"]["accountLabel"]
+                else:
+                    metadata["account"] = v["metadata"]["auth"]["accountLabel"]
             except Exception:
                 pass
 
@@ -320,8 +339,8 @@ def parse_session(file_path: Path) -> tuple[list[dict], str | None, dict]:
                     "timestamp": ts_from_ms(request.get("timestamp")),
                     "responses": [],
                     "callIds": set(),
-                    "timings": {},
-                    "details": {},
+                    "timings": request.get("result", {}).get("timings", {}),
+                    "details": request.get("result", {}).get("details", {}),
                 }
                 groups.append(group)
 
@@ -468,17 +487,41 @@ def render_session(
 # Main
 # ------------------------------------------------
 
+def parse_args() -> argparse.Namespace:
+    """Parse optional src_dir and dst_dir arguments."""
+    parser = argparse.ArgumentParser(
+        description="Export VS Code Copilot Chat sessions to Markdown."
+    )
+    parser.add_argument(
+        "src_dir",
+        nargs="?",
+        type=Path,
+        help="Directory containing *.jsonl session files (default: auto-detect from VS Code storage)",
+    )
+    parser.add_argument(
+        "dst_dir",
+        nargs="?",
+        type=Path,
+        help=f"Directory to write exported Markdown files (default: {DST_DIR}/)",
+    )
+    return parser.parse_args()
+
+
 def main() -> None:
     """Main entry point for exporting chat sessions."""
+    args = parse_args()
 
     # Create output directory
-    out_dir = WS_ROOT / DST_DIR
+    out_dir = args.dst_dir if args.dst_dir else WS_ROOT / DST_DIR
     out_dir.mkdir(exist_ok=True)
 
     # Find chat storage folder
-    storage_dir = get_workspace_storage_dir()
-    workspace_hash_dir = find_workspace_hash_dir(storage_dir)
-    jsonl_files = find_jsonl_files(workspace_hash_dir)
+    if args.src_dir:
+        jsonl_files = list(args.src_dir.glob("*.jsonl"))
+    else:
+        storage_dir = get_workspace_storage_dir()
+        workspace_hash_dir = find_workspace_hash_dir(storage_dir)
+        jsonl_files = find_jsonl_files(workspace_hash_dir)
 
     # Parse each session file
     for file in jsonl_files:
