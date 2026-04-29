@@ -38,6 +38,7 @@ function parseSteamInput(input) {
 const PROFILE_STORAGE_KEY = 'guideRail_profile';
 const GAMES_STORAGE_KEY = 'guideRail_games';
 const API_KEY_STORAGE_KEY = 'guideRail_api_key';
+const ACCOUNT_LIST_KEY = 'guideRail_account_list';
 const API_PROXY = 'http://127.0.0.1:8000';
 const PROXY_DOWN_MESSAGE = 'Proxy server is not running. Start the local proxy at port 8000.';
 const loadingMessages = [
@@ -318,7 +319,20 @@ async function handleLogin(event) {
       localStorage.removeItem(GAMES_STORAGE_KEY);
     }
 
+    // Save the current profile for quick access and add to saved accounts
     localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profileResult.profile));
+    try {
+      addOrUpdateSavedAccount({
+        steamid: profileResult.profile.steamid,
+        displayName: profileResult.profile.personaname || profileResult.profile.steamid,
+        lastUsed: Date.now(),
+        favorite: false,
+        profile: profileResult.profile,
+        apiKey: apiKey
+      });
+    } catch (e) {
+      console.error('Failed to save account:', e);
+    }
     setTimeout(() => {
       resetLoading();
       window.location.href = 'profile.html';
@@ -339,6 +353,200 @@ async function handleLogin(event) {
       resetLoading();
     }
   }
+}
+
+// Account storage + rendering helpers
+function loadSavedAccounts() {
+  try {
+    const accountListRaw = localStorage.getItem(ACCOUNT_LIST_KEY) || '[]';
+    const accountIds = JSON.parse(accountListRaw);
+    if (!Array.isArray(accountIds)) return [];
+    const accounts = [];
+    for (const steamid of accountIds) {
+      const accountRaw = localStorage.getItem(`guideRail_account_${steamid}`);
+      if (accountRaw) {
+        try {
+          const acct = JSON.parse(accountRaw);
+          accounts.push(acct);
+        } catch (e) {
+          console.error(`Failed to parse account ${steamid}:`, e);
+        }
+      }
+    }
+    return accounts;
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveSavedAccounts(list) {
+  const accountIds = [];
+  for (const acct of list) {
+    localStorage.setItem(`guideRail_account_${acct.steamid}`, JSON.stringify(acct));
+    accountIds.push(acct.steamid);
+  }
+  localStorage.setItem(ACCOUNT_LIST_KEY, JSON.stringify(accountIds));
+}
+
+function addOrUpdateSavedAccount(account) {
+  const list = loadSavedAccounts();
+  const idx = list.findIndex(a => a.steamid === account.steamid);
+  const fullAccount = {
+    steamid: account.steamid,
+    displayName: account.displayName,
+    lastUsed: Date.now(),
+    favorite: account.favorite || false,
+    profile: account.profile || null,
+    apiKey: account.apiKey || null
+  };
+  if (idx >= 0) {
+    list[idx] = { ...list[idx], ...fullAccount };
+  } else {
+    list.unshift(fullAccount);
+  }
+  saveSavedAccounts(list);
+  renderAccounts();
+}
+
+function deleteSavedAccount(steamid) {
+  localStorage.removeItem(`guideRail_account_${steamid}`);
+  const accountIds = JSON.parse(localStorage.getItem(ACCOUNT_LIST_KEY) || '[]');
+  const updated = accountIds.filter(id => id !== steamid);
+  localStorage.setItem(ACCOUNT_LIST_KEY, JSON.stringify(updated));
+  renderAccounts();
+}
+
+function toggleFavoriteAccount(steamid) {
+  const list = loadSavedAccounts();
+  const idx = list.findIndex(a => a.steamid === steamid);
+  if (idx >= 0) {
+    list[idx].favorite = !list[idx].favorite;
+    saveSavedAccounts(list);
+    renderAccounts();
+  }
+}
+
+function renderAccounts(showFavoritesOnly = false) {
+  const container = document.getElementById('accountsList');
+  if (!container) return;
+  const list = loadSavedAccounts();
+  const items = showFavoritesOnly ? list.filter(a => a.favorite) : list;
+  container.innerHTML = '';
+
+  if (items.length === 0) {
+    const li = document.createElement('li');
+    li.className = 'account-item empty';
+    li.textContent = 'No saved accounts';
+    container.appendChild(li);
+    return;
+  }
+
+  for (const acct of items) {
+    const li = document.createElement('li');
+    li.className = 'account-item';
+    li.dataset.steamid = acct.steamid;
+
+    const name = document.createElement('button');
+    name.type = 'button';
+    name.className = 'account-select';
+    name.textContent = acct.displayName || acct.steamid;
+    name.title = acct.profile ? 'Boot into this account' : 'Select this account';
+
+    const fav = document.createElement('button');
+    fav.type = 'button';
+    fav.className = 'account-fav';
+    fav.title = acct.favorite ? 'Unfavorite' : 'Favorite';
+    fav.textContent = acct.favorite ? '★' : '☆';
+
+    const del = document.createElement('button');
+    del.type = 'button';
+    del.className = 'account-delete';
+    del.title = 'Delete account';
+    del.textContent = 'Delete';
+
+    li.appendChild(name);
+    li.appendChild(fav);
+    li.appendChild(del);
+    container.appendChild(li);
+  }
+}
+
+function selectAccountToInputs(steamid) {
+  const accounts = loadSavedAccounts();
+  const acct = accounts.find(a => a.steamid === steamid);
+  const usernameInput = document.getElementById('username');
+  if (acct && usernameInput) {
+    usernameInput.value = acct.steamid;
+    usernameInput.focus();
+  }
+}
+
+function bootIntoAccount(steamid) {
+  const accounts = loadSavedAccounts();
+  const acct = accounts.find(a => a.steamid === steamid);
+  if (acct && acct.profile && acct.apiKey) {
+    // Set the API key and profile in localStorage
+    localStorage.setItem(API_KEY_STORAGE_KEY, acct.apiKey);
+    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(acct.profile));
+    // Update lastUsed timestamp
+    acct.lastUsed = Date.now();
+    saveSavedAccounts(accounts);
+    // Redirect to profile page
+    window.location.href = 'profile.html';
+  } else {
+    alert('Account data incomplete. Please login normally to refresh.');
+  }
+}
+
+function exportAccounts() {
+  const accounts = loadSavedAccounts();
+  const exportData = {
+    version: 1,
+    exported: new Date().toISOString(),
+    accounts: accounts
+  };
+  const json = JSON.stringify(exportData, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `guiderail-accounts-${Date.now()}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function importAccounts(file) {
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const data = JSON.parse(event.target.result);
+      if (data.accounts && Array.isArray(data.accounts)) {
+        const existingAccounts = loadSavedAccounts();
+        const newAccounts = data.accounts;
+        // Merge: keep existing, add new ones, update if steamid matches
+        const merged = [...existingAccounts];
+        for (const newAcct of newAccounts) {
+          const idx = merged.findIndex(a => a.steamid === newAcct.steamid);
+          if (idx >= 0) {
+            // Update existing account with imported data
+            merged[idx] = { ...merged[idx], ...newAcct };
+          } else {
+            // Add new account
+            merged.push(newAcct);
+          }
+        }
+        saveSavedAccounts(merged);
+        renderAccounts();
+        alert(`Imported ${newAccounts.length} account(s) successfully!`);
+      } else {
+        alert('Invalid import format');
+      }
+    } catch (e) {
+      console.error('Import error:', e);
+      alert('Failed to import accounts: ' + e.message);
+    }
+  };
+  reader.readAsText(file);
 }
 
 function showError(message, inputField, helpId = 'username-help') {
@@ -399,6 +607,69 @@ applyTheme(savedTheme);
     applyTheme(next);
   });
 }
+  // Accounts UI wiring
+  let showFavoritesOnly = false;
+  const accountsList = document.getElementById('accountsList');
+  const filterToggle = document.getElementById('accounts-filter-toggle');
+
+  if (filterToggle) {
+    filterToggle.addEventListener('click', () => {
+      showFavoritesOnly = !showFavoritesOnly;
+      filterToggle.setAttribute('aria-pressed', String(showFavoritesOnly));
+      filterToggle.textContent = showFavoritesOnly ? 'Show All' : 'Show Favorites';
+      renderAccounts(showFavoritesOnly);
+    });
+  }
+
+  if (accountsList) {
+    accountsList.addEventListener('click', (ev) => {
+      const btn = ev.target;
+      const li = btn.closest('li.account-item');
+      if (!li) return;
+      const sid = li.dataset.steamid;
+
+      if (btn.classList.contains('account-select')) {
+        // Check if account has saved profile data for booting
+        const acct = loadSavedAccounts().find(a => a.steamid === sid);
+        if (acct && acct.profile) {
+          bootIntoAccount(sid);
+        } else {
+          selectAccountToInputs(sid);
+        }
+      } else if (btn.classList.contains('account-fav')) {
+        toggleFavoriteAccount(sid);
+      } else if (btn.classList.contains('account-delete')) {
+        deleteSavedAccount(sid);
+      }
+    });
+  }
+
+  // Wire up import/export
+  const exportBtn = document.getElementById('accounts-export-btn');
+  const importBtn = document.getElementById('accounts-import-btn');
+  const importFile = document.getElementById('accounts-import-file');
+
+  if (exportBtn) {
+    exportBtn.addEventListener('click', exportAccounts);
+  }
+
+  if (importBtn) {
+    importBtn.addEventListener('click', () => {
+      importFile.click();
+    });
+  }
+
+  if (importFile) {
+    importFile.addEventListener('change', (ev) => {
+      if (ev.target.files && ev.target.files[0]) {
+        importAccounts(ev.target.files[0]);
+        ev.target.value = ''; // Reset file input
+      }
+    });
+  }
+
+  // Initial render
+  renderAccounts();
 });
 
 window.addEventListener('resize', () => {

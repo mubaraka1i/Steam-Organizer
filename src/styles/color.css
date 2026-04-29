@@ -39,6 +39,7 @@ body {
 }
 
 .site-header {
+    position: relative;
     width: 100%;
     border-bottom: 1px solid #282e22;
     background-color: #3f4738;
@@ -47,6 +48,13 @@ body {
     justify-content: space-between;
     align-items: center;
     gap: 14px;
+}
+
+#theme-toggle {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .site-title {
@@ -98,8 +106,9 @@ body {
 }
 
 .login-box {
+    position: relative;
     background-color: #4c5844;
-    padding: 25px 60px;
+    padding: 28px 60px 25px;
     border-top: 1px solid #808080;
     border-left: 1px solid #808080;
     border-bottom: 1px solid #282e22;
@@ -184,14 +193,18 @@ button[type="submit"]:active {
     font-weight: 400;
     color: #eff6ee;
     font-size: 15px;
-    margin-bottom: 12px;
     background-color: #4c5844;
     padding: 5px 10px 5px 5px;
-    margin: -25px -35px 15px -35px;
+    margin: 0;
 }
 
-.login-box {
-    position: relative;
+.login-box .window-title {
+    position: absolute;
+    top: -11px;
+    left: 8px;
+    display: inline-block;
+    padding: 4px 10px 4px 6px;
+    font-size: 14px;
 }
 
 .login-page {
@@ -262,12 +275,102 @@ button[type="submit"]:active {
 }
 
 .login-box::before {
-    content: "🚉";
+    content: none;
+}
+
+/* Accounts box (saved accounts on login page) */
+.accounts-box {
+    background-color: #4c5844;
+    padding: 28px 20px 18px;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-bottom: 1px solid #282e22;
+    border-right: 1px solid #282e22;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.accounts-box .window-title {
     position: absolute;
-    top: -2px;
-    left: 6px;
-    font-size: 16px;
+    top: -11px;
+    left: 8px;
+    margin: 0;
+    padding: 4px 10px 4px 6px;
+    display: inline-block;
+    background-color: #4c5844;
+    font-size: 14px;
+}
+
+.accounts-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+}
+
+.accounts-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.account-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.account-item.empty {
+    color: #a1ae9a;
+    margin-top: -4px;
+}
+
+.account-select {
+    flex: 1 1 auto;
+    text-align: left;
+    background: transparent;
     color: #eff6ee;
+    border-top: 1px solid #808080;
+    border-left: 1px solid #808080;
+    border-bottom: 1px solid #282e22;
+    border-right: 1px solid #282e22;
+    padding: 6px 8px;
+}
+
+.account-select:focus {
+    outline: 2px solid #eff6ee;
+    outline-offset: 2px;
+}
+
+.account-fav {
+    width: 42px;
+    flex: 0 0 42px;
+    text-align: center;
+    align-self: flex-start;
+    margin-top: -4px;
+    margin-left: 8px;
+}
+
+.account-delete {
+    background-color: #3f2b2b;
+    color: #fff;
+    border: 1px solid #8a1a1a;
+    align-self: flex-start;
+    margin-top: -4px;
+}
+
+@media (max-width: 600px) {
+    .accounts-box {
+        width: 100%;
+        padding: 12px;
+    }
+    .account-fav {
+        width: 40px;
+        padding: 8px 6px;
+    }
 }
 
 .footer-links {
@@ -349,7 +452,77 @@ button[type="submit"]:focus,
 @media (max-width: 600px) {
     .site-header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        padding: 12px 14px;
+        gap: 8px;
+    }
+
+    /* On small screens keep the toggle in the normal document flow */
+    .site-header button#theme-toggle {
+        position: static;
+        transform: none;
+        margin-top: 6px;
+    }
+
+    /* Larger touch targets and readable text on small screens */
+    body,
+    button,
+    input,
+    label,
+    .window-title,
+    .footer-links,
+    .footer-links a,
+    .divider {
+        font-size: 16px;
+    }
+
+    .site-title {
+        font-size: 20px;
+    }
+
+    button {
+        padding: 10px 16px;
+        font-size: 16px;
+    }
+
+    input[type="text"],
+    input[type="search"],
+    select {
+        font-size: 16px;
+        padding: 10px 8px;
+    }
+
+    input[type="text"],
+    input[type="search"] {
+        min-height: 38px;
+        line-height: 1.1;
+        font-weight: 400;
+        color: #ffffff;
+        -webkit-text-fill-color: #ffffff;
+        caret-color: #ffffff;
+        background-color: #2f362b;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    input[type="text"]::placeholder,
+    input[type="search"]::placeholder {
+        color: #c7d5e0;
+        opacity: 0.9;
+    }
+
+    .site-nav {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .site-nav a {
+        display: inline-block;
+        padding: 10px 12px;
+        font-size: 16px;
     }
 
     .login-page {
@@ -357,16 +530,18 @@ button[type="submit"]:focus,
     }
 
     .login-box {
-        width: min(100%, 560px);
-        padding: 22px 16px;
+        width: min(100%, 300px);
+        padding: 14px 10px;
+        margin-inline: auto;
     }
 
     .auth-stack {
-        width: min(100%, 560px);
+        width: min(100%, 300px);
     }
 
     .window-title {
-        margin: -22px -8px 15px -8px;
+        margin: -14px -6px 10px -6px;
+        font-size: 14px;
     }
 
     .input-group {
@@ -392,7 +567,12 @@ button[type="submit"]:focus,
     }
 
     .site-main {
-        padding: 10px;
+        padding: 6px;
+    }
+
+    .login-box::before {
+        left: 4px;
+        font-size: 14px;
     }
 
     .error-container {
@@ -404,7 +584,7 @@ button[type="submit"]:focus,
 }
 
 .light-theme {
-   background-color: #1b2838;
+    background-color: #2a475e;
     color: #c7d5e0;
 }
 
@@ -429,7 +609,8 @@ button[type="submit"]:focus,
 
 .light-theme .login-box,
 .light-theme .loading-panel,
-.light-theme .profile-container {
+.light-theme .profile-container,
+.light-theme .accounts-box {
     background-color: #2a475e;
     border-top: 1px solid #66c0f4;
     border-left: 1px solid #66c0f4;
@@ -501,6 +682,28 @@ button:hover {
 .light-theme .window-title {
     background-color: #2a475e;
     color: #ffffff;
+}
+
+.light-theme .accounts-box .window-title {
+    background-color: #2a475e;
+    color: #ffffff;
+}
+
+.light-theme .account-select {
+    color: #c7d5e0;
+}
+
+.light-theme .account-item.empty {
+    color: #c7d5e0;
+}
+
+.light-theme .account-delete {
+    background-color: #1b2838;
+    color: #c7d5e0;
+    border-top: 1px solid #66c0f4;
+    border-left: 1px solid #66c0f4;
+    border-bottom: 1px solid #0e141b;
+    border-right: 1px solid #0e141b;
 }
 .light-theme .section,
 .light-theme .section p,

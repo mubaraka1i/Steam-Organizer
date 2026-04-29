@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>GuideRail - Sign In</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="styles/color.css">
     <link rel="icon" href="https://fav.farm/🚉" aria-hidden="true">
     <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
@@ -11,8 +12,8 @@
 
 <body class="login-page">
     <header class="site-header">
-        <button id="theme-toggle" type="button">Toggle Theme</button>
         <h1 class="site-title"><span aria-hidden="true">🚉</span> GuideRail</h1>
+        <button id="theme-toggle" type="button">Toggle Theme</button>
         <nav class="site-nav" aria-label="Main navigation">
             <a href="index.html" aria-current="page">Home</a>
             <a href="profile.html">Profile</a>
@@ -21,14 +22,14 @@
     </header>
 
     <main class="site-main" id="main-content">
-        <section class="error-container" aria-labelledby="login-error-heading">
-            <h2 id="login-error-heading" class="sr-only">Login errors</h2>
+        <section class="error-container" aria-labelledby="fetch-error-heading">
+            <h2 id="fetch-error-heading" class="sr-only">Fetch errors</h2>
             <div id="login-error" class="login-error" role="alert" aria-atomic="true" tabindex="-1" hidden></div>
         </section>
 
-        <section class="auth-stack" aria-labelledby="login-heading">
+        <section class="auth-stack" aria-labelledby="fetch-heading">
             <article class="login-box">
-                <h2 id="login-heading" class="window-title">GuideRail Login</h2>
+                <h2 id="fetch-heading" class="window-title">Fetch Account</h2>
                 <form novalidate>
                     <div class="input-group">
                         <label for="api-key">Steam API Key</label>
@@ -43,8 +44,19 @@
                             id="username">
                         <span id="username-help" class="sr-only">Enter your Steam username or profile URL</span>
                     </div>
-                    <button type="submit">Login</button>
+                    <button type="submit">Fetch</button>
                 </form>
+            </article>
+
+            <article class="accounts-box">
+                <h2 class="window-title">Saved Accounts</h2>
+                <div class="accounts-controls">
+                    <button id="accounts-export-btn" type="button" title="Export accounts to JSON">Export</button>
+                    <button id="accounts-import-btn" type="button" title="Import accounts from JSON">Import</button>
+                    <button id="accounts-filter-toggle" type="button" aria-pressed="false">Show Favorites</button>
+                    <input type="file" id="accounts-import-file" accept=".json" style="display: none;" aria-hidden="true">
+                </div>
+                <ul id="accountsList" class="accounts-list" aria-live="polite"></ul>
             </article>
 
             <section class="loading-panel" id="login-loading" aria-live="polite" aria-atomic="true" hidden>
