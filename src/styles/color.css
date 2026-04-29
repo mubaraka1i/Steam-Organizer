@@ -698,12 +698,9 @@ button:hover {
 }
 
 .light-theme .account-delete {
-    background-color: #1b2838;
-    color: #c7d5e0;
-    border-top: 1px solid #66c0f4;
-    border-left: 1px solid #66c0f4;
-    border-bottom: 1px solid #0e141b;
-    border-right: 1px solid #0e141b;
+    background-color: #3f2b2b;
+    color: #fff;
+    border: 1px solid #8a1a1a;
 }
 .light-theme .section,
 .light-theme .section p,
