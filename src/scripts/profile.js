@@ -401,6 +401,12 @@ function bootstrapProfile() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
+   const backBtn = document.getElementById("back-to-profile-btn");
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      window.location.href = "profile.html";
+    });
+  }
   if (document.getElementById('username')) {
     bootstrapProfile();
 
