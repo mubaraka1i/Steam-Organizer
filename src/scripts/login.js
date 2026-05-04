@@ -37,14 +37,15 @@ function parseSteamInput(input) {
 
 const PROFILE_STORAGE_KEY = 'guideRail_profile';
 const GAMES_STORAGE_KEY = 'guideRail_games';
-// const API_KEY_STORAGE_KEY = 'guideRail_api_key';
 const ACCOUNT_LIST_KEY = 'guideRail_account_list';
-const API_PROXY = 'http://127.0.0.1:8000';
-const PROXY_DOWN_MESSAGE = 'Proxy server is not running. Start the local proxy at port 8000.';
+const APPROXI_PROXY_BASE = 'https://approxi--approxi-65847.us-east4.hosted.app/p/aliappleton-project?url=';
+const APPROXI_PROXY_TOKEN = '68b1d5ba4cde33c593522d9dc0c0ac9898dd023bad0b33a0';
+const STEAM_PROXY_SECRET_PLACEHOLDER = '{STEAM_KEY}';
+const PROXY_DOWN_MESSAGE = 'Steam proxy is unavailable. Please try again in a moment.';
 const loadingMessages = [
   'Validating Steam input...',
-  'Resolving vanity URL via /resolve...',
-  'Fetching profile via /api...',
+  'Resolving vanity URL via Steam API proxy...',
+  'Fetching profile via Steam API proxy...',
   'Signing in...'
 ];
 const TOTAL_LOADING_BARS = 25;
@@ -169,18 +170,19 @@ function positionErrorContainer() {
   errorContainer.style.top = `${Math.round(top)}px`;
 }
 
-function normalizeApiKey(value) {
-  return (value || '').trim();
+function fetchViaApproxi(targetUrl) {
+  return fetch(`${APPROXI_PROXY_BASE}${encodeURIComponent(targetUrl)}`, {
+    headers: {
+      'x-proxy-token': APPROXI_PROXY_TOKEN
+    }
+  });
 }
 
 // Resolve vanity URL to Steam ID
 async function resolveSteamID(vanityUrl) {
   try {
-    const response = await fetch(`${API_PROXY}/resolve`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `vanityurl=${encodeURIComponent(vanityUrl)}`
-    });
+    const targetUrl = `https://api.steampowered.com/ISteamUser/ResolveVanityURL/v1/?key=${STEAM_PROXY_SECRET_PLACEHOLDER}&vanityurl=${encodeURIComponent(vanityUrl)}`;
+    const response = await fetchViaApproxi(targetUrl);
 
     if (!response.ok) {
       if (response.status === 400) {
@@ -190,8 +192,8 @@ async function resolveSteamID(vanityUrl) {
     }
 
     const data = await response.json();
-    if (data.success && data.steamid) {
-      return { steamid: data.steamid, reason: null };
+    if (data.response && data.response.success === 1 && data.response.steamid) {
+      return { steamid: data.response.steamid, reason: null };
     }
     console.error('Resolve error:', data);
     return { steamid: null, reason: 'not_found' };
@@ -204,11 +206,8 @@ async function resolveSteamID(vanityUrl) {
 // Fetch user profile from Steam
 async function getSteamProfile(steamID) {
   try {
-    const response = await fetch(`${API_PROXY}/api`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `steamid=${encodeURIComponent(steamID)}`
-    });
+    const targetUrl = `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=${STEAM_PROXY_SECRET_PLACEHOLDER}&steamids=${encodeURIComponent(steamID)}`;
+    const response = await fetchViaApproxi(targetUrl);
 
     if (!response.ok) {
       return { profile: null, reason: 'proxy_error' };

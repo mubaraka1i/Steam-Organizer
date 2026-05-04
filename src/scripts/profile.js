@@ -23,7 +23,10 @@ function initTheme() {
       applyTheme(next);
     });
   }
-}const API_PROXY = 'http://127.0.0.1:8000';
+}
+const APPROXI_PROXY_BASE = 'https://approxi--approxi-65847.us-east4.hosted.app/p/aliappleton-project?url=';
+const APPROXI_PROXY_TOKEN = '68b1d5ba4cde33c593522d9dc0c0ac9898dd023bad0b33a0';
+const STEAM_PROXY_SECRET_PLACEHOLDER = '{STEAM_KEY}';
 const PROFILE_STORAGE_KEY = 'guideRail_profile';
 const GAMES_STORAGE_KEY = 'guideRail_games';
 const API_KEY_STORAGE_KEY = 'guideRail_api_key';
@@ -264,22 +267,22 @@ function scheduleGamesRefresh() {
     renderGames(storedGames);
   }, 90);
 }
-async function importGames(steamid, apiKey) {
-  if (!apiKey) {
-    setStatus('No Steam API key found. Go back to Home and enter your key first.', 'error');
-    return;
-  }
+async function fetchViaApproxi(targetUrl) {
+  return fetch(`${APPROXI_PROXY_BASE}${encodeURIComponent(targetUrl)}`, {
+    headers: {
+      'x-proxy-token': APPROXI_PROXY_TOKEN
+    }
+  });
+}
 
+async function importGames(steamid) {
   const importBtn = document.getElementById('import-btn');
   importBtn.disabled = true;
   setStatus('Loading games from Steam API...', 'loading');
 
   try {
-    const response = await fetch(`${API_PROXY}/games`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `steamid=${encodeURIComponent(steamid)}&apikey=${encodeURIComponent(apiKey)}`
-    });
+    const targetUrl = `https://api.steampowered.com/IPlayerService/GetOwnedGames/v1/?key=${STEAM_PROXY_SECRET_PLACEHOLDER}&steamid=${encodeURIComponent(steamid)}&include_appinfo=1&include_played_free_games=1`;
+    const response = await fetchViaApproxi(targetUrl);
 
     if (!response.ok) {
       throw new Error('Server responded with an error.');
@@ -340,13 +343,6 @@ function bootstrapProfile() {
   applyGamePreferences(loadGamePreferences());
   restoreStoredGames();
 
-  const importBtn = document.getElementById('import-btn');
-  const apiKey = (localStorage.getItem(API_KEY_STORAGE_KEY) || '').trim();
-  if (!apiKey) {
-    setStatus('No Steam API key found. Go to Home and add one to enable imports.', 'error');
-    importBtn.disabled = true;
-  }
-
   document.getElementById('game-search').addEventListener('input', () => {
     setFilterStateFromControls();
     scheduleGamesRefresh();
@@ -361,8 +357,7 @@ function bootstrapProfile() {
   });
 
   document.getElementById('import-btn').addEventListener('click', () => {
-    const currentApiKey = (localStorage.getItem(API_KEY_STORAGE_KEY) || '').trim();
-    importGames(profile.steamid, currentApiKey);
+    importGames(profile.steamid);
   });
   document.getElementById('logout-btn').addEventListener('click', logout);
 }
