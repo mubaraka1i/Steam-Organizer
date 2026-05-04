@@ -145,7 +145,7 @@ function clearErrorState(inputField) {
 
   if (inputField) {
     inputField.removeAttribute('aria-invalid');
-    const defaultHelpId = inputField.id === 'api-key' ? 'api-key-help' : 'username-help';
+    const defaultHelpId = 'username-help';
     inputField.setAttribute('aria-describedby', defaultHelpId);
   }
 }
@@ -230,20 +230,12 @@ async function handleLogin(event) {
   event.preventDefault();
 
   const inputField = document.getElementById('username');
-  // const apiKeyField = document.getElementById('api-key');
   const input = inputField.value;
-  // const apiKey = normalizeApiKey(apiKeyField?.value);
   const button = document.querySelector('button[type="submit"]');
   const errorDiv = document.getElementById('login-error');
 
   // Reset any previous error before validating a new attempt.
   clearErrorState(inputField);
-  // clearErrorState(apiKeyField);
-
-  /* if (!apiKey) {
-    showError('Enter your Steam API key before logging in.', apiKeyField, 'api-key-help');
-    return;
-  } */
 
   // Parse input
   const parsed = parseSteamInput(input);
@@ -255,11 +247,7 @@ async function handleLogin(event) {
   startLoading();
   button.disabled = true;
   inputField.disabled = true;
-  /* if (apiKeyField) {
-    apiKeyField.disabled = true;
-  } */
   button.textContent = 'Validating...';
-  // localStorage.setItem(API_KEY_STORAGE_KEY, apiKey);
 
   try {
     let steamID = parsed.value;
@@ -342,9 +330,6 @@ async function handleLogin(event) {
   } finally {
     button.disabled = false;
     inputField.disabled = false;
-    /* if (apiKeyField) {
-      apiKeyField.disabled = false;
-    } */
     button.textContent = 'Login';
 
     // Keep completed state visible on success, otherwise hide/reset.
@@ -575,14 +560,6 @@ applyTheme(savedTheme);
 
   const form = document.querySelector('form');
   const usernameInput = document.getElementById('username');
-  /* const apiKeyInput = document.getElementById('api-key');
-
-  if (apiKeyInput) {
-    const storedApiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
-    if (storedApiKey) {
-      apiKeyInput.value = storedApiKey;
-    }
-  } */
 
   if (usernameInput) {
     usernameInput.addEventListener('keydown', (event) => {

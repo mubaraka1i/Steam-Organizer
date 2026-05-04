@@ -33,22 +33,6 @@
                 <h2 id="fetch-heading" class="window-title">Fetch Account</h2>
                 <form novalidate>
                     <div class="input-group">
-                        <label for="api-key">Steam API Key (optional)</label>
-                        <input type="text" aria-describedby="api-key-help" name="api-key"
-                            id="api-key" autocomplete="off" spellcheck="false">
-                        <span id="api-key-help" class="sr-only">Optional: your project can use the configured proxy secret instead of this field.</span>
-                    </div>
-                    <details class="api-key-help">
-                        <summary>Help getting Steam API Key</summary>
-                        <p>Steam keys are created from your Steam account and are used to fetch profile and library data.</p>
-                        <ol>
-                            <li>Sign in to Steam and open the <a href="https://steamcommunity.com/login/home/?goto=%2Fdev%2Fapikey" target="_blank" rel="noopener noreferrer">Steam API key signup page</a>.</li>
-                            <li>Enter any domain name (ex. google.com), complete the registration (Will need to download the Steam Guard App), and copy the key that Steam shows you.</li>
-                            <li>Keep the key private. If you ever need a new one, revoke the old key and register again.</li>
-                        </ol>
-                        <p>Need your SteamID64 too? You can look it up with <a href="https://steamid.io/" target="_blank" rel="noopener noreferrer">SteamID I/O</a>.</p>
-                    </details>
-                    <div class="input-group">
                         <label for="username">Steam URL/ID</label>
                         <input type="text" aria-required="true" aria-describedby="username-help" name="username"
                             id="username">
