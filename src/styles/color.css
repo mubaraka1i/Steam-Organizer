@@ -132,6 +132,43 @@ label {
     flex: 0 0 92px;
 }
 
+.api-key-help {
+    margin: -6px 0 12px 102px;
+    width: 340px;
+    color: #a1ae9a;
+}
+
+.api-key-help p,
+.api-key-help ol {
+    margin: 0 0 8px 0;
+}
+
+.api-key-help ol {
+    padding-left: 18px;
+}
+
+.api-key-help li {
+    margin-bottom: 6px;
+}
+
+.api-key-help summary {
+    cursor: pointer;
+    color: #968732;
+    text-decoration: underline;
+    margin-bottom: 8px;
+}
+
+.api-key-help a {
+    color: #eff6ee;
+}
+
+.api-key-help a:hover,
+.api-key-help a:focus,
+.api-key-help summary:hover,
+.api-key-help summary:focus {
+    color: #eff6ee;
+}
+
 input[type="text"] {
     color: #eff6ee;
     background-color: #3f4738;
@@ -363,6 +400,36 @@ button[type="submit"]:active {
 }
 
 @media (max-width: 600px) {
+    .login-box {
+        padding: 28px 12px 18px;
+    }
+
+    .login-box .input-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+
+    .login-box .input-group label {
+        width: auto;
+        flex: none;
+    }
+
+    .login-box input[type="text"] {
+        width: 100%;
+    }
+
+    .api-key-help {
+        margin: -2px 0 12px 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    button[type="submit"] {
+        margin-left: 0;
+        width: 100%;
+    }
+
     .accounts-box {
         width: 100%;
         padding: 12px;
