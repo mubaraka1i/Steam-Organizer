@@ -36,8 +36,11 @@
       <section class="import-panel" aria-labelledby="import-heading">
         <h3 id="import-heading">Library Import</h3>
         <p>Fetch your Steam owned games and store the result locally for offline viewing.</p>
-        <button id="fetch-btn" class="fetch-btn" type="button">Fetch Games</button>
-        <button id="import-btn" class="import-btn" type="button">Import Games</button>
+        <div class="import-actions">
+          <button id="fetch-btn" class="fetch-btn import-btn" type="button">Fetch Games</button>
+          <button id="import-btn" class="import-btn" type="button">Import Games</button>
+        </div>
+        <input id="games-import-file" type="file" accept="application/json" hidden>
         <p id="status" class="status-message" role="status" aria-live="polite"></p>
         <button id="export-btn" class="import-btn" type="button">Export Games</button>
       </section>

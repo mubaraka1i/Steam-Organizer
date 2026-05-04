@@ -304,6 +304,37 @@ async function importGames(steamid) {
   }
 }
 
+function importGamesFromFile(file) {
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const parsed = JSON.parse(ev.target.result);
+      let games = null;
+
+      if (Array.isArray(parsed)) {
+        games = parsed;
+      } else if (parsed && Array.isArray(parsed.games)) {
+        games = parsed.games;
+      } else if (parsed && parsed.response && Array.isArray(parsed.response.games)) {
+        games = parsed.response.games;
+      }
+
+      if (!Array.isArray(games)) {
+        alert('Invalid games file format.');
+        return;
+      }
+
+      localStorage.setItem(GAMES_STORAGE_KEY, JSON.stringify(games));
+      renderGames(games);
+      setStatus(`Imported ${games.length} games from file.`, 'success');
+    } catch (e) {
+      console.error('Import file error:', e);
+      alert('Failed to import games file: ' + e.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
 function restoreStoredGames() {
   const raw = localStorage.getItem(GAMES_STORAGE_KEY);
   if (!raw) {
@@ -356,9 +387,16 @@ function bootstrapProfile() {
     renderGames(storedGames);
   });
 
-  document.getElementById('import-btn').addEventListener('click', () => {
-    importGames(profile.steamid);
-  });
+  const importBtnEl = document.getElementById('import-btn');
+  const importFileEl = document.getElementById('games-import-file');
+  if (importBtnEl && importFileEl) {
+    importBtnEl.addEventListener('click', () => importFileEl.click());
+  }
+
+  const fetchBtnEl = document.getElementById('fetch-btn');
+  if (fetchBtnEl) {
+    fetchBtnEl.addEventListener('click', () => importGames(profile.steamid));
+  }
   document.getElementById('logout-btn').addEventListener('click', logout);
 }
 
@@ -367,23 +405,37 @@ document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('username')) {
     bootstrapProfile();
 
-    document.getElementById('export-btn').addEventListener('click', () => {
-      const data = localStorage.getItem('guideRail_games');
+    const exportBtn = document.getElementById('export-btn');
+    const importFile = document.getElementById('games-import-file');
 
-      if (!data) {
-        alert('No games to export.');
-        return;
-      }
+    if (exportBtn) {
+      exportBtn.addEventListener('click', () => {
+        const data = localStorage.getItem('guideRail_games');
 
-      const blob = new Blob([data], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
+        if (!data) {
+          alert('No games to export.');
+          return;
+        }
 
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'guiderail-games.json';
-      a.click();
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
 
-      URL.revokeObjectURL(url);
-  });
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'guiderail-games.json';
+        a.click();
+
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    if (importFile) {
+      importFile.addEventListener('change', (ev) => {
+        if (ev.target.files && ev.target.files[0]) {
+          importGamesFromFile(ev.target.files[0]);
+          ev.target.value = '';
+        }
+      });
+    }
 }
 });
