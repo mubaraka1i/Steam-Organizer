@@ -59,6 +59,7 @@ body {
 }
 
 .import-panel,
+.preferences-panel,
 .games-section {
     background-color: #4c5844;
     border-top: 1px solid #808080;
@@ -70,13 +71,15 @@ body {
 }
 
 .import-panel h3,
+.preferences-panel h3,
 .games-section h3 {
     margin: 0 0 8px;
     color: #eff6ee;
     font-size: 14px;
 }
 
-.import-panel p {
+.import-panel p,
+.preferences-panel p {
     margin: 0 0 10px;
 }
 
@@ -100,6 +103,7 @@ body {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 10px;
     width: min(100%, 540px);
+    margin-bottom: 16px;
 }
 
 .control-field {
@@ -142,6 +146,8 @@ body {
     padding: 6px 14px;
     cursor: pointer;
     font-size: 12px;
+    margin: 0;
+    width: 110px;
 }
 
 .import-btn:active,
@@ -163,8 +169,8 @@ body {
 }
 
 .status-message {
-    margin: 10px 0 0;
-    min-height: 16px;
+    margin: 0;
+    min-height: 0;
     font-size: 12px;
 }
 
@@ -251,6 +257,12 @@ body {
         width: 100%;
     }
 }
+
+.light-theme .preferences-panel,
+.light-theme .preferences-panel {
+    background-color: #1b2838;
+    color: #c7d5e0;
+}
 .light-theme .import-panel,
 .light-theme .games-section {
     background-color: #1b2838;
@@ -262,10 +274,10 @@ body {
 .light-theme .control-field select {
     background-color: #1b2838;
     color: #c7d5e0;
-    border-top: 1px solid #000;
-    border-left: 1px solid #000;
-    border-bottom: 1px solid #66c0f4;
-    border-right: 1px solid #66c0f4;
+    border-top: 1px solid #66c0f4;
+    border-left: 1px solid #66c0f4;
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
 }
 
 /* Fix game cards */

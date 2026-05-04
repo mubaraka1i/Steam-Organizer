@@ -751,6 +751,25 @@ button:hover {
     color: #ffffff;
 }
 
+.light-theme .api-key-help {
+    color: #c7d5e0;
+}
+
+.light-theme .api-key-help summary {
+    color: #66c0f4;
+}
+
+.light-theme .api-key-help a {
+    color: #66c0f4;
+}
+
+.light-theme .api-key-help a:hover,
+.light-theme .api-key-help a:focus,
+.light-theme .api-key-help summary:hover,
+.light-theme .api-key-help summary:focus {
+    color: #ffffff;
+}
+
 .light-theme .accounts-box .window-title {
     background-color: #2a475e;
     color: #ffffff;

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GuideRail - Settings</title>
+  <link rel="stylesheet" href="styles/color.css">
+  <link rel="stylesheet" href="styles/profile.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <header class="site-header">
+    <h1 class="site-title"><span aria-hidden="true">🚉</span> GuideRail</h1>
+    <button id="theme-toggle" type="button">Toggle Theme</button>
+    <nav class="site-nav" aria-label="Main navigation">
+      <a href="index.html">Home</a>
+      <a href="profile.html">Profile</a>
+      <a href="settings.html" aria-current="page">Settings</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main class="site-main profile-page-main">
+    <section class="profile-container" aria-labelledby="settings-heading">
+      <h2 id="settings-heading" class="panel-title">Library Preferences</h2>
+
+      <section class="preferences-panel" aria-labelledby="preferences-content">
+        <h3 id="preferences-content">Library Search, Filter & Sort</h3>
+        <p>Set the default search, filter, and sort choices that load when you open your library on the Profile page.</p>
+        <div class="games-controls" aria-label="Library preferences">
+          <label class="control-field" for="pref-search">
+            <span>Starting search</span>
+            <input id="pref-search" type="search" placeholder="Leave blank to start empty" autocomplete="off">
+          </label>
+          <label class="control-field" for="pref-filter">
+            <span>Starting filter</span>
+            <select id="pref-filter">
+              <option value="all">All games</option>
+              <option value="unplayed">Never played</option>
+              <option value="light">Light playtime</option>
+              <option value="heavy">Heavy playtime</option>
+            </select>
+          </label>
+          <label class="control-field" for="pref-sort">
+            <span>Starting sort</span>
+            <select id="pref-sort">
+              <option value="playtime-desc">Most played</option>
+              <option value="playtime-asc">Least played</option>
+              <option value="name-asc">Name A-Z</option>
+              <option value="name-desc">Name Z-A</option>
+            </select>
+          </label>
+        </div>
+        <button id="save-preferences-btn" class="import-btn" type="button">Save Preferences</button>
+      </section>
+
+      <button id="back-to-profile-btn" class="logout-btn" type="button">Back to Profile</button>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="index.html">Home</a>
+      <span class="divider" aria-hidden="true">|</span>
+      <a href="profile.html">Profile</a>
+      <span class="divider" aria-hidden="true">|</span>
+      <a href="about.html">About</a>
+    </nav>
+  </footer>
+
+  <script src="scripts/profile.js"></script>
+  <script src="scripts/settings.js"></script>
+</body>
+</html>

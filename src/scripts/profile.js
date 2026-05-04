@@ -27,7 +27,16 @@ function initTheme() {
 const PROFILE_STORAGE_KEY = 'guideRail_profile';
 const GAMES_STORAGE_KEY = 'guideRail_games';
 const API_KEY_STORAGE_KEY = 'guideRail_api_key';
+const GAME_PREFERENCES_KEY = 'guideRail_game_preferences';
 
+const DEFAULT_GAME_PREFERENCES = {
+  search: '',
+  playtime: 'all',
+  sort: 'playtime-desc'
+};
+
+const VALID_PLAYTIME_FILTERS = new Set(['all', 'unplayed', 'light', 'heavy']);
+const VALID_SORT_OPTIONS = new Set(['playtime-desc', 'playtime-asc', 'name-asc', 'name-desc']);
 
 let storedGames = [];
 let searchRenderTimeout = null;
@@ -67,6 +76,69 @@ function gameImageUrl(appid, iconHash) {
 
 function normalizeText(value) {
   return (value || '').toString().trim().toLowerCase();
+}
+
+function loadGamePreferences() {
+  const raw = localStorage.getItem(GAME_PREFERENCES_KEY);
+  if (!raw) {
+    return { ...DEFAULT_GAME_PREFERENCES };
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    return {
+      search: typeof parsed.search === 'string' ? parsed.search : DEFAULT_GAME_PREFERENCES.search,
+      playtime: VALID_PLAYTIME_FILTERS.has(parsed.playtime) ? parsed.playtime : DEFAULT_GAME_PREFERENCES.playtime,
+      sort: VALID_SORT_OPTIONS.has(parsed.sort) ? parsed.sort : DEFAULT_GAME_PREFERENCES.sort
+    };
+  } catch {
+    return { ...DEFAULT_GAME_PREFERENCES };
+  }
+}
+
+function saveGamePreferences(preferences) {
+  localStorage.setItem(GAME_PREFERENCES_KEY, JSON.stringify(preferences));
+}
+
+function readGamePreferenceControls() {
+  return {
+    search: document.getElementById('pref-search')?.value || '',
+    playtime: document.getElementById('pref-filter')?.value || DEFAULT_GAME_PREFERENCES.playtime,
+    sort: document.getElementById('pref-sort')?.value || DEFAULT_GAME_PREFERENCES.sort
+  };
+}
+
+function applyGamePreferences(preferences) {
+  const nextPreferences = {
+    ...DEFAULT_GAME_PREFERENCES,
+    ...preferences
+  };
+
+  const searchFieldValue = nextPreferences.search || '';
+  const playtimeFieldValue = VALID_PLAYTIME_FILTERS.has(nextPreferences.playtime)
+    ? nextPreferences.playtime
+    : DEFAULT_GAME_PREFERENCES.playtime;
+  const sortFieldValue = VALID_SORT_OPTIONS.has(nextPreferences.sort)
+    ? nextPreferences.sort
+    : DEFAULT_GAME_PREFERENCES.sort;
+
+  const fieldValues = {
+    'game-search': searchFieldValue,
+    'game-filter': playtimeFieldValue,
+    'game-sort': sortFieldValue,
+    'pref-search': searchFieldValue,
+    'pref-filter': playtimeFieldValue,
+    'pref-sort': sortFieldValue
+  };
+
+  Object.entries(fieldValues).forEach(([fieldId, value]) => {
+    const field = document.getElementById(fieldId);
+    if (field) {
+      field.value = value;
+    }
+  });
+
+  setFilterStateFromControls();
 }
 
 function setFilterStateFromControls() {
@@ -265,7 +337,7 @@ function bootstrapProfile() {
   document.getElementById('created').textContent = formatDate(profile.timecreated);
   document.getElementById('lastlogoff').textContent = formatDate(profile.lastlogoff);
 
-  setFilterStateFromControls();
+  applyGamePreferences(loadGamePreferences());
   restoreStoredGames();
 
   const importBtn = document.getElementById('import-btn');
