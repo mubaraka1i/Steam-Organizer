@@ -531,6 +531,13 @@ button[type="submit"]:focus,
         margin-top: 6px;
     }
 
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
     /* Larger touch targets and readable text on small screens */
     body,
     button,
