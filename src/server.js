@@ -1,3 +1,4 @@
+require("dotenv").config();
 const http = require('http');
 const fs = require('fs/promises');
 const path = require('path');
@@ -6,7 +7,7 @@ const { URL } = require('url');
 const STEAM_API_BASE = 'https://api.steampowered.com';
 const PUBLIC_DIR = path.resolve(__dirname);
 const PORT = 8000;
-
+const STEAM_API_KEY = process.env.STEAM_API_KEY;
 const CONTENT_TYPES = {
   '.html': 'text/html',
   '.css': 'text/css',
@@ -28,9 +29,9 @@ async function parseFormBody(req) {
   return new URLSearchParams(body);
 }
 
-function getApiKey(params) {
-  return (params.get('apikey') || '').trim();
-}
+//function getApiKey(params) {
+  // return (params.get('apikey') || '').trim();c
+// }
 
 function sendBadRequest(res, message) {
   res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -66,20 +67,20 @@ async function handleApi(req, res) {
 
   const params = await parseFormBody(req);
   const steamid = params.get('steamid');
-  const apiKey = getApiKey(params);
+  // const apiKey = getApiKey(params);
 
   if (!steamid) {
     sendBadRequest(res, 'Missing steamid');
     return;
   }
 
-  if (!apiKey) {
-    sendBadRequest(res, 'Missing apikey');
-    return;
-  }
+  //if (!apiKey) {
+    //sendBadRequest(res, 'Missing apikey');
+    //return;
+  //}
 
   try {
-    const apiUrl = `${STEAM_API_BASE}/ISteamUser/GetPlayerSummaries/v2/?key=${encodeURIComponent(apiKey)}&steamids=${encodeURIComponent(steamid)}`;
+    const apiUrl = `${STEAM_API_BASE}/ISteamUser/GetPlayerSummaries/v2/?key=${encodeURIComponent(STEAM_API_KEY)}&steamids=${encodeURIComponent(steamid)}`;
     console.log('Fetching profile:', steamid);
 
     const steamResponse = await fetch(apiUrl);
@@ -110,20 +111,20 @@ async function handleResolve(req, res) {
 
   const params = await parseFormBody(req);
   const vanityurl = params.get('vanityurl');
-  const apiKey = getApiKey(params);
+  // const apiKey = getApiKey(params);
 
   if (!vanityurl) {
     sendBadRequest(res, 'Missing vanityurl');
     return;
   }
 
-  if (!apiKey) {
-    sendBadRequest(res, 'Missing apikey');
-    return;
-  }
+  // if (!apiKey) {
+  //   sendBadRequest(res, 'Missing apikey');
+  //   return;
+  //}
 
   try {
-    const apiUrl = `${STEAM_API_BASE}/ISteamUser/ResolveVanityURL/v1/?key=${encodeURIComponent(apiKey)}&vanityurl=${encodeURIComponent(vanityurl)}`;
+    const apiUrl = `${STEAM_API_BASE}/ISteamUser/ResolveVanityURL/v1/?key=${encodeURIComponent(STEAM_API_KEY)}&vanityurl=${encodeURIComponent(vanityurl)}`;
     console.log('Resolving vanity URL:', vanityurl);
 
     const steamResponse = await fetch(apiUrl);
@@ -141,6 +142,7 @@ async function handleResolve(req, res) {
     res.writeHead(500, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: error.message }));
   }
+
 }
 
 async function handleGames(req, res) {
@@ -159,20 +161,20 @@ async function handleGames(req, res) {
 
   const params = await parseFormBody(req);
   const steamid = params.get('steamid');
-  const apiKey = getApiKey(params);
+  //const apiKey = getApiKey(params);
 
   if (!steamid) {
     sendBadRequest(res, 'Missing steamid');
     return;
   }
 
-  if (!apiKey) {
+  /* if (!apiKey) {
     sendBadRequest(res, 'Missing apikey');
     return;
-  }
+  } */
 
   try {
-    const apiUrl = `${STEAM_API_BASE}/IPlayerService/GetOwnedGames/v1/?key=${encodeURIComponent(apiKey)}&steamid=${encodeURIComponent(steamid)}&include_appinfo=1&include_played_free_games=1`;
+    const apiUrl = `${STEAM_API_BASE}/IPlayerService/GetOwnedGames/v1/?key=${encodeURIComponent(STEAM_API_KEY)}&steamid=${encodeURIComponent(steamid)}&include_appinfo=1&include_played_free_games=1`;
     console.log('Fetching owned games:', steamid);
 
     const steamResponse = await fetch(apiUrl);

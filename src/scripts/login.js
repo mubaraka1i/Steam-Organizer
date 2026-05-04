@@ -37,7 +37,7 @@ function parseSteamInput(input) {
 
 const PROFILE_STORAGE_KEY = 'guideRail_profile';
 const GAMES_STORAGE_KEY = 'guideRail_games';
-const API_KEY_STORAGE_KEY = 'guideRail_api_key';
+// const API_KEY_STORAGE_KEY = 'guideRail_api_key';
 const ACCOUNT_LIST_KEY = 'guideRail_account_list';
 const API_PROXY = 'http://127.0.0.1:8000';
 const PROXY_DOWN_MESSAGE = 'Proxy server is not running. Start the local proxy at port 8000.';
@@ -174,12 +174,12 @@ function normalizeApiKey(value) {
 }
 
 // Resolve vanity URL to Steam ID
-async function resolveSteamID(vanityUrl, apiKey) {
+async function resolveSteamID(vanityUrl) {
   try {
     const response = await fetch(`${API_PROXY}/resolve`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `vanityurl=${encodeURIComponent(vanityUrl)}&apikey=${encodeURIComponent(apiKey)}`
+      body: `vanityurl=${encodeURIComponent(vanityUrl)}`
     });
 
     if (!response.ok) {
@@ -202,12 +202,12 @@ async function resolveSteamID(vanityUrl, apiKey) {
 }
 
 // Fetch user profile from Steam
-async function getSteamProfile(steamID, apiKey) {
+async function getSteamProfile(steamID) {
   try {
     const response = await fetch(`${API_PROXY}/api`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `steamid=${encodeURIComponent(steamID)}&apikey=${encodeURIComponent(apiKey)}`
+      body: `steamid=${encodeURIComponent(steamID)}`
     });
 
     if (!response.ok) {
@@ -231,20 +231,20 @@ async function handleLogin(event) {
   event.preventDefault();
 
   const inputField = document.getElementById('username');
-  const apiKeyField = document.getElementById('api-key');
+  // const apiKeyField = document.getElementById('api-key');
   const input = inputField.value;
-  const apiKey = normalizeApiKey(apiKeyField?.value);
+  // const apiKey = normalizeApiKey(apiKeyField?.value);
   const button = document.querySelector('button[type="submit"]');
   const errorDiv = document.getElementById('login-error');
 
   // Reset any previous error before validating a new attempt.
   clearErrorState(inputField);
-  clearErrorState(apiKeyField);
+  // clearErrorState(apiKeyField);
 
-  if (!apiKey) {
+  /* if (!apiKey) {
     showError('Enter your Steam API key before logging in.', apiKeyField, 'api-key-help');
     return;
-  }
+  } */
 
   // Parse input
   const parsed = parseSteamInput(input);
@@ -256,11 +256,11 @@ async function handleLogin(event) {
   startLoading();
   button.disabled = true;
   inputField.disabled = true;
-  if (apiKeyField) {
+  /* if (apiKeyField) {
     apiKeyField.disabled = true;
-  }
+  } */
   button.textContent = 'Validating...';
-  localStorage.setItem(API_KEY_STORAGE_KEY, apiKey);
+  // localStorage.setItem(API_KEY_STORAGE_KEY, apiKey);
 
   try {
     let steamID = parsed.value;
@@ -268,7 +268,7 @@ async function handleLogin(event) {
     // If vanity URL, resolve it first
     if (parsed.type === 'vanity') {
       setLoadingStage(1, 28);
-      const resolution = await resolveSteamID(parsed.value, apiKey);
+      const resolution = await resolveSteamID(parsed.value);
       steamID = resolution.steamid;
 
       if (!steamID) {
@@ -289,7 +289,7 @@ async function handleLogin(event) {
     button.textContent = 'Fetching profile...';
 
     // Fetch profile
-    const profileResult = await getSteamProfile(steamID, apiKey);
+    const profileResult = await getSteamProfile(steamID);
     if (!profileResult.profile) {
       if (profileResult.reason === 'proxy_unreachable' || profileResult.reason === 'proxy_error') {
         showError(PROXY_DOWN_MESSAGE, inputField);
@@ -328,7 +328,7 @@ async function handleLogin(event) {
         lastUsed: Date.now(),
         favorite: false,
         profile: profileResult.profile,
-        apiKey: apiKey
+        // apiKey: apiKey
       });
     } catch (e) {
       console.error('Failed to save account:', e);
@@ -343,9 +343,9 @@ async function handleLogin(event) {
   } finally {
     button.disabled = false;
     inputField.disabled = false;
-    if (apiKeyField) {
+    /* if (apiKeyField) {
       apiKeyField.disabled = false;
-    }
+    } */
     button.textContent = 'Login';
 
     // Keep completed state visible on success, otherwise hide/reset.
@@ -397,7 +397,7 @@ function addOrUpdateSavedAccount(account) {
     lastUsed: Date.now(),
     favorite: account.favorite || false,
     profile: account.profile || null,
-    apiKey: account.apiKey || null
+    // apiKey: account.apiKey || null
   };
   if (idx >= 0) {
     list[idx] = { ...list[idx], ...fullAccount };
@@ -484,9 +484,9 @@ function selectAccountToInputs(steamid) {
 function bootIntoAccount(steamid) {
   const accounts = loadSavedAccounts();
   const acct = accounts.find(a => a.steamid === steamid);
-  if (acct && acct.profile && acct.apiKey) {
+  if (acct && acct.profile) {
     // Set the API key and profile in localStorage
-    localStorage.setItem(API_KEY_STORAGE_KEY, acct.apiKey);
+    // localStorage.setItem(API_KEY_STORAGE_KEY, acct.apiKey);
     localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(acct.profile));
     // Update lastUsed timestamp
     acct.lastUsed = Date.now();
@@ -576,14 +576,14 @@ applyTheme(savedTheme);
 
   const form = document.querySelector('form');
   const usernameInput = document.getElementById('username');
-  const apiKeyInput = document.getElementById('api-key');
+  /* const apiKeyInput = document.getElementById('api-key');
 
   if (apiKeyInput) {
     const storedApiKey = localStorage.getItem(API_KEY_STORAGE_KEY);
     if (storedApiKey) {
       apiKeyInput.value = storedApiKey;
     }
-  }
+  } */
 
   if (usernameInput) {
     usernameInput.addEventListener('keydown', (event) => {
