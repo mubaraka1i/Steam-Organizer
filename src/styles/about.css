@@ -2,7 +2,7 @@
 
 body {
     background-color: #4c5844;
-    color: #a1ae9a;
+    color: #c7d5e0;
     overflow: auto;
 }
 
@@ -31,7 +31,7 @@ body {
 }
 
 .tagline {
-    color: #968732;
+    color: #e8d469;
     font-size: 14px;
     margin: 0;
     font-style: italic;
@@ -58,7 +58,7 @@ body {
 }
 
 .section p {
-    color: #a1ae9a;
+    color: #c7d5e0;
     font-size: 12px;
     line-height: 1.6;
     margin: 8px 0;
@@ -69,7 +69,7 @@ body {
 }
 
 .section em {
-    color: #968732;
+    color: #e8d469;
 }
 
 .feature-list {
@@ -79,7 +79,7 @@ body {
 }
 
 .feature-list li {
-    color: #a1ae9a;
+    color: #c7d5e0;
     font-size: 12px;
     margin: 8px 0;
     padding-left: 20px;
@@ -88,7 +88,7 @@ body {
 
 .feature-list li:before {
     content: "▸";
-    color: #968732;
+    color: #e8d469;
     position: absolute;
     left: 0;
 }
@@ -115,7 +115,7 @@ body {
 }
 
 .feature-box p {
-    color: #a1ae9a;
+    color: #c7d5e0;
     font-size: 11px;
     margin: 0;
     line-height: 1.5;
@@ -127,7 +127,7 @@ body {
 }
 
 .api-note {
-    color: #a1ae9a;
+    color: #c7d5e0;
     font-size: 11px;
     margin-top: 20px;
 }

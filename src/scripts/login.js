@@ -472,6 +472,8 @@ function bootIntoAccount(steamid) {
     // Set the API key and profile in localStorage
     // localStorage.setItem(API_KEY_STORAGE_KEY, acct.apiKey);
     localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(acct.profile));
+    // Clear games from previous account
+    localStorage.removeItem(GAMES_STORAGE_KEY);
     // Update lastUsed timestamp
     acct.lastUsed = Date.now();
     saveSavedAccounts(accounts);

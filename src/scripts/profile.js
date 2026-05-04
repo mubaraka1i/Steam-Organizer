@@ -233,7 +233,6 @@ function renderGames(games) {
   visibleGames.forEach((game) => {
     const card = document.createElement('article');
     card.className = 'game-card';
-    card.setAttribute('role', 'listitem');
 
     const image = document.createElement('img');
     image.className = 'game-card-image';
