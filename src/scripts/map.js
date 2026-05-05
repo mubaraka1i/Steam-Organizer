@@ -122,7 +122,7 @@ function renderTrack(container, games) {
   });
 }
 
-function renderMap() {
+async function renderMap() {
   const games = loadGames();
 
   const empty = document.getElementById('map-empty');

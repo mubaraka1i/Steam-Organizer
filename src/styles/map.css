@@ -203,13 +203,14 @@
   margin: 0;
   font-size: 14px;
   line-height: 1.2;
-  text-transform: uppercase;
-  color: var(--map-text);
+
+  font-size: 12px;
 }
 
-.game-node .meta {
-  color: var(--map-muted);
+.game-node .status {
   font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .game-node .status {

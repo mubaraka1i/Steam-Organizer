@@ -62,6 +62,9 @@ All user data is stored in the browser's `localStorage`:
 | `guideRail_games` | List of user's Steam games with metadata |
 | `guideRail_api_key` | User's Steam Web API key |
 | `guideRail_game_preferences` | Default search, filter, and sort preferences |
+| `guideRail_game_name_map` | Name mapping used by the Map page |
+
+| `guideRail_game_name_map` | Name mapping used by the Map page |
 
 ## Third-party API
 

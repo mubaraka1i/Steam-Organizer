@@ -215,6 +215,8 @@ async function requestHandler(req, res) {
     return;
   }
 
+  
+
   const requestedPath = pathname === '/' ? '/index.html' : pathname;
   const safePath = path.join(PUBLIC_DIR, path.normalize(requestedPath));
 
