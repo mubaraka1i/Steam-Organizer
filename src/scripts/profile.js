@@ -401,6 +401,15 @@ function bootstrapProfile() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
+  const savePrefBtn = document.getElementById('save-preferences-btn');
+  if (savePrefBtn) {
+    applyGamePreferences(loadGamePreferences());
+    savePrefBtn.addEventListener('click', () => {
+      const preferences = readGamePreferenceControls();
+      saveGamePreferences(preferences);
+    });
+  }
+
    const backBtn = document.getElementById("back-to-profile-btn");
   if (backBtn) {
     backBtn.addEventListener("click", () => {
