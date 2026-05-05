@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GuideRail - Map</title>
+  <link rel="stylesheet" href="styles/color.css">
+  <link rel="stylesheet" href="styles/map.css">
+</head>
+<body class="map-page">
+  <header class="site-header map-header">
+    <h1 class="site-title"><span aria-hidden="true">🚉</span> GuideRail</h1>
+    <button id="theme-toggle" type="button">Toggle Theme</button>
+    <nav class="site-nav map-nav" aria-label="Main navigation">
+      <a href="profile.html">Profile</a>
+    </nav>
+  </header>
+
+  <main class="site-main map-main">
+    <section class="map-shell" aria-labelledby="map-heading">
+      <h2 id="map-heading" class="sr-only">Game Map</h2>
+
+      <section class="map-stats" aria-label="Library summary">
+        <article class="stat-card">
+          <span class="stat-label">Games</span>
+          <strong id="stat-games">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Hrs Played</span>
+          <strong id="stat-hours">0</strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Unplayed</span>
+          <strong id="stat-unplayed">0</strong>
+        </article>
+        <article class="stat-card stat-accent">
+          <span class="stat-label">ETA</span>
+          <strong id="stat-eta">--</strong>
+        </article>
+      </section>
+
+      <section class="track-group" aria-labelledby="mainline-heading">
+        <div class="track-label">MAIN LINE</div>
+        <div class="track-content">
+          <h3 id="mainline-heading" class="track-heading">Most Played</h3>
+          <div id="mainline-track" class="track-row"></div>
+        </div>
+      </section>
+
+      <section class="track-group branch-group" aria-labelledby="branch-heading">
+        <div class="track-label">BRANCH</div>
+        <div class="track-content">
+          <h3 id="branch-heading" class="track-heading">Secondary</h3>
+          <div id="branch-track" class="track-row"></div>
+        </div>
+      </section>
+
+      <section class="track-group sidetrack-group" aria-labelledby="sidetrack-heading">
+        <div class="track-label">SIDETRACKS</div>
+        <div class="track-content">
+          <h3 id="sidetrack-heading" class="track-heading">Lower Priority</h3>
+          <div id="sidetrack-track" class="track-row"></div>
+        </div>
+      </section>
+
+      <section class="yard-panel" aria-labelledby="yard-heading">
+        <h3 id="yard-heading" class="yard-title">RAIL YARD — Unplayed Library</h3>
+        <div class="yard-grid">
+          <article>
+            <span class="yard-label">SHORT (<5h)</span>
+            <strong id="yard-short">0 games</strong>
+          </article>
+          <article>
+            <span class="yard-label">MEDIUM (5–20h)</span>
+            <strong id="yard-medium">0 games</strong>
+          </article>
+          <article>
+            <span class="yard-label">LONG (20h+)</span>
+            <strong id="yard-long">0 games</strong>
+          </article>
+        </div>
+      </section>
+
+      <p id="map-empty" class="map-empty" hidden>No games loaded yet. Go back to Library and fetch or import your games.</p>
+    </section>
+  </main>
+
+  <script src="scripts/map.js"></script>
+</body>
+</html>

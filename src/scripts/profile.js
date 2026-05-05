@@ -29,6 +29,7 @@ const APPROXI_PROXY_TOKEN = '68b1d5ba4cde33c593522d9dc0c0ac9898dd023bad0b33a0';
 const STEAM_PROXY_SECRET_PLACEHOLDER = '{STEAM_KEY}';
 const PROFILE_STORAGE_KEY = 'guideRail_profile';
 const GAMES_STORAGE_KEY = 'guideRail_games';
+const GAME_NAME_MAP_KEY = 'guideRail_game_name_map';
 const API_KEY_STORAGE_KEY = 'guideRail_api_key';
 const GAME_PREFERENCES_KEY = 'guideRail_game_preferences';
 
@@ -210,6 +211,39 @@ function updateGamesSummary(totalCount, visibleCount) {
     : `${visibleCount} of ${totalCount} games shown.`;
 }
 
+function getMapButton() {
+  return document.getElementById('map-btn');
+}
+
+function updateMapButtonVisibility(hasGames) {
+  const mapBtn = getMapButton();
+  if (mapBtn) {
+    mapBtn.hidden = !hasGames;
+  }
+}
+
+function buildGameMap(games) {
+  const map = {};
+  games.forEach((game) => {
+    if (game && game.appid) {
+      map[String(game.appid)] = game.name || `App ${game.appid}`;
+    }
+  });
+  return map;
+}
+
+function mapCurrentGames() {
+  if (!storedGames.length) {
+    setStatus('Fetch or import games first.', 'error');
+    return;
+  }
+
+  const gameMap = buildGameMap(storedGames);
+  localStorage.setItem(GAME_NAME_MAP_KEY, JSON.stringify(gameMap));
+  setStatus(`Mapped ${Object.keys(gameMap).length} games. Opening map...`, 'loading');
+  window.location.href = 'map.html';
+}
+
 function renderGames(games) {
   window.clearTimeout(searchRenderTimeout);
   const nextGames = Array.isArray(games) ? games : [];
@@ -217,6 +251,7 @@ function renderGames(games) {
   const grid = document.getElementById('games-grid');
   const visibleGames = getVisibleGames(storedGames);
   grid.innerHTML = '';
+  updateMapButtonVisibility(storedGames.length > 0);
 
   updateGamesSummary(storedGames.length, visibleGames.length);
 
@@ -294,6 +329,7 @@ async function importGames(steamid) {
 
     localStorage.setItem(GAMES_STORAGE_KEY, JSON.stringify(data.response.games));
     renderGames(data.response.games);
+    updateMapButtonVisibility(true);
     setStatus('', '');
   } catch (error) {
     console.error('Import error:', error);
@@ -325,6 +361,7 @@ function importGamesFromFile(file) {
 
       localStorage.setItem(GAMES_STORAGE_KEY, JSON.stringify(games));
       renderGames(games);
+      updateMapButtonVisibility(true);
       setStatus('', '');
     } catch (e) {
       console.error('Import file error:', e);
@@ -393,8 +430,12 @@ function bootstrapProfile() {
   }
 
   const fetchBtnEl = document.getElementById('fetch-btn');
+  const mapBtnEl = document.getElementById('map-btn');
   if (fetchBtnEl) {
     fetchBtnEl.addEventListener('click', () => importGames(profile.steamid));
+  }
+  if (mapBtnEl) {
+    mapBtnEl.addEventListener('click', mapCurrentGames);
   }
   document.getElementById('logout-btn').addEventListener('click', logout);
 }

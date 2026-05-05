@@ -210,6 +210,11 @@ async function requestHandler(req, res) {
     return;
   }
 
+  if (pathname === '/map') {
+    await sendFile(res, path.join(PUBLIC_DIR, 'map.html'));
+    return;
+  }
+
   const requestedPath = pathname === '/' ? '/index.html' : pathname;
   const safePath = path.join(PUBLIC_DIR, path.normalize(requestedPath));
 
