@@ -294,7 +294,7 @@ async function importGames(steamid) {
 
     localStorage.setItem(GAMES_STORAGE_KEY, JSON.stringify(data.response.games));
     renderGames(data.response.games);
-    setStatus(`Imported ${data.response.games.length} games successfully.`, 'success');
+    setStatus('', '');
   } catch (error) {
     console.error('Import error:', error);
     setStatus('Could not load games. Check if account is public or check internet/proxy and try again.', 'error');
@@ -325,7 +325,7 @@ function importGamesFromFile(file) {
 
       localStorage.setItem(GAMES_STORAGE_KEY, JSON.stringify(games));
       renderGames(games);
-      setStatus(`Imported ${games.length} games from file.`, 'success');
+      setStatus('', '');
     } catch (e) {
       console.error('Import file error:', e);
       alert('Failed to import games file: ' + e.message);
@@ -441,6 +441,47 @@ document.addEventListener('DOMContentLoaded', () => {
           ev.target.value = '';
         }
       });
+      // Drag and drop support for importing games JSON
+      const importPanel = document.querySelector('.import-panel');
+      if (importPanel) {
+        importPanel.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; importPanel.classList.add('drag-over'); });
+        importPanel.addEventListener('dragenter', (e) => { e.preventDefault(); importPanel.classList.add('drag-over'); });
+        importPanel.addEventListener('dragleave', (e) => { e.preventDefault(); importPanel.classList.remove('drag-over'); });
+        importPanel.addEventListener('drop', (e) => {
+          e.preventDefault();
+          importPanel.classList.remove('drag-over');
+          const files = e.dataTransfer.files;
+          if (files && files[0]) {
+              console.debug('import-panel drop:', files[0].name, files[0].type);
+              try { importGamesFromFile(files[0]); } catch (err) { console.error('Import from drop failed', err); }
+          }
+        });
+      }
     }
 }
 });
+
+  // Global fallback: accept a JSON file dropped anywhere on the page when on Profile
+  window.addEventListener('dragover', (e) => {
+    // Allow drop when over the page
+    e.preventDefault();
+  });
+
+  window.addEventListener('drop', (e) => {
+    try {
+      e.preventDefault();
+      // Only handle on Profile (username element exists)
+      if (!document.getElementById('username')) return;
+      const files = e.dataTransfer?.files;
+      if (!files || !files.length) return;
+      const file = files[0];
+      console.debug('global drop detected on profile:', file.name, file.type);
+      // Accept .json files or application/json; ignore others
+      const isJson = file.type === 'application/json' || file.name.toLowerCase().endsWith('.json') || file.type === '';
+      if (isJson) {
+        importGamesFromFile(file);
+      }
+    } catch (err) {
+      console.error('Global drop handler error:', err);
+    }
+  });

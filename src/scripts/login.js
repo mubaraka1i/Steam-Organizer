@@ -523,7 +523,6 @@ function importAccounts(file) {
         }
         saveSavedAccounts(merged);
         renderAccounts();
-        alert(`Imported ${newAccounts.length} account(s) successfully!`);
       } else {
         alert('Invalid import format');
       }
@@ -644,6 +643,21 @@ applyTheme(savedTheme);
         ev.target.value = ''; // Reset file input
       }
     });
+    // Drag and drop support for importing accounts
+    const accountsBox = document.querySelector('.accounts-box');
+    if (accountsBox) {
+      accountsBox.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; accountsBox.classList.add('drag-over'); });
+      accountsBox.addEventListener('dragenter', (e) => { e.preventDefault(); accountsBox.classList.add('drag-over'); });
+      accountsBox.addEventListener('dragleave', (e) => { e.preventDefault(); accountsBox.classList.remove('drag-over'); });
+      accountsBox.addEventListener('drop', (e) => {
+        e.preventDefault();
+        accountsBox.classList.remove('drag-over');
+        const files = e.dataTransfer.files;
+        if (files && files[0]) {
+          importAccounts(files[0]);
+        }
+      });
+    }
   }
 
   // Initial render
