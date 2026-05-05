@@ -115,18 +115,41 @@
 }
 
 .track-label {
-  color: var(--map-main-line);
+  color: var(--map-text);
   font-weight: 700;
   letter-spacing: 0.08em;
   padding-top: 20px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 8px;
 }
 
 .branch-group .track-label {
-  color: var(--map-branch-line);
+  color: var(--map-text);
 }
 
 .sidetrack-group .track-label {
-  color: var(--map-side-line);
+  color: var(--map-text);
+}
+
+.track-label::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--map-main-line);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.branch-group .track-label::after {
+  background: var(--map-branch-line);
+}
+
+.sidetrack-group .track-label::after {
+  background: var(--map-side-line);
 }
 
 .track-content {
