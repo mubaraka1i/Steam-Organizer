@@ -138,7 +138,7 @@ function renderMap() {
   const totalHours = games.reduce((sum, game) => sum + ((game.playtime_forever || 0) / 60), 0);
   document.getElementById('stat-hours').textContent = totalHours.toLocaleString(undefined, { maximumFractionDigits: 0 });
   document.getElementById('stat-unplayed').textContent = String(games.filter((game) => (game.playtime_forever || 0) === 0).length);
-  document.getElementById('stat-eta').textContent = `YEAR ${estimateEtaYear(games)}`;
+  document.getElementById('stat-eta').textContent = 'TBA';
 
   renderTrack(document.getElementById('mainline-track'), mainline);
   renderTrack(document.getElementById('branch-track'), branch);
