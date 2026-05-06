@@ -91,20 +91,23 @@
   border-color: var(--map-accent-2);
 }
 
-.stat-label {
-  color: var(--map-muted);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.stat-card strong {
-  font-size: 24px;
+.track-label {
   color: var(--map-text);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding-top: 20px;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 8px;
+  margin-top: 8px;
 }
 
-.stat-accent strong {
-  color: var(--map-accent-2);
+.track-controls {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  align-items: center;
 }
 
 .track-group {
@@ -116,13 +119,19 @@
 }
 
 .track-label {
-  color: var(--map-text);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  padding-top: 20px;
-  position: relative;
-  display: inline-block;
-  padding-bottom: 8px;
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.track-controls {
+  margin-top: 4px;
+  display:flex;
+  gap:8px;
+  justify-content:flex-start;
+  align-items: center;
+}
 }
 
 .branch-group .track-label {
@@ -156,6 +165,7 @@
 .track-content {
   border-top: 1px solid var(--map-line-soft);
   padding-top: 12px;
+  padding-bottom: 28px; /* leave room for controls so node borders remain visible */
 }
 
 .branch-group .track-content {
@@ -175,8 +185,19 @@
 .track-row {
   display: flex;
   gap: 14px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   min-height: 104px;
+  max-height: 140px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 8px;
+  align-items: flex-start;
+  max-width: 100%;
+  /* Prevent parent/page scrolling when panning horizontally on a track */
+  overscroll-behavior: contain;
+  touch-action: pan-x;
 }
 
 .game-node {
@@ -189,14 +210,38 @@
   flex-direction: column;
   justify-content: space-between;
   box-shadow: 0 0 0 1px var(--map-shadow) inset;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  position: relative;
+  z-index: 3;
+  /* draw a full-color outline so the colored border shows on all sides */
+  outline: 2px solid var(--map-main-line);
+  outline-offset: -2px;
 }
 
 .branch-group .game-node {
   border-color: var(--map-branch-line);
+  outline-color: var(--map-branch-line);
+}
+
+/* Override: place track controls absolutely so they don't increase track height
+   This lets controls sit visually below the track without adding extra spacing between lines. */
+.track-content {
+  position: relative;
+  /* reserve space for the controls so they don't overlap following content */
+  padding-bottom: 48px !important;
+}
+.track-controls {
+  position: absolute;
+  right: 0;
+  bottom: 8px; /* sit inside the reserved padding */
+  margin-top: 0 !important;
+  z-index: 2;
 }
 
 .sidetrack-group .game-node {
   border-color: var(--map-side-line);
+  outline-color: var(--map-side-line);
 }
 
 .game-node h4 {
@@ -211,6 +256,47 @@
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
+}
+
+.status-select {
+  margin-top: 8px;
+  font-size: 12px;
+  padding: 6px 8px;
+  background: transparent;
+  color: var(--map-text);
+  border: 1px solid var(--map-panel-border);
+}
+
+.move-wrap {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  align-items: center;
+}
+
+.btn.move-left,
+.btn.move-right {
+  padding: 4px 6px;
+  font-size: 12px;
+  line-height: 1;
+  width: 28px;
+  height: 28px;
+}
+
+.btn.small {
+  padding: 0;
+  font-size: 13px;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.assign-select {
+  margin-top: 8px;
+  font-size: 12px;
+  padding: 6px 8px;
 }
 
 .game-node .status {
@@ -318,6 +404,6 @@
   }
 
   .game-node {
-    width: 100%;
+    width: min(80vw, 168px);
   }
 }

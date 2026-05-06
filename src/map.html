@@ -43,7 +43,11 @@
         <div class="track-label">MAIN LINE</div>
         <div class="track-content">
           <h3 id="mainline-heading" class="track-heading">Most Played</h3>
-          <div id="mainline-track" class="track-row"></div>
+          <div id="mainline-track" class="track-row" data-track="mainline"></div>
+          <div class="track-controls">
+            <button id="mainline-prev" class="btn small" aria-label="Previous mainline">◀</button>
+            <button id="mainline-next" class="btn small" aria-label="Next mainline">▶</button>
+          </div>
         </div>
       </section>
 
@@ -51,7 +55,11 @@
         <div class="track-label">BRANCH</div>
         <div class="track-content">
           <h3 id="branch-heading" class="track-heading">Secondary</h3>
-          <div id="branch-track" class="track-row"></div>
+          <div id="branch-track" class="track-row" data-track="branch"></div>
+          <div class="track-controls">
+            <button id="branch-prev" class="btn small" aria-label="Previous branch">◀</button>
+            <button id="branch-next" class="btn small" aria-label="Next branch">▶</button>
+          </div>
         </div>
       </section>
 
@@ -59,7 +67,11 @@
         <div class="track-label">SIDETRACKS</div>
         <div class="track-content">
           <h3 id="sidetrack-heading" class="track-heading">Lower Priority</h3>
-          <div id="sidetrack-track" class="track-row"></div>
+          <div id="sidetrack-track" class="track-row" data-track="sidetrack"></div>
+          <div class="track-controls">
+            <button id="sidetrack-prev" class="btn small" aria-label="Previous sidetrack">◀</button>
+            <button id="sidetrack-next" class="btn small" aria-label="Next sidetrack">▶</button>
+          </div>
         </div>
       </section>
 
@@ -82,6 +94,42 @@
       </section>
 
       <p id="map-empty" class="map-empty" hidden>No games loaded yet. Go back to Library and fetch or import your games.</p>
+      <section class="map-controls" aria-label="Map controls">
+        <div class="controls-row">
+          <button id="add-game-btn" class="btn">Add Game</button>
+          <button id="export-games-btn" class="btn">Export Library</button>
+          <button id="import-games-btn" class="btn">Import Library</button>
+          <input id="import-games-input" type="file" accept="application/json" hidden>
+        </div>
+
+        <form id="add-game-form" class="add-game-form" hidden aria-hidden="true">
+          <h3>Add Game</h3>
+          <p class="helper">Select a game you already own from your library to place it on a line.</p>
+          <label>
+            Choose from your library
+            <select id="game-select" name="appid">
+              <option value="">— No games available —</option>
+            </select>
+          </label>
+          <label>
+            Optional launch URL (overrides stored)
+            <input id="game-url" name="url" placeholder="https://example.com/mygame/index.html">
+          </label>
+          <label>
+            Add to line
+            <select id="game-track" name="track" class="status-select">
+              <option value="unassigned">Yard (unassigned)</option>
+              <option value="mainline">Main Line</option>
+              <option value="branch">Branch</option>
+              <option value="sidetrack">Sidetracks</option>
+            </select>
+          </label>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" id="cancel-add-game" class="btn">Cancel</button>
+          </div>
+        </form>
+      </section>
     </section>
   </main>
 

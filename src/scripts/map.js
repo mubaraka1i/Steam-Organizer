@@ -77,49 +77,265 @@ function createNode(game) {
   meta.className = 'meta';
   meta.textContent = `${formatHours(game.playtime_forever)} played`;
 
-  const status = document.createElement('div');
-  status.className = 'status';
-  const hours = (game.playtime_forever || 0) / 60;
-  if (hours === 0) {
-    status.textContent = '○ Unplayed';
-  } else if (hours >= 100) {
-    status.textContent = '✓ Complete';
-  } else if (hours >= 20) {
-    status.textContent = '▶ Active';
-  } else {
-    status.textContent = '▶ Playing';
-  }
+  // status selector (persisted on the game as `status`)
+  const statusSelect = document.createElement('select');
+  statusSelect.className = 'status-select';
+  const statusOptions = [
+    ['unplayed', 'Unplayed'],
+    ['playing', 'Playing'],
+    ['paused', 'Paused'],
+    ['complete', 'Complete'],
+  ];
+  statusOptions.forEach(([val, label]) => {
+    const o = document.createElement('option');
+    o.value = val;
+    o.textContent = label;
+    statusSelect.appendChild(o);
+  });
+  const derived = game.status ? String(game.status).toLowerCase() : classifyGame(game);
+  statusSelect.value = derived;
+  statusSelect.addEventListener('change', (e) => {
+    try {
+      const games = loadGames();
+      const idx = games.findIndex((g) => String(g.appid) === String(game.appid));
+      if (idx !== -1) {
+        games[idx].status = statusSelect.value === 'unplayed' ? undefined : statusSelect.value;
+        saveGames(games);
+        renderMap();
+      }
+    } catch (err) {
+      console.error('Failed to change status', err);
+    }
+  });
 
-  card.append(title, meta, status);
+  card.append(title, meta, statusSelect);
+
+  if (game.url) {
+    const play = document.createElement('button');
+    play.className = 'btn play-btn';
+    play.type = 'button';
+    play.textContent = 'Play';
+    play.addEventListener('click', () => {
+      try {
+        window.open(game.url, '_blank', 'noopener');
+      } catch (e) {
+        console.error('Failed to open game url', e);
+      }
+    });
+    card.appendChild(play);
+  }
+  // move controls (position within the line) grouped
+  const moveWrap = document.createElement('div');
+  moveWrap.className = 'move-wrap';
+  const moveLeft = document.createElement('button');
+  moveLeft.type = 'button';
+  moveLeft.className = 'btn move-left';
+  moveLeft.setAttribute('aria-label', 'Move earlier on this line');
+  moveLeft.textContent = '←';
+  moveLeft.addEventListener('click', () => moveGameWithinTrack(game.appid, -1));
+  const moveRight = document.createElement('button');
+  moveRight.type = 'button';
+  moveRight.className = 'btn move-right';
+  moveRight.setAttribute('aria-label', 'Move later on this line');
+  moveRight.textContent = '→';
+  moveRight.addEventListener('click', () => moveGameWithinTrack(game.appid, 1));
+  moveWrap.appendChild(moveLeft);
+  moveWrap.appendChild(moveRight);
+  card.appendChild(moveWrap);
+  // assign selector (styled like status)
+  const assign = document.createElement('select');
+  assign.className = 'status-select assign-select';
+  const opts = [
+    ['unassigned', 'Yard'],
+    ['mainline', 'Main Line'],
+    ['branch', 'Branch'],
+    ['sidetrack', 'Sidetrack'],
+  ];
+  opts.forEach(([val, label]) => {
+    const o = document.createElement('option');
+    o.value = val;
+    o.textContent = label;
+    assign.appendChild(o);
+  });
+  assign.value = game.track || 'unassigned';
+  assign.addEventListener('change', (e) => {
+    try {
+      const games = loadGames();
+      const idx = games.findIndex((g) => String(g.appid) === String(game.appid));
+      if (idx !== -1) {
+        games[idx].track = assign.value === 'unassigned' ? undefined : assign.value;
+        saveGames(games);
+        renderMap();
+      }
+    } catch (err) {
+      console.error('Failed to assign game', err);
+    }
+  });
+  card.appendChild(assign);
   return card;
 }
 
-function renderTrack(container, games) {
-  container.innerHTML = '';
+function saveGames(games) {
+  try {
+    localStorage.setItem(GAMES_STORAGE_KEY, JSON.stringify(games));
+  } catch (e) {
+    console.error('Failed to save games', e);
+  }
+}
+
+function moveGameWithinTrack(appid, dir) {
+  try {
+    const games = loadGames();
+    const idx = games.findIndex((g) => String(g.appid) === String(appid));
+    if (idx === -1) return;
+    const track = games[idx].track || 'unassigned';
+    const same = games.map((g, i) => ({ g, i })).filter((x) => (x.g.track || 'unassigned') === track);
+    const pos = same.findIndex((x) => String(x.g.appid) === String(appid));
+    if (pos === -1) return;
+    if (dir === -1 && pos > 0) {
+      // move before previous same-track game
+      const [item] = games.splice(idx, 1);
+      const refAppid = same[pos - 1].g.appid;
+      const refIdx = games.findIndex((g) => String(g.appid) === String(refAppid));
+      games.splice(refIdx, 0, item);
+      saveGames(games);
+      renderMap();
+    } else if (dir === 1 && pos < same.length - 1) {
+      // move after next same-track game
+      const [item] = games.splice(idx, 1);
+      const refAppid = same[pos + 1].g.appid;
+      const refIdx = games.findIndex((g) => String(g.appid) === String(refAppid));
+      games.splice(refIdx + 1, 0, item);
+      saveGames(games);
+      renderMap();
+    }
+  } catch (err) {
+    console.error('Failed to move game', err);
+  }
+}
+
+function addGame(game) {
+  const games = loadGames();
+  games.push(game);
+  saveGames(games);
+  renderMap();
+}
+
+function exportGames() {
+  const games = loadGames();
+  const blob = new Blob([JSON.stringify(games, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'guideRail_games.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function handleImportFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      if (!Array.isArray(parsed)) throw new Error('Invalid format');
+      saveGames(parsed);
+      renderMap();
+    } catch (err) {
+      console.error('Import failed', err);
+      alert('Failed to import library: invalid file');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function populateAddForm(preselectAppid, preselectTrack) {
+  const sel = document.getElementById('game-select');
+  const urlInput = document.getElementById('game-url');
+  if (!sel) return;
+  sel.innerHTML = '';
+  const games = loadGames();
   if (!games.length) {
-    const placeholder = document.createElement('div');
-    placeholder.className = 'game-node unplayed';
-    const title = document.createElement('h4');
-    title.textContent = 'No games';
-    const meta = document.createElement('div');
-    meta.className = 'meta';
-    meta.textContent = 'Import your library';
-    const status = document.createElement('div');
-    status.className = 'status';
-    status.textContent = '—';
-    placeholder.append(title, meta, status);
-    container.appendChild(placeholder);
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = 'No games in library — import first';
+    sel.appendChild(opt);
+    if (urlInput) urlInput.value = '';
     return;
   }
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.textContent = '-- select a game --';
+  sel.appendChild(placeholder);
 
-  games.forEach((game, index) => {
-    if (index > 0) {
-      const spacer = document.createElement('div');
-      spacer.className = 'node-spacer';
-      container.appendChild(spacer);
-    }
-    container.appendChild(createNode(game));
+  games.forEach((g) => {
+    const o = document.createElement('option');
+    o.value = g.appid;
+    const assigned = g.track ? ` (on ${g.track})` : '';
+    o.textContent = `${g.name || g.appid}${assigned}`;
+    sel.appendChild(o);
   });
+
+  if (preselectAppid) sel.value = String(preselectAppid);
+  if (preselectTrack) {
+    const trackSel = document.getElementById('game-track');
+    if (trackSel) trackSel.value = preselectTrack;
+  }
+  if (preselectAppid && urlInput) {
+    const g = games.find((x) => String(x.appid) === String(preselectAppid));
+    urlInput.value = g && g.url ? g.url : '';
+  }
+}
+
+const PAGE_SIZE = 4;
+const trackPages = { mainline: 0, branch: 0, sidetrack: 0 };
+
+function renderTrack(container, games, trackName) {
+  container.innerHTML = '';
+  const page = trackPages[trackName] || 0;
+  const totalPages = Math.max(1, Math.ceil((games.length || 0) / PAGE_SIZE));
+  const start = page * PAGE_SIZE;
+  const pageItems = games.slice(start, start + PAGE_SIZE);
+
+  if (!pageItems.length) {
+    const placeholder = document.createElement('div');
+    placeholder.className = 'track-empty';
+    const hint = document.createElement('div');
+    hint.className = 'track-hint';
+    hint.textContent = 'Empty — add games to this line';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'btn btn-secondary add-to-line';
+    btn.textContent = 'Add to this line';
+    btn.addEventListener('click', () => {
+      const addForm = document.getElementById('add-game-form');
+      if (!addForm) return;
+      populateAddForm(null, trackName === 'sidetrack' ? 'sidetrack' : trackName);
+      addForm.hidden = false;
+      addForm.setAttribute('aria-hidden', 'false');
+      const sel = document.getElementById('game-select');
+      if (sel) sel.focus();
+    });
+    placeholder.appendChild(hint);
+    placeholder.appendChild(btn);
+    container.appendChild(placeholder);
+  } else {
+    pageItems.forEach((game, index) => {
+      if (index > 0) {
+        const spacer = document.createElement('div');
+        spacer.className = 'node-spacer';
+        container.appendChild(spacer);
+      }
+      container.appendChild(createNode(game));
+    });
+  }
+
+  // update control button disabled state
+  const prevBtn = document.getElementById(`${trackName}-prev`);
+  const nextBtn = document.getElementById(`${trackName}-next`);
+  if (prevBtn) prevBtn.disabled = page <= 0;
+  if (nextBtn) nextBtn.disabled = page >= totalPages - 1;
 }
 
 async function renderMap() {
@@ -129,28 +345,41 @@ async function renderMap() {
   const hasGames = games.length > 0;
   empty.hidden = hasGames;
 
-  const sorted = games.slice().sort((a, b) => (b.playtime_forever || 0) - (a.playtime_forever || 0));
-  const mainline = sorted.slice(0, 4);
-  const branch = sorted.slice(4, 6);
-  const sidetracks = sorted.slice(6, 8);
+  // Use explicit track assignment. Unassigned games live in the yard.
+  const mainline = games.filter((g) => g.track === 'mainline');
+  const branch = games.filter((g) => g.track === 'branch');
+  const sidetracks = games.filter((g) => g.track === 'sidetrack');
+  const unassigned = games.filter((g) => !g.track || g.track === 'unassigned');
 
   document.getElementById('stat-games').textContent = String(games.length);
   const totalHours = games.reduce((sum, game) => sum + ((game.playtime_forever || 0) / 60), 0);
   document.getElementById('stat-hours').textContent = totalHours.toLocaleString(undefined, { maximumFractionDigits: 0 });
   document.getElementById('stat-unplayed').textContent = String(games.filter((game) => (game.playtime_forever || 0) === 0).length);
-  document.getElementById('stat-eta').textContent = 'TBA';
+  try {
+    document.getElementById('stat-eta').textContent = String(estimateEtaYear(games));
+  } catch (e) {
+    document.getElementById('stat-eta').textContent = 'TBA';
+  }
 
-  renderTrack(document.getElementById('mainline-track'), mainline);
-  renderTrack(document.getElementById('branch-track'), branch);
-  renderTrack(document.getElementById('sidetrack-track'), sidetracks);
+  renderTrack(document.getElementById('mainline-track'), mainline, 'mainline');
+  renderTrack(document.getElementById('branch-track'), branch, 'branch');
+  renderTrack(document.getElementById('sidetrack-track'), sidetracks, 'sidetrack');
 
-  const unplayed = games.filter((game) => (game.playtime_forever || 0) === 0);
+  // ensure page indices are within bounds
+  ['mainline', 'branch', 'sidetrack'].forEach((t) => {
+    const arr = t === 'mainline' ? mainline : t === 'branch' ? branch : sidetracks;
+    const pages = Math.max(1, Math.ceil(arr.length / PAGE_SIZE));
+    if ((trackPages[t] || 0) >= pages) trackPages[t] = Math.max(0, pages - 1);
+  });
+
+  // Yard shows unassigned games stats
+  const unplayed = unassigned.filter((game) => (game.playtime_forever || 0) === 0);
   const short = unplayed.filter((game) => game.playtime_forever === 0).length;
-  const medium = games.filter((game) => {
+  const medium = unassigned.filter((game) => {
     const hours = (game.playtime_forever || 0) / 60;
     return hours >= 5 && hours < 20;
   }).length;
-  const long = games.filter((game) => (game.playtime_forever || 0) / 60 >= 20).length;
+  const long = unassigned.filter((game) => (game.playtime_forever || 0) / 60 >= 20).length;
 
   document.getElementById('yard-short').textContent = `${short} games`;
   document.getElementById('yard-medium').textContent = `${medium} games`;
@@ -160,4 +389,83 @@ async function renderMap() {
 document.addEventListener('DOMContentLoaded', () => {
   initThemeToggle();
   renderMap();
+  // Map control bindings
+  const addBtn = document.getElementById('add-game-btn');
+  const addForm = document.getElementById('add-game-form');
+  const importInput = document.getElementById('import-games-input');
+  const importBtn = document.getElementById('import-games-btn');
+  const exportBtn = document.getElementById('export-games-btn');
+
+  if (addBtn && addForm) {
+    addBtn.addEventListener('click', () => {
+      populateAddForm();
+      addForm.hidden = false;
+      addForm.setAttribute('aria-hidden', 'false');
+      const sel = document.getElementById('game-select');
+      if (sel) sel.focus();
+    });
+
+    const cancel = document.getElementById('cancel-add-game');
+    if (cancel) {
+      cancel.addEventListener('click', () => {
+        addForm.reset();
+        addForm.hidden = true;
+        addForm.setAttribute('aria-hidden', 'true');
+      });
+    }
+
+    addForm.addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      const appid = document.getElementById('game-select').value;
+      const urlOverride = document.getElementById('game-url').value.trim();
+      const track = document.getElementById('game-track').value;
+      if (!appid) {
+        alert('Please select a game from your library first (or import your library).');
+        return;
+      }
+      const games = loadGames();
+      const idx = games.findIndex((g) => String(g.appid) === String(appid));
+      if (idx === -1) {
+        alert('Selected game not found in library. Try importing your library.');
+        return;
+      }
+      if (urlOverride) games[idx].url = urlOverride;
+      games[idx].track = track === 'unassigned' ? undefined : track;
+      saveGames(games);
+      addForm.reset();
+      addForm.hidden = true;
+      addForm.setAttribute('aria-hidden', 'true');
+      renderMap();
+    });
+  }
+
+  if (importInput) {
+    importInput.addEventListener('change', (ev) => {
+      const file = ev.target.files && ev.target.files[0];
+      if (file) handleImportFile(file);
+      importInput.value = '';
+    });
+    if (importBtn) {
+      importBtn.addEventListener('click', () => importInput.click());
+    }
+  }
+
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => exportGames());
+  }
+
+  // track pagination buttons
+  const tracks = ['mainline', 'branch', 'sidetrack'];
+  tracks.forEach((t) => {
+    const prev = document.getElementById(`${t}-prev`);
+    const next = document.getElementById(`${t}-next`);
+    if (prev) prev.addEventListener('click', () => {
+      trackPages[t] = Math.max(0, (trackPages[t] || 0) - 1);
+      renderMap();
+    });
+    if (next) next.addEventListener('click', () => {
+      trackPages[t] = (trackPages[t] || 0) + 1;
+      renderMap();
+    });
+  });
 });
