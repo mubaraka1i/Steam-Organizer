@@ -2,6 +2,67 @@ const PROFILE_STORAGE_KEY = 'guideRail_profile';
 const GAMES_STORAGE_KEY = 'guideRail_games';
 const THEME_KEY = 'guideRail_theme';
 
+const IGDB_ENDPOINT = '/api/igdb-completion-times';
+
+function parseIgdbInput(value) {
+  const text = String(value || '').trim();
+  if (!text) {
+    return { title: '', slug: '' };
+  }
+
+  try {
+    const parsed = new URL(text);
+    const parts = parsed.pathname.split('/').filter(Boolean);
+    const gamesIndex = parts.indexOf('games');
+    if (gamesIndex !== -1 && parts[gamesIndex + 1]) {
+      const slug = parts[gamesIndex + 1].trim();
+      return { title: slug.replace(/-/g, ' '), slug };
+    }
+  } catch (error) {
+    // Plain text title.
+  }
+
+  const slug = text
+    .toLowerCase()
+    .replace(/[\u2019'’]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+  return { title: text, slug };
+}
+
+function formatIgdbResult(result) {
+  if (!result) return 'No result returned.';
+  if (result.notFound) {
+    return JSON.stringify({ error: result.error || 'No match found in IGDB' }, null, 2);
+  }
+  if (result.raw || result.hours) {
+    return JSON.stringify({ raw: result.raw || null, hours: result.hours || null }, null, 2);
+  }
+  return JSON.stringify(result, null, 2);
+}
+
+async function fetchIgdbCompletionTimes(inputValue) {
+  const parsed = parseIgdbInput(inputValue);
+  const response = await fetch(IGDB_ENDPOINT, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ title: parsed.title, slug: parsed.slug })
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (response.status === 404) {
+    return { notFound: true, error: data?.error || 'No match found in IGDB' };
+  }
+  if (!response.ok) {
+    throw new Error(data?.error || `Request failed (${response.status})`);
+  }
+
+  return data.completionTimesRaw
+    ? { raw: data.completionTimesRaw, hours: data.completionTimes || null }
+    : (data.completionTimes || data);
+}
+
 function applyTheme(theme) {
   document.body.classList.toggle('light-theme', theme === 'blue');
 }
@@ -389,6 +450,55 @@ async function renderMap() {
 document.addEventListener('DOMContentLoaded', () => {
   initThemeToggle();
   renderMap();
+
+  const igdbTestBtn = document.getElementById('igdb-test-btn');
+  const igdbTitleInput = document.getElementById('igdb-title');
+  const igdbStatusEl = document.getElementById('igdb-status');
+  const igdbOutputEl = document.getElementById('igdb-output');
+
+  const setIgdbStatus = (message, type = '') => {
+    if (igdbStatusEl) {
+      igdbStatusEl.textContent = message;
+      igdbStatusEl.className = `status-message ${type}`.trim();
+    }
+  };
+
+  const setIgdbOutput = (value) => {
+    if (igdbOutputEl) {
+      igdbOutputEl.textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+    }
+  };
+
+  if (igdbTestBtn && igdbTitleInput) {
+    igdbTestBtn.addEventListener('click', async () => {
+      const title = igdbTitleInput.value.trim();
+      if (!title) {
+        setIgdbStatus('Enter a game name or IGDB URL first.', 'error');
+        return;
+      }
+
+      try {
+        igdbTestBtn.disabled = true;
+        setIgdbStatus(`Looking up ${title}...`, 'loading');
+        setIgdbOutput('Waiting for proxy response...');
+
+        const result = await fetchIgdbCompletionTimes(title);
+        if (result?.notFound) {
+          setIgdbStatus(`No match found for ${title}`, 'error');
+          setIgdbOutput({ error: result.error || 'No match found in IGDB', title });
+          return;
+        }
+
+        setIgdbStatus(`Success: ${title}`, 'success');
+        setIgdbOutput(formatIgdbResult(result));
+      } catch (error) {
+        setIgdbStatus(`Failed: ${error.message}`, 'error');
+        setIgdbOutput({ error: error.message });
+      } finally {
+        igdbTestBtn.disabled = false;
+      }
+    });
+  }
   // Map control bindings
   const addBtn = document.getElementById('add-game-btn');
   const addForm = document.getElementById('add-game-form');

@@ -39,6 +39,20 @@
         </article>
       </section>
 
+      <section class="yard-panel igdb-panel" aria-labelledby="igdb-heading">
+        <h3 id="igdb-heading" class="yard-title">IGDB Completion-Time Tester</h3>
+        <p class="igdb-copy">Paste a game name or IGDB URL to look up completion times through the local proxy.</p>
+        <label class="igdb-field" for="igdb-title">
+          <span>Game name or IGDB URL</span>
+          <input id="igdb-title" type="text" placeholder="Elden Ring or https://www.igdb.com/games/garry-s-mod" autocomplete="off">
+        </label>
+        <div class="igdb-actions">
+          <button id="igdb-test-btn" class="btn" type="button">Test IGDB</button>
+        </div>
+        <p id="igdb-status" class="status-message" role="status" aria-live="polite"></p>
+        <pre id="igdb-output" class="igdb-output" aria-live="polite">No test run yet.</pre>
+      </section>
+
       <section class="track-group" aria-labelledby="mainline-heading">
         <div class="track-label">MAIN LINE</div>
         <div class="track-content">
