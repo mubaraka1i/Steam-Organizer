@@ -4,21 +4,11 @@ const THEME_KEY = 'guideRail_theme';
 
 const IGDB_BASE = 'https://api.igdb.com/v4';
 const APPROXI_PROXY_BASE = 'https://approxi--approxi-65847.us-east4.hosted.app/p/aliappleton-project?url=';
-
-// Approxi proxy token: prefer a gitignored client config `src/config.local.js`.
-// If that file is not present, fallback to stored token or prompt.
-const APPROXI_PROXY_TOKEN = (typeof window !== 'undefined' && window.__CONFIG && window.__CONFIG.APPROXI_PROXY_TOKEN) || '';
+const APPROXI_PROXY_TOKEN = '68b1d5ba4cde33c593522d9dc0c0ac9898dd023bad0b33a0';
 
 function getApproxiToken() {
   try {
-    // Prefer token from client config, otherwise fall back to stored/prompted token.
-    if (APPROXI_PROXY_TOKEN) return APPROXI_PROXY_TOKEN;
-    let t = localStorage.getItem('approxi_token');
-    if (!t) {
-      t = window.prompt('Enter your Approxi proxy token (will be saved locally)') || '';
-      if (t) localStorage.setItem('approxi_token', t);
-    }
-    return t || '';
+    return APPROXI_PROXY_TOKEN || '';
   } catch (e) {
     return '';
   }
