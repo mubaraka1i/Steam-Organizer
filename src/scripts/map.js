@@ -2,7 +2,32 @@ const PROFILE_STORAGE_KEY = 'guideRail_profile';
 const GAMES_STORAGE_KEY = 'guideRail_games';
 const THEME_KEY = 'guideRail_theme';
 
-const IGDB_ENDPOINT = '/api/igdb-completion-times';
+const IGDB_BASE = 'https://api.igdb.com/v4';
+const APPROXI_PROXY_BASE = 'https://approxi--approxi-65847.us-east4.hosted.app/p/aliappleton-project?url=';
+
+// Approxi proxy token: prefer a gitignored client config `src/config.local.js`.
+// If that file is not present, fallback to stored token or prompt.
+const APPROXI_PROXY_TOKEN = (typeof window !== 'undefined' && window.__CONFIG && window.__CONFIG.APPROXI_PROXY_TOKEN) || '';
+
+function getApproxiToken() {
+  try {
+    // Prefer token from client config, otherwise fall back to stored/prompted token.
+    if (APPROXI_PROXY_TOKEN) return APPROXI_PROXY_TOKEN;
+    let t = localStorage.getItem('approxi_token');
+    if (!t) {
+      t = window.prompt('Enter your Approxi proxy token (will be saved locally)') || '';
+      if (t) localStorage.setItem('approxi_token', t);
+    }
+    return t || '';
+  } catch (e) {
+    return '';
+  }
+}
+
+const igdbTokenCache = {
+  accessToken: null,
+  expiresAt: 0,
+};
 
 function parseIgdbInput(value) {
   const text = String(value || '').trim();
@@ -44,23 +69,127 @@ function formatIgdbResult(result) {
 
 async function fetchIgdbCompletionTimes(inputValue) {
   const parsed = parseIgdbInput(inputValue);
-  const response = await fetch(IGDB_ENDPOINT, {
+  const queryTitle = parsed.title.trim();
+  const querySlug = parsed.slug.trim();
+  
+  if (!queryTitle && !querySlug) {
+    return { notFound: true, error: 'Please enter a game name or IGDB URL' };
+  }
+
+  try {
+    let game = null;
+    
+    // Try slug lookup first if available
+    if (querySlug) {
+      const slugBody = `fields id,name,slug; where slug = "${querySlug.replace(/"/g, '\\"')}"; limit 1;`;
+      const slugResponse = await igdbPost('/games', slugBody);
+      if (Array.isArray(slugResponse) && slugResponse.length > 0) {
+        game = slugResponse[0];
+      }
+    }
+    
+    // Fall back to search if slug didn't find anything
+    if (!game) {
+      const searchBody = `fields id,name,slug; search "${queryTitle.replace(/"/g, '\\"')}"; limit 5;`;
+      const searchResponse = await igdbPost('/games', searchBody);
+      if (Array.isArray(searchResponse) && searchResponse.length > 0) {
+        game = searchResponse[0];
+      }
+    }
+    
+    if (!game) {
+      return { notFound: true, error: 'No match found in IGDB', title: queryTitle };
+    }
+    
+    // Fetch completion times for the found game
+    const timesBody = `fields hastily,normally,completely,count; where game_id = ${game.id}; limit 1;`;
+    const timesResponse = await igdbPost('/game_time_to_beats', timesBody);
+    
+    if (!Array.isArray(timesResponse) || timesResponse.length === 0) {
+      return { notFound: true, error: 'No completion time data found for this game', title: game.name };
+    }
+    
+    const times = timesResponse[0];
+    const hours = {
+      hastily: times.hastily ? Math.round((times.hastily / 3600) * 10) / 10 : null,
+      normally: times.normally ? Math.round((times.normally / 3600) * 10) / 10 : null,
+      completely: times.completely ? Math.round((times.completely / 3600) * 10) / 10 : null,
+      count: times.count || 0
+    };
+    
+    return { raw: times, hours, gameName: game.name };
+  } catch (error) {
+    throw new Error(`IGDB lookup failed: ${error.message}`);
+  }
+}
+
+async function getIgdbAccessToken() {
+  if (igdbTokenCache.accessToken && Date.now() < igdbTokenCache.expiresAt) {
+    return igdbTokenCache.accessToken;
+  }
+
+  // Use Approxi proxy to perform the Twitch OAuth token exchange server-side.
+  // Approxi will inject the configured TWITCH_CLIENT_ID / TWITCH_CLIENT_SECRET
+  // so the secrets are not exposed in this repository.
+  const proxiedTokenUrl = 'https://id.twitch.tv/oauth2/token?client_id={TWITCH_CLIENT_ID}&client_secret={TWITCH_CLIENT_SECRET}&grant_type=client_credentials';
+  const proxyUrl = `${APPROXI_PROXY_BASE}${encodeURIComponent(proxiedTokenUrl)}`;
+
+  const proxyToken = getApproxiToken();
+  const response = await fetch(proxyUrl, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ title: parsed.title, slug: parsed.slug })
+    headers: {
+      'x-proxy-token': proxyToken,
+      'Accept': 'application/json',
+    },
   });
 
-  const data = await response.json().catch(() => ({}));
-  if (response.status === 404) {
-    return { notFound: true, error: data?.error || 'No match found in IGDB' };
-  }
   if (!response.ok) {
-    throw new Error(data?.error || `Request failed (${response.status})`);
+    throw new Error(`Failed to get Twitch token via proxy (${response.status})`);
   }
 
-  return data.completionTimesRaw
-    ? { raw: data.completionTimesRaw, hours: data.completionTimes || null }
-    : (data.completionTimes || data);
+  const data = await response.json();
+  if (!data?.access_token) {
+    throw new Error('No access token in response from proxy');
+  }
+
+  igdbTokenCache.accessToken = data.access_token;
+  igdbTokenCache.expiresAt = Date.now() + Math.max(60, (data.expires_in || 0) - 60) * 1000;
+  return igdbTokenCache.accessToken;
+}
+
+async function buildIgdbHeaders(accessToken) {
+  return {
+    'Client-ID': TWITCH_CLIENT_ID,
+    'Authorization': `Bearer ${accessToken}`,
+    'Accept': 'application/json',
+    'Content-Type': 'text/plain',
+  };
+}
+
+async function igdbPost(pathname, body) {
+  const accessToken = await getIgdbAccessToken();
+  const igdbUrl = `${IGDB_BASE}${pathname}`;
+  const proxyUrl = `${APPROXI_PROXY_BASE}${encodeURIComponent(igdbUrl)}`;
+  
+  const proxyToken = getApproxiToken();
+  const response = await fetch(proxyUrl, {
+    method: 'POST',
+    headers: {
+      'x-proxy-token': proxyToken,
+      // Use Approxi placeholder so the real Client ID is injected server-side
+      'Client-ID': '{TWITCH_CLIENT_ID}',
+      'Authorization': `Bearer ${accessToken}`,
+      'Accept': 'application/json',
+      'Content-Type': 'text/plain'
+    },
+    body
+  });
+
+  if (!response.ok) {
+    throw new Error(`IGDB request failed (${response.status})`);
+  }
+
+  return response.json();
 }
 
 function applyTheme(theme) {
