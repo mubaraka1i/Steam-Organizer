@@ -131,7 +131,7 @@
   min-width: 60px; /* reduce min width so button isn't too long */
   max-width: 220px;
   text-align: center;
-  line-height: .72;
+  line-height: .75;
 }
 
 .eta-results {
@@ -150,5 +150,115 @@
 
   .eta-form {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .eta-header {
+    padding: 8px 4px;
+    gap: 8px;
+  }
+
+  .site-title {
+    font-size: 14px;
+  }
+
+  .eta-nav {
+    gap: 2px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .eta-nav a,
+  .eta-nav button {
+    padding: 6px 8px;
+    font-size: 11px;
+    border: 1px solid #808080;
+  }
+
+  .eta-main {
+    padding: 12px 8px 16px;
+  }
+
+  .eta-shell {
+    gap: 12px;
+  }
+
+  .eta-hero,
+  .eta-card,
+  .eta-results {
+    padding: 14px 12px;
+    box-shadow: 0 8px 16px var(--eta-shadow);
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    margin: 0 0 6px;
+  }
+
+  .eta-hero h2,
+  .eta-card h3 {
+    font-size: 16px;
+    margin: 0 0 8px;
+  }
+
+  .eta-copy {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .eta-form {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .eta-form label {
+    gap: 6px;
+    font-size: 14px;
+  }
+
+  .eta-form input[type="number"] {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+
+  .eta-actions {
+    margin-top: 6px;
+    gap: 6px;
+    /* Stretch buttons to equal height on small screens */
+    align-items: stretch;
+  }
+
+  .eta-actions .btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    flex: 1 1 0;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 0;
+    line-height: 1.2;
+  }
+
+  .eta-actions .btn[type="submit"] {
+    width: auto;
+    min-width: 0;
+    padding: 8px 12px;
+    line-height: 1.2;
+  }
+
+  /* Ensure buttons can shrink and distribute evenly on very small screens */
+  .eta-actions .btn {
+    box-sizing: border-box;
+    min-width: 0; /* allow flex children to be equal width */
+  }
+
+  .eta-nav a,
+  .eta-nav button {
+    padding: 6px 8px;
+    font-size: 11px;
   }
 }

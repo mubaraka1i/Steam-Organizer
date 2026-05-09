@@ -323,6 +323,7 @@ function createNode(game) {
   // status selector (persisted on the game as `status`)
   const statusSelect = document.createElement('select');
   statusSelect.className = 'status-select';
+  statusSelect.setAttribute('aria-label', 'Game status');
   const statusOptions = [
     ['unplayed', 'Unplayed'],
     ['playing', 'Playing'],
@@ -388,6 +389,7 @@ function createNode(game) {
   // assign selector (styled like status)
   const assign = document.createElement('select');
   assign.className = 'status-select assign-select';
+  assign.setAttribute('aria-label', 'Game track assignment');
   const opts = [
     ['unassigned', 'Yard'],
     ['mainline', 'Main Line'],
@@ -544,15 +546,20 @@ function populateAddForm(preselectAppid, preselectTrack) {
   }
 }
 
-const PAGE_SIZE = 4;
+function getPageSize() {
+  // Use a single-item page on small viewports (phones), otherwise show 4 per page
+  return window.matchMedia('(max-width: 420px)').matches ? 1 : 4;
+}
+
 const trackPages = { mainline: 0, branch: 0, sidetrack: 0 };
 
 function renderTrack(container, games, trackName) {
   container.innerHTML = '';
   const page = trackPages[trackName] || 0;
-  const totalPages = Math.max(1, Math.ceil((games.length || 0) / PAGE_SIZE));
-  const start = page * PAGE_SIZE;
-  const pageItems = games.slice(start, start + PAGE_SIZE);
+  const pageSize = getPageSize();
+  const totalPages = Math.max(1, Math.ceil((games.length || 0) / pageSize));
+  const start = page * pageSize;
+  const pageItems = games.slice(start, start + pageSize);
 
   if (!pageItems.length) {
     const placeholder = document.createElement('div');
@@ -623,10 +630,10 @@ async function renderMap() {
   renderTrack(document.getElementById('branch-track'), branch, 'branch');
   renderTrack(document.getElementById('sidetrack-track'), sidetracks, 'sidetrack');
 
-  // ensure page indices are within bounds
+  // ensure page indices are within bounds (use current page size)
   ['mainline', 'branch', 'sidetrack'].forEach((t) => {
     const arr = t === 'mainline' ? mainline : t === 'branch' ? branch : sidetracks;
-    const pages = Math.max(1, Math.ceil(arr.length / PAGE_SIZE));
+    const pages = Math.max(1, Math.ceil(arr.length / getPageSize()));
     if ((trackPages[t] || 0) >= pages) trackPages[t] = Math.max(0, pages - 1);
   });
 
@@ -851,5 +858,12 @@ document.addEventListener('DOMContentLoaded', () => {
       trackPages[t] = (trackPages[t] || 0) + 1;
       renderMap();
     });
+  });
+
+  // Re-render on resize to adjust page size for small viewports
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => renderMap(), 120);
   });
 });

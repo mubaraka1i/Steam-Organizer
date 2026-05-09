@@ -206,14 +206,22 @@
   max-height: none;
   overflow-x: auto;
   overflow-y: visible;
-  -webkit-overflow-scrolling: touch;
   scroll-snap-type: x mandatory;
   padding-bottom: 8px;
   align-items: flex-start;
   max-width: 100%;
-  /* Prevent parent/page scrolling when panning horizontally on a track */
-  overscroll-behavior: contain;
-  touch-action: pan-x;
+  /* Allow page scrolling when the cursor/wheel is over a track-row (fix Firefox behavior) */
+  overscroll-behavior: auto;
+  touch-action: auto;
+}
+
+/* For touch devices prefer horizontal pan behavior and native momentum scrolling */
+@media (pointer: coarse) {
+  .track-row {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    overscroll-behavior: contain;
+  }
 }
 
 .game-node {
@@ -501,6 +509,169 @@
   }
 }
 
+@media (max-width: 480px) {
+  .map-header {
+    padding: 8px 4px;
+    gap: 8px;
+  }
+
+  .site-title {
+    font-size: 14px;
+  }
+
+  .map-nav {
+    gap: 2px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .map-nav a,
+  .map-nav button {
+    padding: 6px 8px;
+    font-size: 11px;
+    border: 1px solid #808080;
+  }
+
+  .map-main {
+    padding: 0 8px 14px;
+  }
+
+  .map-shell {
+    padding-top: 12px;
+  }
+
+  .map-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+
+  .stat-card {
+    min-height: 64px;
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .stat-card strong {
+    font-size: 18px;
+  }
+
+  .track-group {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .track-label {
+    padding-top: 0;
+    margin-top: 0;
+  }
+
+  .track-content {
+    border-top: none;
+    padding-top: 0;
+    padding-bottom: 40px;
+  }
+
+  .track-heading {
+    font-size: 13px;
+    margin: 0 0 8px;
+  }
+
+  .game-node {
+    width: min(85vw, 150px);
+    min-height: 140px;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .game-node h4 {
+    font-size: 11px;
+  }
+
+  .track-controls {
+    position: absolute;
+    right: 0;
+    bottom: 4px;
+    gap: 4px;
+  }
+
+  .btn.small {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .yard-panel {
+    margin-top: 16px;
+    padding: 14px 12px 16px;
+  }
+
+  .yard-title {
+    font-size: 13px;
+    margin: 0 0 12px;
+  }
+
+  .yard-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .yard-grid article {
+    min-height: 80px;
+    padding: 12px;
+  }
+
+  .igdb-panel {
+    margin-top: 16px;
+    padding: 14px 12px 16px;
+  }
+
+  .igdb-field input {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .igdb-output {
+    padding: 12px 14px;
+    min-height: 80px;
+    font-size: 12px;
+  }
+
+  .map-nav a,
+  .map-nav button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  /* Ensure action buttons have equal min-height on very small screens */
+  .form-actions .btn {
+    min-height: 40px;
+  }
+
+  .add-game-form button[type="submit"] {
+    margin-left: 0;
+    padding: 8px 12px;
+    min-width: 0;
+    min-height: 40px;
+  }
+
+  /* Make the game selector compact on small screens */
+  .add-game-form select,
+  #game-select,
+  #game-track {
+    font-size: 12px;
+    padding: 2px 6px;
+    height: 32px;
+    line-height: 1;
+    box-sizing: border-box;
+    max-width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
 .form-actions {
   display: flex;
   flex-direction: row;
@@ -521,4 +692,29 @@
   width: auto;
   min-width: 0;
   padding: 6px 20px;
+}
+
+@media (max-width: 480px) {
+  /* Make form action buttons (Save / Cancel) equal width on small screens */
+  .form-actions {
+    gap: 8px;
+  }
+
+  .form-actions .btn {
+    flex: 1 1 0;
+    min-width: 0; /* allow buttons to shrink to equal widths */
+    box-sizing: border-box;
+    padding: 8px 12px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.2;
+  }
+
+  /* Ensure submit button doesn't keep a larger min-width */
+  .form-actions button[type="submit"],
+  .form-actions button[type="button"] {
+    width: auto;
+  }
 }
