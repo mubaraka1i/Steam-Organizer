@@ -430,6 +430,19 @@ function importGamesFromFile(file) {
   reader.readAsText(file);
 }
 
+function normalizeImportedGames(parsed) {
+  if (Array.isArray(parsed)) {
+    return parsed;
+  }
+  if (parsed && Array.isArray(parsed.games)) {
+    return parsed.games;
+  }
+  if (parsed && parsed.response && Array.isArray(parsed.response.games)) {
+    return parsed.response.games;
+  }
+  return null;
+}
+
 function restoreStoredGames() {
   const raw = localStorage.getItem(GAMES_STORAGE_KEY);
   if (!raw) {
@@ -484,8 +497,86 @@ function bootstrapProfile() {
 
   const importBtnEl = document.getElementById('import-btn');
   const importFileEl = document.getElementById('games-import-file');
+  const importPreviewEl = document.getElementById('games-import-preview');
+  const importPreviewSummaryEl = document.getElementById('games-import-preview-summary');
+  const importPreviewSampleEl = document.getElementById('games-import-preview-sample');
+  const importConfirmBtnEl = document.getElementById('games-import-confirm-btn');
+  const importCancelBtnEl = document.getElementById('games-import-cancel-btn');
+  let pendingImportFile = null;
+
+  const hideImportPreview = () => {
+    pendingImportFile = null;
+    if (importPreviewEl) {
+      importPreviewEl.hidden = true;
+    }
+  };
+
+  const showImportPreview = async (file) => {
+    if (!importPreviewEl || !importPreviewSummaryEl || !importPreviewSampleEl) return;
+
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      const games = normalizeImportedGames(parsed);
+      if (!Array.isArray(games)) {
+        throw new Error('Expected a JSON array of games.');
+      }
+
+      pendingImportFile = file;
+      importPreviewSummaryEl.textContent = `${games.length} game${games.length === 1 ? '' : 's'} ready to import from ${file.name}.`;
+      const sampleNames = games.slice(0, 3).map((game) => game.name || `App ${game.appid}`);
+      importPreviewSampleEl.textContent = sampleNames.length
+        ? `Preview: ${sampleNames.join(', ')}${games.length > 3 ? '...' : ''}`
+        : 'Preview: no game names found in the file.';
+      importPreviewEl.hidden = false;
+    } catch (error) {
+      pendingImportFile = null;
+      importPreviewSummaryEl.textContent = 'Could not preview that file.';
+      importPreviewSampleEl.textContent = error.message;
+      importPreviewEl.hidden = false;
+    }
+  };
   if (importBtnEl && importFileEl) {
     importBtnEl.addEventListener('click', () => importFileEl.click());
+  }
+
+  if (importConfirmBtnEl) {
+    importConfirmBtnEl.addEventListener('click', () => {
+      if (!pendingImportFile) return;
+      importGamesFromFile(pendingImportFile);
+      hideImportPreview();
+    });
+  }
+
+  if (importCancelBtnEl) {
+    importCancelBtnEl.addEventListener('click', () => {
+      hideImportPreview();
+    });
+  }
+
+  if (importFileEl) {
+    importFileEl.addEventListener('change', (ev) => {
+      const file = ev.target.files && ev.target.files[0];
+      if (file) {
+        showImportPreview(file);
+      }
+      ev.target.value = '';
+    });
+  }
+
+  const importDropZone = document.querySelector('.import-panel');
+  if (importDropZone && importFileEl) {
+    importDropZone.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'copy';
+    });
+    importDropZone.addEventListener('drop', (event) => {
+      event.preventDefault();
+      const file = event.dataTransfer.files && event.dataTransfer.files[0];
+      if (file) {
+        showImportPreview(file);
+      }
+    });
   }
 
   const fetchBtnEl = document.getElementById('fetch-btn');

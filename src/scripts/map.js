@@ -493,6 +493,19 @@ function handleImportFile(file) {
   reader.readAsText(file);
 }
 
+function normalizeGameImportPayload(parsed) {
+  if (Array.isArray(parsed)) {
+    return parsed;
+  }
+  if (parsed && Array.isArray(parsed.games)) {
+    return parsed.games;
+  }
+  if (parsed && parsed.response && Array.isArray(parsed.response.games)) {
+    return parsed.response.games;
+  }
+  return null;
+}
+
 function populateAddForm(preselectAppid, preselectTrack) {
   const sel = document.getElementById('game-select');
   const urlInput = document.getElementById('game-url');
@@ -650,6 +663,59 @@ document.addEventListener('DOMContentLoaded', () => {
   const igdbTitleInput = document.getElementById('igdb-title');
   const igdbStatusEl = document.getElementById('igdb-status');
   const igdbOutputEl = document.getElementById('igdb-output');
+  const importPreview = document.getElementById('map-import-preview');
+  const importPreviewSummary = document.getElementById('map-import-preview-summary');
+  const importPreviewSample = document.getElementById('map-import-preview-sample');
+  const importPreviewConfirm = document.getElementById('map-import-confirm-btn');
+  const importPreviewCancel = document.getElementById('map-import-cancel-btn');
+  let pendingImportFile = null;
+
+  const hideImportPreview = () => {
+    pendingImportFile = null;
+    if (importPreview) {
+      importPreview.hidden = true;
+    }
+  };
+
+  const showImportPreview = async (file) => {
+    if (!importPreview || !importPreviewSummary || !importPreviewSample) return;
+
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      const games = normalizeGameImportPayload(parsed);
+      if (!Array.isArray(games)) {
+        throw new Error('Expected a JSON array of games.');
+      }
+
+      pendingImportFile = file;
+      importPreviewSummary.textContent = `${games.length} game${games.length === 1 ? '' : 's'} ready to import from ${file.name}.`;
+      const sampleNames = games.slice(0, 3).map((game) => game.name || `App ${game.appid}`);
+      importPreviewSample.textContent = sampleNames.length
+        ? `Preview: ${sampleNames.join(', ')}${games.length > 3 ? '...' : ''}`
+        : 'Preview: no game names found in the file.';
+      importPreview.hidden = false;
+    } catch (error) {
+      pendingImportFile = null;
+      importPreviewSummary.textContent = 'Could not preview that file.';
+      importPreviewSample.textContent = error.message;
+      importPreview.hidden = false;
+    }
+  };
+
+  if (importPreviewConfirm) {
+    importPreviewConfirm.addEventListener('click', () => {
+      if (!pendingImportFile) return;
+      handleImportFile(pendingImportFile);
+      hideImportPreview();
+    });
+  }
+
+  if (importPreviewCancel) {
+    importPreviewCancel.addEventListener('click', () => {
+      hideImportPreview();
+    });
+  }
 
   const setIgdbStatus = (message, type = '') => {
     if (igdbStatusEl) {
@@ -745,12 +811,27 @@ document.addEventListener('DOMContentLoaded', () => {
   if (importInput) {
     importInput.addEventListener('change', (ev) => {
       const file = ev.target.files && ev.target.files[0];
-      if (file) handleImportFile(file);
+      if (file) showImportPreview(file);
       importInput.value = '';
     });
     if (importBtn) {
       importBtn.addEventListener('click', () => importInput.click());
     }
+  }
+
+  const mapImportDropZone = document.querySelector('.map-controls') || document.querySelector('.controls-row');
+  if (mapImportDropZone && importInput) {
+    mapImportDropZone.addEventListener('dragover', (event) => {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'copy';
+    });
+    mapImportDropZone.addEventListener('drop', (event) => {
+      event.preventDefault();
+      const file = event.dataTransfer.files && event.dataTransfer.files[0];
+      if (file) {
+        showImportPreview(file);
+      }
+    });
   }
 
   if (exportBtn) {

@@ -50,6 +50,15 @@
                     <button id="accounts-filter-toggle" type="button" aria-pressed="false">Show Favorites</button>
                     <input type="file" id="accounts-import-file" accept=".json" style="display: none;" aria-hidden="true">
                 </div>
+                <div id="accounts-import-preview" class="import-preview" hidden aria-live="polite">
+                    <p class="import-preview-title">Import preview</p>
+                    <p id="accounts-import-preview-summary" class="import-preview-summary"></p>
+                    <p id="accounts-import-preview-sample" class="import-preview-sample"></p>
+                    <div class="import-preview-actions">
+                        <button id="accounts-import-confirm-btn" type="button" class="import-btn">Import</button>
+                        <button id="accounts-import-cancel-btn" type="button" class="import-btn">Cancel</button>
+                    </div>
+                </div>
                 <ul id="accountsList" class="accounts-list" aria-live="polite"></ul>
             </article>
 

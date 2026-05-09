@@ -117,6 +117,15 @@
           <button id="eta-calc-btn" class="btn" type="button">ETA Calculate</button>
           <input id="import-games-input" type="file" accept="application/json" hidden>
         </div>
+        <div id="map-import-preview" class="import-preview" hidden aria-live="polite">
+          <p class="import-preview-title">Import preview</p>
+          <p id="map-import-preview-summary" class="import-preview-summary"></p>
+          <p id="map-import-preview-sample" class="import-preview-sample"></p>
+          <div class="import-preview-actions">
+            <button id="map-import-confirm-btn" type="button" class="btn btn-primary">Import</button>
+            <button id="map-import-cancel-btn" type="button" class="btn">Cancel</button>
+          </div>
+        </div>
 
         <form id="add-game-form" class="add-game-form" hidden aria-hidden="true">
           <h3>Add Game</h3>

@@ -542,6 +542,13 @@ function importAccounts(file) {
   reader.readAsText(file);
 }
 
+function normalizeImportedAccounts(parsed) {
+  if (parsed && Array.isArray(parsed.accounts)) {
+    return parsed.accounts;
+  }
+  return null;
+}
+
 function showError(message, inputField, helpId = 'username-help') {
   const errorDiv = document.getElementById('login-error');
   errorDiv.textContent = message;
@@ -633,6 +640,45 @@ applyTheme(savedTheme);
   const exportBtn = document.getElementById('accounts-export-btn');
   const importBtn = document.getElementById('accounts-import-btn');
   const importFile = document.getElementById('accounts-import-file');
+  const importPreview = document.getElementById('accounts-import-preview');
+  const importPreviewSummary = document.getElementById('accounts-import-preview-summary');
+  const importPreviewSample = document.getElementById('accounts-import-preview-sample');
+  const importConfirmBtn = document.getElementById('accounts-import-confirm-btn');
+  const importCancelBtn = document.getElementById('accounts-import-cancel-btn');
+  let pendingImportFile = null;
+
+  const hideImportPreview = () => {
+    pendingImportFile = null;
+    if (importPreview) {
+      importPreview.hidden = true;
+    }
+  };
+
+  const showImportPreview = async (file) => {
+    if (!importPreview || !importPreviewSummary || !importPreviewSample) return;
+
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      const accounts = normalizeImportedAccounts(parsed);
+      if (!Array.isArray(accounts)) {
+        throw new Error('Expected an export with an accounts array.');
+      }
+
+      pendingImportFile = file;
+      importPreviewSummary.textContent = `${accounts.length} account${accounts.length === 1 ? '' : 's'} ready to import from ${file.name}.`;
+      const sampleNames = accounts.slice(0, 3).map((account) => account.personaname || account.steamid || 'Unnamed account');
+      importPreviewSample.textContent = sampleNames.length
+        ? `Preview: ${sampleNames.join(', ')}${accounts.length > 3 ? '...' : ''}`
+        : 'Preview: no account names found in the file.';
+      importPreview.hidden = false;
+    } catch (error) {
+      pendingImportFile = null;
+      importPreviewSummary.textContent = 'Could not preview that file.';
+      importPreviewSample.textContent = error.message;
+      importPreview.hidden = false;
+    }
+  };
 
   if (exportBtn) {
     exportBtn.addEventListener('click', exportAccounts);
@@ -644,14 +690,28 @@ applyTheme(savedTheme);
     });
   }
 
+  if (importConfirmBtn) {
+    importConfirmBtn.addEventListener('click', () => {
+      if (!pendingImportFile) return;
+      importAccounts(pendingImportFile);
+      hideImportPreview();
+    });
+  }
+
+  if (importCancelBtn) {
+    importCancelBtn.addEventListener('click', () => {
+      hideImportPreview();
+    });
+  }
+
   if (importFile) {
     importFile.addEventListener('change', (ev) => {
-      if (ev.target.files && ev.target.files[0]) {
-        importAccounts(ev.target.files[0]);
-        ev.target.value = ''; // Reset file input
+      const file = ev.target.files && ev.target.files[0];
+      if (file) {
+        showImportPreview(file);
       }
+      ev.target.value = ''; // Reset file input
     });
-    // Drag and drop support for importing accounts
     const accountsBox = document.querySelector('.accounts-box');
     if (accountsBox) {
       accountsBox.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; accountsBox.classList.add('drag-over'); });
@@ -662,7 +722,7 @@ applyTheme(savedTheme);
         accountsBox.classList.remove('drag-over');
         const files = e.dataTransfer.files;
         if (files && files[0]) {
-          importAccounts(files[0]);
+          showImportPreview(files[0]);
         }
       });
     }

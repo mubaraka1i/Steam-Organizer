@@ -941,3 +941,43 @@ button:active {
   transform: translateY(-2px);
   opacity: 0.7;
 }
+
+.import-preview {
+    margin: 10px 0 12px;
+    padding: 10px 12px;
+    border: 1px solid rgba(128, 128, 128, 0.28);
+    background: rgba(0, 0, 0, 0.1);
+    color: inherit;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.import-preview[hidden] {
+    display: none;
+}
+
+.import-preview-title {
+    margin: 0 0 6px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: inherit;
+    opacity: 0.9;
+}
+
+.import-preview-summary,
+.import-preview-sample {
+    margin: 0;
+}
+
+.import-preview-sample {
+    margin-top: 4px;
+    opacity: 0.95;
+}
+
+.import-preview-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
