@@ -246,6 +246,7 @@ function estimateEtaYear(games) {
   return currentYear + Math.ceil(months / 12);
 }
 
+
 function createNode(game) {
   const card = document.createElement('article');
   card.className = `game-node ${classifyGame(game)}`;

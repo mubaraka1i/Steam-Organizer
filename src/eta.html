@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GuideRail - ETA Calculator</title>
+  <link rel="stylesheet" href="styles/color.css">
+  <link rel="stylesheet" href="styles/eta.css">
+</head>
+<body class="eta-page">
+  <header class="site-header eta-header">
+    <h1 class="site-title"><span aria-hidden="true">🚉</span> GuideRail</h1>
+    <button id="theme-toggle" type="button">Toggle Theme</button>
+    <nav class="site-nav eta-nav" aria-label="Main navigation">
+      <a href="map.html">Map</a>
+      <a href="profile.html">Profile</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <main class="site-main eta-main">
+    <section class="eta-shell" aria-labelledby="eta-heading">
+      <header class="eta-hero">
+        <p class="eyebrow">Backlog planning</p>
+        <h2 id="eta-heading">ETA Calculator</h2>
+        <p class="eta-copy">Enter the time you can spend gaming each day of the week. GuideRail will estimate how long your current backlog may take to clear.</p>
+      </header>
+
+      <section class="eta-card" aria-labelledby="schedule-heading">
+        <h3 id="schedule-heading">Weekly schedule</h3>
+        <form id="eta-form" class="eta-form">
+          <label>
+            Monday
+            <input id="eta-monday" type="number" min="0" max="24" step="0.25" value="0">
+          </label>
+          <label>
+            Tuesday
+            <input id="eta-tuesday" type="number" min="0" max="24" step="0.25" value="0">
+          </label>
+          <label>
+            Wednesday
+            <input id="eta-wednesday" type="number" min="0" max="24" step="0.25" value="0">
+          </label>
+          <label>
+            Thursday
+            <input id="eta-thursday" type="number" min="0" max="24" step="0.25" value="0">
+          </label>
+          <label>
+            Friday
+            <input id="eta-friday" type="number" min="0" max="24" step="0.25" value="0">
+          </label>
+          <label>
+            Saturday
+            <input id="eta-saturday" type="number" min="0" max="24" step="0.25" value="0">
+          </label>
+          <label>
+            Sunday
+            <input id="eta-sunday" type="number" min="0" max="24" step="0.25" value="0">
+          </label>
+          <div class="eta-actions">
+            <button type="submit" class="btn btn-primary">Calculate</button>
+            <button id="eta-reset-btn" type="button" class="btn">Reset</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="eta-results" class="eta-results" aria-live="polite" hidden></section>
+    </section>
+  </main>
+
+  <script src="scripts/eta.js"></script>
+</body>
+</html>

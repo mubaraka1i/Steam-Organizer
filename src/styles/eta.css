@@ -1,0 +1,130 @@
+.eta-page {
+  --eta-bg: linear-gradient(180deg, #4c5844 0%, #434f3b 100%);
+  --eta-text: #eff6ee;
+  --eta-muted: #a8b49e;
+  --eta-panel: rgba(63, 71, 56, 0.65);
+  --eta-panel-strong: rgba(63, 71, 56, 0.85);
+  --eta-panel-border: rgba(128, 128, 128, 0.24);
+  --eta-accent: #c2af3f;
+  --eta-shadow: rgba(0, 0, 0, 0.18);
+  background: var(--eta-bg);
+  color: var(--eta-text);
+}
+
+.light-theme.eta-page {
+  --eta-bg: #2a475e;
+  --eta-text: #c7d5e0;
+  --eta-muted: #9fb7c5;
+  --eta-panel: #1b2838;
+  --eta-panel-strong: #1b2838;
+  --eta-panel-border: #000000;
+  --eta-accent: #b77cff;
+  --eta-shadow: rgba(0, 0, 0, 0.2);
+}
+
+.eta-header {
+  border-bottom: 1px solid #282e22;
+  box-shadow: inset 0 0 0 #282e22;
+}
+
+.eta-nav a,
+.eta-nav button {
+  color: #eff6ee;
+  text-decoration: none;
+  padding: 6px 14px;
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-bottom: 1px solid #282e22;
+  border-right: 1px solid #282e22;
+  background-color: #4c5844;
+  font: inherit;
+}
+
+.eta-main {
+  padding: 22px 24px 32px;
+}
+
+.eta-shell {
+  width: min(980px, 100%);
+  margin: 0 auto;
+  display: grid;
+  gap: 18px;
+}
+
+.eta-hero,
+.eta-card,
+.eta-results {
+  border: 1px solid var(--eta-panel-border);
+  background: var(--eta-panel);
+  padding: 18px 20px;
+  box-shadow: 0 16px 32px var(--eta-shadow);
+}
+
+.eta-hero h2,
+.eta-card h3 {
+  margin: 0 0 10px;
+  color: var(--eta-accent);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--eta-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+}
+
+.eta-copy {
+  margin: 0;
+  color: var(--eta-text);
+  line-height: 1.5;
+}
+
+.eta-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.eta-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--eta-text);
+}
+
+.eta-form input[type="number"] {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--eta-panel-border);
+  background: rgba(0, 0, 0, 0.12);
+  color: var(--eta-text);
+  font: inherit;
+}
+
+.eta-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+  margin-top: 4px;
+}
+
+.eta-results {
+  color: var(--eta-text);
+  min-height: 72px;
+}
+
+.eta-results[hidden] {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .eta-main {
+    padding: 16px 12px 20px;
+  }
+
+  .eta-form {
+    grid-template-columns: 1fr;
+  }
+}
