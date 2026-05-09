@@ -1,6 +1,7 @@
 const PROFILE_STORAGE_KEY = 'guideRail_profile';
 const GAMES_STORAGE_KEY = 'guideRail_games';
 const THEME_KEY = 'guideRail_theme';
+const ETA_WEEKLY_STORAGE_KEY = 'guideRail_eta_weekly';
 
 const IGDB_BASE = 'https://api.igdb.com/v4';
 const APPROXI_PROXY_BASE = 'https://approxi--approxi-65847.us-east4.hosted.app/p/aliappleton-project?url=';
@@ -246,6 +247,42 @@ function estimateEtaYear(games) {
   return currentYear + Math.ceil(months / 12);
 }
 
+function loadEtaSchedule() {
+  try {
+    const raw = localStorage.getItem(ETA_WEEKLY_STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function estimateBacklogHours(games) {
+  return games.reduce((sum, game) => {
+    const track = game.track || 'unassigned';
+    const isOnLine = track === 'mainline' || track === 'branch' || track === 'sidetrack';
+    const isComplete = String(game.status || '').toLowerCase() === 'complete';
+    if (!isOnLine || isComplete) {
+      return sum;
+    }
+    return sum + (Number(game.completionHours) || 0);
+  }, 0);
+}
+
+function weeklyHoursFromSchedule(schedule) {
+  const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+  return days.reduce((sum, day) => sum + (Number(schedule?.[day]) || 0), 0);
+}
+
+function formatEtaDays(backlogHours, weeklyHours) {
+  if (weeklyHours <= 0) {
+    return '0.0 days';
+  }
+  const days = (backlogHours / weeklyHours) * 7;
+  return `${days.toFixed(1)} days`;
+}
+
 
 function createNode(game) {
   const card = document.createElement('article');
@@ -257,6 +294,31 @@ function createNode(game) {
   const meta = document.createElement('div');
   meta.className = 'meta';
   meta.textContent = `${formatHours(game.playtime_forever)} played`;
+
+  const completionField = document.createElement('label');
+  completionField.className = 'completion-field';
+  completionField.textContent = 'Completion time (hrs)';
+
+  const completionInput = document.createElement('input');
+  completionInput.type = 'number';
+  completionInput.min = '0';
+  completionInput.step = '0.25';
+  completionInput.placeholder = '0';
+  completionInput.value = game.completionHours !== undefined && game.completionHours !== null ? String(game.completionHours) : '';
+  completionInput.addEventListener('input', () => {
+    try {
+      const games = loadGames();
+      const idx = games.findIndex((g) => String(g.appid) === String(game.appid));
+      if (idx !== -1) {
+        const value = completionInput.value.trim();
+        games[idx].completionHours = value === '' ? undefined : Number(value);
+        saveGames(games);
+      }
+    } catch (err) {
+      console.error('Failed to save completion time', err);
+    }
+  });
+  completionField.appendChild(completionInput);
 
   // status selector (persisted on the game as `status`)
   const statusSelect = document.createElement('select');
@@ -289,7 +351,7 @@ function createNode(game) {
     }
   });
 
-  card.append(title, meta, statusSelect);
+  card.append(title, meta, completionField, statusSelect);
 
   if (game.url) {
     const play = document.createElement('button');
@@ -537,9 +599,11 @@ async function renderMap() {
   document.getElementById('stat-hours').textContent = totalHours.toLocaleString(undefined, { maximumFractionDigits: 0 });
   document.getElementById('stat-unplayed').textContent = String(games.filter((game) => (game.playtime_forever || 0) === 0).length);
   try {
-    document.getElementById('stat-eta').textContent = String(estimateEtaYear(games));
+    const backlogHours = estimateBacklogHours(games);
+    const weeklyHours = weeklyHoursFromSchedule(loadEtaSchedule());
+    document.getElementById('stat-eta').textContent = formatEtaDays(backlogHours, weeklyHours);
   } catch (e) {
-    document.getElementById('stat-eta').textContent = 'TBA';
+    document.getElementById('stat-eta').textContent = '0.0 days';
   }
 
   renderTrack(document.getElementById('mainline-track'), mainline, 'mainline');
@@ -570,6 +634,17 @@ async function renderMap() {
 document.addEventListener('DOMContentLoaded', () => {
   initThemeToggle();
   renderMap();
+
+  const etaCalcBtn = document.getElementById('eta-calc-btn');
+  if (etaCalcBtn) {
+    etaCalcBtn.addEventListener('click', () => {
+      renderMap();
+      const etaStat = document.getElementById('stat-eta');
+      if (etaStat) {
+        etaStat.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  }
 
   const igdbTestBtn = document.getElementById('igdb-test-btn');
   const igdbTitleInput = document.getElementById('igdb-title');

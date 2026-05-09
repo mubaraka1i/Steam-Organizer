@@ -203,9 +203,9 @@
   gap: 14px;
   flex-wrap: nowrap;
   min-height: 104px;
-  max-height: 140px;
+  max-height: none;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: visible;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x mandatory;
   padding-bottom: 8px;
@@ -218,7 +218,7 @@
 
 .game-node {
   width: 168px;
-  min-height: 86px;
+  min-height: 148px;
   padding: 10px 12px;
   border: 2px solid var(--map-main-line);
   background: var(--map-panel-strong);
@@ -313,6 +313,33 @@
   margin-top: 8px;
   font-size: 12px;
   padding: 6px 8px;
+}
+
+.completion-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--map-text);
+}
+
+.completion-field input[type="number"] {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--map-panel-border);
+  background: rgba(0, 0, 0, 0.12);
+  color: var(--map-text);
+  font: inherit;
+}
+
+.game-node .play-btn {
+  margin-top: 8px;
+}
+
+.game-node .move-wrap,
+.game-node .assign-select {
+  margin-top: 10px;
 }
 
 .game-node .status {
@@ -438,6 +465,10 @@
 .map-empty {
   margin-top: 18px;
   color: var(--map-text);
+}
+
+.controls-row {
+  margin-top: 10px;
 }
 
 @media (max-width: 900px) {

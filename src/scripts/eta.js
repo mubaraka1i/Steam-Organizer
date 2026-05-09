@@ -32,29 +32,6 @@ function loadGames() {
   }
 }
 
-function estimateBacklogHours(games) {
-  const backlogHours = games.filter((game) => (game.playtime_forever || 0) === 0).length * 12;
-  const playedHours = games.reduce((sum, game) => sum + ((game.playtime_forever || 0) / 60), 0);
-  return backlogHours + playedHours;
-}
-
-function formatDuration(hours) {
-  const safeHours = Math.max(0, Number(hours) || 0);
-  const totalDays = safeHours / 24;
-  const totalWeeks = totalDays / 7;
-  const months = totalWeeks / 4.345;
-  if (months >= 12) {
-    return `${(months / 12).toFixed(1)} years`;
-  }
-  if (months >= 1) {
-    return `${months.toFixed(1)} months`;
-  }
-  if (totalWeeks >= 1) {
-    return `${totalWeeks.toFixed(1)} weeks`;
-  }
-  return `${safeHours.toFixed(1)} hours`;
-}
-
 function loadEtaSchedule() {
   try {
     const raw = localStorage.getItem(ETA_WEEKLY_STORAGE_KEY);
@@ -72,6 +49,35 @@ function saveEtaSchedule(schedule) {
   } catch (error) {
     console.error('Failed to save ETA schedule', error);
   }
+}
+
+function estimateBacklogHours(games) {
+  return games.reduce((sum, game) => {
+    const track = game.track || 'unassigned';
+    const isOnLine = track === 'mainline' || track === 'branch' || track === 'sidetrack';
+    const hasCompletion = Number(game.completionHours) > 0;
+    if (!isOnLine || !hasCompletion || String(game.status || '').toLowerCase() === 'complete') {
+      return sum;
+    }
+    return sum + Number(game.completionHours);
+  }, 0);
+}
+
+function formatDuration(hours) {
+  const safeHours = Math.max(0, Number(hours) || 0);
+  const totalDays = safeHours / 24;
+  const totalWeeks = totalDays / 7;
+  const months = totalWeeks / 4.345;
+  if (months >= 12) {
+    return `${(months / 12).toFixed(1)} years`;
+  }
+  if (months >= 1) {
+    return `${months.toFixed(1)} months`;
+  }
+  if (totalWeeks >= 1) {
+    return `${totalWeeks.toFixed(1)} weeks`;
+  }
+  return `${safeHours.toFixed(1)} hours`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -108,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentSchedule = loadEtaSchedule() || {};
       currentSchedule[day] = Number(input.value) || 0;
       saveEtaSchedule(currentSchedule);
+      calculateEta();
     });
   });
 
@@ -121,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     etaResults.hidden = false;
 
     if (backlogHours <= 0) {
-      etaResults.textContent = 'Import your library first to calculate an ETA.';
+      etaResults.textContent = 'Import your library and place games on a line to calculate an ETA.';
       return;
     }
 
@@ -130,12 +137,13 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    const etaHours = (backlogHours / weeklyHours) * 24 * 7;
     const weeks = backlogHours / weeklyHours;
     const days = weeks * 7;
     const finishDate = new Date();
     finishDate.setDate(finishDate.getDate() + Math.ceil(days));
 
-    etaResults.textContent = `Weekly total: ${weeklyHours.toFixed(1)}h. Estimated time to clear your backlog: ${formatDuration(backlogHours / weeklyHours * 24 * 7)}. Estimated finish: ${finishDate.toLocaleDateString()}.`;
+    etaResults.textContent = `Weekly total: ${weeklyHours.toFixed(1)}h. Estimated time to clear your backlog: ${formatDuration(etaHours)}. Estimated finish: ${finishDate.toLocaleDateString()}.`;
   };
 
   if (etaForm) {
@@ -158,5 +166,11 @@ document.addEventListener('DOMContentLoaded', () => {
         etaResults.textContent = '';
       }
     });
+  }
+
+  if (etaResults) {
+    etaResults.hidden = false;
+    etaResults.textContent = 'Enter your weekly hours and click Calculate.';
+    calculateEta();
   }
 });
