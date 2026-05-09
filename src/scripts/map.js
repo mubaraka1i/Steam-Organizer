@@ -6,7 +6,6 @@ const ETA_WEEKLY_STORAGE_KEY = 'guideRail_eta_weekly';
 const IGDB_BASE = 'https://api.igdb.com/v4';
 const APPROXI_PROXY_BASE = 'https://approxi--approxi-65847.us-east4.hosted.app/p/aliappleton-project?url=';
 const APPROXI_PROXY_TOKEN = '68b1d5ba4cde33c593522d9dc0c0ac9898dd023bad0b33a0';
-const TWITCH_CLIENT_ID_VALUE = typeof TWITCH_CLIENT_ID !== 'undefined' ? TWITCH_CLIENT_ID : '{TWITCH_CLIENT_ID}';
 
 function getApproxiToken() {
   try {
@@ -151,7 +150,7 @@ async function getIgdbAccessToken() {
 
 async function buildIgdbHeaders(accessToken) {
   return {
-    'Client-ID': TWITCH_CLIENT_ID_VALUE,
+    'Client-ID': TWITCH_CLIENT_ID,
     'Authorization': `Bearer ${accessToken}`,
     'Accept': 'application/json',
     'Content-Type': 'text/plain',
