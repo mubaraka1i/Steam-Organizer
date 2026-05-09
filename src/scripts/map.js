@@ -646,7 +646,6 @@ document.addEventListener('DOMContentLoaded', () => {
     addForm.addEventListener('submit', (ev) => {
       ev.preventDefault();
       const appid = document.getElementById('game-select').value;
-      const urlOverride = document.getElementById('game-url').value.trim();
       const track = document.getElementById('game-track').value;
       if (!appid) {
         alert('Please select a game from your library first (or import your library).');
@@ -658,7 +657,6 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Selected game not found in library. Try importing your library.');
         return;
       }
-      if (urlOverride) games[idx].url = urlOverride;
       games[idx].track = track === 'unassigned' ? undefined : track;
       saveGames(games);
       addForm.reset();
