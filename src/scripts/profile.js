@@ -32,6 +32,13 @@ const GAMES_STORAGE_KEY = 'guideRail_games';
 const GAME_NAME_MAP_KEY = 'guideRail_game_name_map';
 const API_KEY_STORAGE_KEY = 'guideRail_api_key';
 const GAME_PREFERENCES_KEY = 'guideRail_game_preferences';
+const IGDB_BASE = 'https://api.igdb.com/v4';
+const TWITCH_CLIENT_ID_VALUE = typeof TWITCH_CLIENT_ID !== 'undefined' ? TWITCH_CLIENT_ID : '{TWITCH_CLIENT_ID}';
+
+const igdbTokenCache = {
+  accessToken: null,
+  expiresAt: 0,
+};
 
 const DEFAULT_GAME_PREFERENCES = {
   search: '',
@@ -91,23 +98,117 @@ function formatIgdbResult(result) {
 
 async function fetchIgdbCompletionTimes(inputValue) {
   const parsed = parseIgdbInput(inputValue);
-  const response = await fetch('/api/igdb-completion-times', {
+  const queryTitle = parsed.title.trim();
+  const querySlug = parsed.slug.trim();
+
+  if (!queryTitle && !querySlug) {
+    return { notFound: true, error: 'Please enter a game name or IGDB URL' };
+  }
+
+  try {
+    let game = null;
+
+    if (querySlug) {
+      const slugBody = `fields id,name,slug; where slug = "${querySlug.replace(/"/g, '\\"')}"; limit 1;`;
+      const slugResponse = await igdbPost('/games', slugBody);
+      if (Array.isArray(slugResponse) && slugResponse.length > 0) {
+        game = slugResponse[0];
+      }
+    }
+
+    if (!game) {
+      const searchBody = `fields id,name,slug; search "${queryTitle.replace(/"/g, '\\"')}"; limit 5;`;
+      const searchResponse = await igdbPost('/games', searchBody);
+      if (Array.isArray(searchResponse) && searchResponse.length > 0) {
+        game = searchResponse[0];
+      }
+    }
+
+    if (!game) {
+      return { notFound: true, error: 'No match found in IGDB', title: queryTitle };
+    }
+
+    const timesBody = `fields hastily,normally,completely,count; where game_id = ${game.id}; limit 1;`;
+    const timesResponse = await igdbPost('/game_time_to_beats', timesBody);
+
+    if (!Array.isArray(timesResponse) || timesResponse.length === 0) {
+      return { notFound: true, error: 'No completion time data found for this game', title: game.name };
+    }
+
+    const times = timesResponse[0];
+    const hours = {
+      hastily: times.hastily ? Math.round((times.hastily / 3600) * 10) / 10 : null,
+      normally: times.normally ? Math.round((times.normally / 3600) * 10) / 10 : null,
+      completely: times.completely ? Math.round((times.completely / 3600) * 10) / 10 : null,
+      count: times.count || 0
+    };
+
+    return { raw: times, hours, gameName: game.name };
+  } catch (error) {
+    throw new Error(`IGDB lookup failed: ${error.message}`);
+  }
+}
+
+function getApproxiToken() {
+  try {
+    return APPROXI_PROXY_TOKEN || '';
+  } catch (error) {
+    return '';
+  }
+}
+
+async function getIgdbAccessToken() {
+  if (igdbTokenCache.accessToken && Date.now() < igdbTokenCache.expiresAt) {
+    return igdbTokenCache.accessToken;
+  }
+
+  const proxiedTokenUrl = 'https://id.twitch.tv/oauth2/token?client_id={TWITCH_CLIENT_ID}&client_secret={TWITCH_CLIENT_SECRET}&grant_type=client_credentials';
+  const proxyUrl = `${APPROXI_PROXY_BASE}${encodeURIComponent(proxiedTokenUrl)}`;
+
+  const response = await fetch(proxyUrl, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({ title: parsed.title, slug: parsed.slug }),
+    headers: {
+      'x-proxy-token': getApproxiToken(),
+      'Accept': 'application/json',
+    },
   });
 
-  const data = await response.json().catch(() => ({}));
-  if (response.status === 404) {
-    return { notFound: true, error: data?.error || 'No match found in IGDB' };
-  }
   if (!response.ok) {
-    throw new Error(data?.error || `Request failed (${response.status})`);
+    throw new Error(`Failed to get Twitch token via proxy (${response.status})`);
   }
 
-  return data.completionTimesRaw
-    ? { raw: data.completionTimesRaw, hours: data.completionTimes || null }
-    : (data.completionTimes || data);
+  const data = await response.json();
+  if (!data?.access_token) {
+    throw new Error('No access token in response from proxy');
+  }
+
+  igdbTokenCache.accessToken = data.access_token;
+  igdbTokenCache.expiresAt = Date.now() + Math.max(60, (data.expires_in || 0) - 60) * 1000;
+  return igdbTokenCache.accessToken;
+}
+
+async function igdbPost(pathname, body) {
+  const accessToken = await getIgdbAccessToken();
+  const igdbUrl = `${IGDB_BASE}${pathname}`;
+  const proxyUrl = `${APPROXI_PROXY_BASE}${encodeURIComponent(igdbUrl)}`;
+
+  const response = await fetch(proxyUrl, {
+    method: 'POST',
+    headers: {
+      'x-proxy-token': getApproxiToken(),
+      'Client-ID': '{TWITCH_CLIENT_ID}',
+      'Authorization': `Bearer ${accessToken}`,
+      'Accept': 'application/json',
+      'Content-Type': 'text/plain'
+    },
+    body
+  });
+
+  if (!response.ok) {
+    throw new Error(`IGDB request failed (${response.status})`);
+  }
+
+  return response.json();
 }
 
 function formatDate(unixSeconds) {
@@ -258,7 +359,7 @@ function updateGamesSummary(totalCount, visibleCount) {
   const summaryEl = document.getElementById('games-summary');
   if (!summaryEl) {
     return;
-  }
+      'Client-ID': TWITCH_CLIENT_ID_VALUE,
 
   if (totalCount === 0) {
     summaryEl.textContent = 'No imported games yet.';
