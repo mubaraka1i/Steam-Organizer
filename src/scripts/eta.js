@@ -1,11 +1,45 @@
+/*
+This class controls the backlog ETA for GuideRail.
+
+- Read the users saved Steam games
+- Read users weekly gaming schedule
+- Estimate the time it'd take to finish thheir backlog
+
+The file interacts primarily with:
+localStorage
+map.js
+eta.html
+*/
+
+// Keys shared across GuideRail that allow access to data
 const THEME_KEY = 'guideRail_theme';
 const GAMES_STORAGE_KEY = 'guideRail_games';
 const ETA_WEEKLY_STORAGE_KEY = 'guideRail_eta_weekly';
 
+/*
+ * Applies the selected theme(Blue/Green) to the page.
+ *
+ * EX: If the theme is "blue", the light-theme class
+ * is added to the body element.
+ *
+ * This same theme system is reused across nearly
+ * every page in the application 
+ */
+
 function applyTheme(theme) {
   document.body.classList.toggle('light-theme', theme === 'blue');
 }
-
+/*
+ * Initializes the theme toggle button.
+ *
+ * - loads the user's previously saved theme
+ * - applies it to the page
+ * - allows the user to switch themes
+ * - saves the new theme to localStorage
+ *
+ * localStorage allows the theme to persist even
+ * after refreshing or reopening the browser.
+ */
 function initThemeToggle() {
   const savedTheme = localStorage.getItem(THEME_KEY) || 'green';
   applyTheme(savedTheme);
@@ -21,6 +55,15 @@ function initThemeToggle() {
   }
 }
 
+/*
+ * Loads the user's saved Steam games from localStorage.
+ *
+ * This game data is originally imported in profile.js
+ * and later reused by map.js and eta.js.
+ *
+ * If no games exist or the data is corrupted,
+ * an empty array is returned instead.
+ */
 function loadGames() {
   try {
     const raw = localStorage.getItem(GAMES_STORAGE_KEY);
@@ -31,7 +74,17 @@ function loadGames() {
     return [];
   }
 }
-
+/*
+ * Loads the user's saved weekly gaming schedule in hours.
+ *
+ * Ex:
+ *
+ *   monday: 2,
+ *   tuesday: 1,
+ *   
+ * This data is used to estimate how quickly
+ * the user can complete their backlog.
+ */
 function loadEtaSchedule() {
   try {
     const raw = localStorage.getItem(ETA_WEEKLY_STORAGE_KEY);
@@ -42,6 +95,13 @@ function loadEtaSchedule() {
     return null;
   }
 }
+/*
+ * Saves the user's weekly gaming schedule
+ * into localStorage.
+ *
+ * This allows the schedule to persist between
+ * sessions and page refreshes.
+ */
 
 function saveEtaSchedule(schedule) {
   try {
@@ -50,7 +110,22 @@ function saveEtaSchedule(schedule) {
     console.error('Failed to save ETA schedule', error);
   }
 }
-
+/*
+ * Calculates the total estimated completion hours
+ * for games currently placed on one of the rail lines.
+ *
+ * Only games on:
+ * - mainline
+ * - branch
+ * - sidetrack
+ *
+ * are counted toward the backlog estimate.
+ *
+ * Completed games are ignored.
+ *
+ * This connects directly to map.js because
+ * map.js is where games are assigned to tracks.
+ */
 function estimateBacklogHours(games) {
   return games.reduce((sum, game) => {
     const track = game.track || 'unassigned';

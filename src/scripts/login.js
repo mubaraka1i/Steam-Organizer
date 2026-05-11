@@ -1,6 +1,30 @@
+/*
+ * This file controls the login system for GuideRail.
+ *
+ * - Allow the user to enter a Steam profile
+ * - Validate Steam IDs and profile URLs
+ * - Contact the Steam API through the proxy server
+ * - Load the user's Steam profile information
+ * - Save account data into localStorage
+ * - Redirect the user to profile.html
+ *
+ * This file acts as the main entry point
+ * into the entire application.
+ */
 
+// Shared localStorage key used to remember
+// the user's selected color theme across pages.
 const THEME_KEY = 'guideRail_theme';
 
+/*
+ * Applies the selected visual theme to the page.
+ *
+ * If the saved theme is "blue", the light-theme
+ * CSS class is added to the body element.
+ *
+ * This same theme system is reused throughout
+ * the entire application for consistency.
+ */
 function applyTheme(theme) {
   document.body.classList.toggle('light-theme', theme === 'blue');
 }
@@ -78,13 +102,29 @@ function initializeLoadingBars() {
   }
 }
 
+/*
+ * Visually fills in the loading bars during login.
+ *
+ * The login screen contains multiple small bars
+ * that slowly fill as the login process progresses.
+ */
 function paintLoadingBars(progress) {
   const filledBars = Math.floor((progress / 100) * TOTAL_LOADING_BARS);
   loadingBars.forEach((bar, index) => {
     bar.style.backgroundColor = index < filledBars ? '#968732' : '#3f4738';
   });
 }
-
+/*
+ * Updates the loading screen UI with progressive visual feedback.
+ *
+ * - the progress bars
+ * - the percentage text
+ * - the current loading message
+ *
+ *
+ * This function is repeatedly called during
+ * the login process to visually track progress.
+ */
 function updateLoadingUI(progress, message) {
   const percent = document.getElementById('percentText');
   const status = document.getElementById('statusText');
@@ -103,20 +143,34 @@ function updateLoadingUI(progress, message) {
   }
 }
 
+/*
+ * Makes the loading panel visible.
+ *
+ * The loading panel appears while the app
+ * communicates with the Steam API.
+ */
 function showLoading() {
   const panel = document.getElementById('login-loading');
   if (panel) {
     panel.hidden = false;
   }
 }
-
+/*
+Hides the loading panel
+*/
 function hideLoading() {
   const panel = document.getElementById('login-loading');
   if (panel) {
     panel.hidden = true;
   }
 }
+/*
+Starts the laoding panel.
 
+  - shows the loading panel
+  - sets the initial progress value
+  - displays the first loading message
+*/
 function startLoading() {
   showLoading();
   loadingProgress = 8;
@@ -128,7 +182,13 @@ function setLoadingStage(stageIndex, minProgress) {
   loadingProgress = Math.max(loadingProgress, minProgress);
   updateLoadingUI(loadingProgress, loadingMessages[safeIndex]);
 }
-
+/*
+ * Finishes the loading process.
+ *
+ * This sets progress to 100%
+ * and updates the UI to show
+ * that login completed successfully.
+ */
 function completeLoading() {
   loadingProgress = 100;
   updateLoadingUI(loadingProgress, 'All files verified.');
@@ -137,13 +197,29 @@ function completeLoading() {
     percent.textContent = 'Done!';
   }
 }
-
+/*
+ * Resets the loading screen back
+ * to its default state.
+ *
+ * Used after:
+ * - failed login attempts
+ * - page reloads
+ * - returning to the login page
+ */
 function resetLoading() {
   loadingProgress = 0;
   updateLoadingUI(loadingProgress, loadingMessages[0]);
   hideLoading();
 }
-
+/*
+ * Clears any previous login error messages.
+ *
+ * Also removes accessibility error attributes
+ * from the username input field.
+ *
+ * This ensures old errors do not remain
+ * visible during a new login attempt.
+ */
 function clearErrorState(inputField) {
   const errorDiv = document.getElementById('login-error');
   if (errorDiv) {
@@ -157,7 +233,14 @@ function clearErrorState(inputField) {
     inputField.setAttribute('aria-describedby', defaultHelpId);
   }
 }
-
+/*
+ * Dynamically positions the error message box
+ * on the screen.
+ *
+ * This keeps the error message visually centered
+ * between the page header and login form,
+ * even when the browser window changes size.
+ */
 function positionErrorContainer() {
   const header = document.querySelector('.site-header');
   const main = document.querySelector('.site-main');
@@ -177,7 +260,16 @@ function positionErrorContainer() {
   const top = Math.max(0, midpoint - mainTop - (errorContainer.offsetHeight / 2));
   errorContainer.style.top = `${Math.round(top)}px`;
 }
-
+/*
+ * Sends API requests through the Approxi proxy.
+ *
+ * Instead of directly contacting Steam,
+ * requests pass through the proxy server.
+ *
+ * - protect API secrets
+ * - avoid browser CORS restrictions
+ * - centralize API communication
+ */
 function fetchViaApproxi(targetUrl) {
   return fetch(`${APPROXI_PROXY_BASE}${encodeURIComponent(targetUrl)}`, {
     headers: {
@@ -417,7 +509,19 @@ function toggleFavoriteAccount(steamid) {
     renderAccounts();
   }
 }
-
+/* Renders all saved Steam accounts onto the page.
+*
+* This creates the clickable account list shown
+* on the login screen.
+*
+* Each saved account can:
+* - quickly log in
+* - be favorited
+* - be deleted
+*
+* The accounts are loaded from localStorage
+* and displayed dynamically using JavaScript.
+*/
 function renderAccounts(showFavoritesOnly = false) {
   const container = document.getElementById('accountsList');
   if (!container) return;
@@ -462,7 +566,18 @@ function renderAccounts(showFavoritesOnly = false) {
     container.appendChild(li);
   }
 }
-
+/* Renders all saved Steam accounts onto the page.
+*
+* This creates the clickable account list shown
+* on the login screen.
+*
+* - quickly log in
+* - be favorited
+* - be deleted
+*
+* The accounts are loaded from localStorage
+* and displayed dynamically using JavaScript.
+*/
 function selectAccountToInputs(steamid) {
   const accounts = loadSavedAccounts();
   const acct = accounts.find(a => a.steamid === steamid);
@@ -472,7 +587,18 @@ function selectAccountToInputs(steamid) {
     usernameInput.focus();
   }
 }
-
+/*
+ * Automatically logs into a previously
+ * saved Steam account.
+ *
+ * - restores saved profile data
+ * - clears old game data
+ * - updates the last used timestamp
+ * - redirects to profile.html
+ *
+ * This creates a "quick boot" experience
+ * similar to saved accounts in real launchers.
+ */
 function bootIntoAccount(steamid) {
   const accounts = loadSavedAccounts();
   const acct = accounts.find(a => a.steamid === steamid);
@@ -491,7 +617,13 @@ function bootIntoAccount(steamid) {
     alert('Account data incomplete. Please login normally to refresh.');
   }
 }
-
+/*
+ * Exports saved account data into a JSON file.
+ *
+ * - back up their saved accounts
+ * - transfer accounts between browsers/devices
+ * - re-import them later
+ */
 function exportAccounts() {
   const accounts = loadSavedAccounts();
   const exportData = {
@@ -508,7 +640,13 @@ function exportAccounts() {
   link.click();
   URL.revokeObjectURL(url);
 }
-
+/*
+ * Imports saved accounts from a JSON file.
+ *
+ * Imported accounts are merged with any
+ * existing saved accounts already stored
+ * in localStorage.
+ */
 function importAccounts(file) {
   const reader = new FileReader();
   reader.onload = (event) => {
@@ -541,13 +679,30 @@ function importAccounts(file) {
   };
   reader.readAsText(file);
 }
-
+/*
+ * Validates imported account JSON structure.
+ *
+ * Ensures the imported file actually contains
+ * an accounts array before importing it.
+ */
 function normalizeImportedAccounts(parsed) {
   if (parsed && Array.isArray(parsed.accounts)) {
     return parsed.accounts;
   }
   return null;
 }
+
+/*
+ * Displays an accessible login error message.
+ *
+ * - shows the error visually
+ * - updates accessibility attributes
+ * - focuses the input field
+ * - positions the error container correctly
+ *
+ * Used throughout the login flow whenever
+ * validation or API requests fail.
+ */
 
 function showError(message, inputField, helpId = 'username-help') {
   const errorDiv = document.getElementById('login-error');
@@ -569,7 +724,7 @@ function showError(message, inputField, helpId = 'username-help') {
 // Setup on page load
 document.addEventListener('DOMContentLoaded', () => {
   const savedTheme = localStorage.getItem(THEME_KEY) || 'green';
-applyTheme(savedTheme);
+  applyTheme(savedTheme);
   initializeLoadingBars();
   resetLoading();
   positionErrorContainer();
@@ -577,6 +732,7 @@ applyTheme(savedTheme);
   const form = document.querySelector('form');
   const usernameInput = document.getElementById('username');
 
+  // Prevent Enter from accidentally submitting early
   if (usernameInput) {
     usernameInput.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
@@ -584,21 +740,21 @@ applyTheme(savedTheme);
       }
     });
   }
-
+  // Connect the login form to the main login handler
   if (form) {
     form.addEventListener('submit', handleLogin);
   }
-  const toggleBtn = document.getElementById('theme-toggle'); 
-  
+  const toggleBtn = document.getElementById('theme-toggle');
+  // Toggle between themes
   if (toggleBtn) {
-  toggleBtn.addEventListener('click', () => {
-    const current = localStorage.getItem(THEME_KEY) || 'green';
-    const next = current === 'green' ? 'blue' : 'green';
+    toggleBtn.addEventListener('click', () => {
+      const current = localStorage.getItem(THEME_KEY) || 'green';
+      const next = current === 'green' ? 'blue' : 'green';
 
-    localStorage.setItem(THEME_KEY, next);
-    applyTheme(next);
-  });
-}
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme(next);
+    });
+  }
   // Accounts UI wiring
   let showFavoritesOnly = false;
   const accountsList = document.getElementById('accountsList');
@@ -612,7 +768,16 @@ applyTheme(savedTheme);
       renderAccounts(showFavoritesOnly);
     });
   }
-
+  /*
+   * Handles all button clicks inside the saved accounts list.
+   *
+   * - boot into an account
+   * - favorite/unfavorite an account
+   * - delete an account
+   *
+   * Event delegation is used here so one listener
+   * can manage every dynamically created account item.
+   */
   if (accountsList) {
     accountsList.addEventListener('click', (ev) => {
       const btn = ev.target;
@@ -647,13 +812,32 @@ applyTheme(savedTheme);
   const importCancelBtn = document.getElementById('accounts-import-cancel-btn');
   let pendingImportFile = null;
 
+  /*
+ * Hides the account import preview panel.
+ *
+ * This clears the currently selected import file
+ * and removes the preview window from the page.
+
+ * - an import is canceled
+ * - an import finishes successfully
+ */
   const hideImportPreview = () => {
     pendingImportFile = null;
     if (importPreview) {
       importPreview.hidden = true;
     }
   };
-
+  /* Displays a preview of an account import file
+  * before actually importing it.
+  *
+  * This allows the user to verify
+  * - how many accounts were detected
+  * - sample account names
+  * - whether the file format is valid
+  *
+  * This creates a safer import experience
+  * by preventing accidental imports.
+  */
   const showImportPreview = async (file) => {
     if (!importPreview || !importPreviewSummary || !importPreviewSample) return;
 
@@ -689,7 +873,15 @@ applyTheme(savedTheme);
       importFile.click();
     });
   }
-
+  /*
+   * Handles the final confirmation step
+   * for importing saved accounts.
+   *
+   * Once confirmed
+   * - the selected file is imported
+   * - accounts are saved to localStorage
+   * - the preview window closes
+   */
   if (importConfirmBtn) {
     importConfirmBtn.addEventListener('click', () => {
       if (!pendingImportFile) return;
@@ -703,7 +895,13 @@ applyTheme(savedTheme);
       hideImportPreview();
     });
   }
-
+  /*
+   * Handles account file selection from
+   * the user's computer.
+   *
+   * Once a file is selected, the app
+   * displays a preview before importing it.
+   */
   if (importFile) {
     importFile.addEventListener('change', (ev) => {
       const file = ev.target.files && ev.target.files[0];
@@ -731,14 +929,27 @@ applyTheme(savedTheme);
   // Initial render
   renderAccounts();
 });
-
+/*
+ * Repositions the login error message whenever
+ * the browser window is resized.
+ *
+ * This keeps the error box visually centered
+ * and properly aligned on different screen sizes.
+ */
 window.addEventListener('resize', () => {
   const errorDiv = document.getElementById('login-error');
   if (errorDiv && !errorDiv.hidden) {
     positionErrorContainer();
   }
 });
-
+/*
+ * Runs whenever the page is shown again
+ * through browser navigation.
+ *
+ * By using the browser back button
+, this resets the loading screen and
+ * restores proper UI positioning.
+ */
 window.addEventListener('pageshow', () => {
   resetLoading();
   positionErrorContainer();
