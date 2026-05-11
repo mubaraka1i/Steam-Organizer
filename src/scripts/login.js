@@ -14,7 +14,7 @@
 
 // Shared localStorage key used to remember
 // the user's selected color theme across pages.
-const THEME_KEY = 'guideRail_theme';
+const THEME_KEY = 'team03_guideRail_theme';
 
 /*
  * Applies the selected visual theme to the page.
@@ -59,9 +59,9 @@ function parseSteamInput(input) {
   return null;
 }
 
-const PROFILE_STORAGE_KEY = 'guideRail_profile';
-const GAMES_STORAGE_KEY = 'guideRail_games';
-const ACCOUNT_LIST_KEY = 'guideRail_account_list';
+const PROFILE_STORAGE_KEY = 'team03_guideRail_profile';
+const GAMES_STORAGE_KEY = 'team03_guideRail_games';
+const ACCOUNT_LIST_KEY = 'team03_guideRail_account_list';
 const APPROXI_PROXY_BASE = 'https://approxi--approxi-65847.us-east4.hosted.app/p/aliappleton-project?url=';
 const APPROXI_PROXY_TOKEN = '68b1d5ba4cde33c593522d9dc0c0ac9898dd023bad0b33a0';
 
@@ -443,7 +443,7 @@ function loadSavedAccounts() {
     if (!Array.isArray(accountIds)) return [];
     const accounts = [];
     for (const steamid of accountIds) {
-      const accountRaw = localStorage.getItem(`guideRail_account_${steamid}`);
+      const accountRaw = localStorage.getItem(`team03_guideRail_account_${steamid}`);
       if (accountRaw) {
         try {
           const acct = JSON.parse(accountRaw);
@@ -462,7 +462,7 @@ function loadSavedAccounts() {
 function saveSavedAccounts(list) {
   const accountIds = [];
   for (const acct of list) {
-    localStorage.setItem(`guideRail_account_${acct.steamid}`, JSON.stringify(acct));
+    localStorage.setItem(`team03_guideRail_account_${acct.steamid}`, JSON.stringify(acct));
     accountIds.push(acct.steamid);
   }
   localStorage.setItem(ACCOUNT_LIST_KEY, JSON.stringify(accountIds));
@@ -489,7 +489,7 @@ function addOrUpdateSavedAccount(account) {
 }
 
 function deleteSavedAccount(steamid) {
-  localStorage.removeItem(`guideRail_account_${steamid}`);
+  localStorage.removeItem(`team03_guideRail_account_${steamid}`);
   const accountIds = JSON.parse(localStorage.getItem(ACCOUNT_LIST_KEY) || '[]');
   const updated = accountIds.filter(id => id !== steamid);
   localStorage.setItem(ACCOUNT_LIST_KEY, JSON.stringify(updated));

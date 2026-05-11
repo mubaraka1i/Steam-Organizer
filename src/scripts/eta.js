@@ -12,9 +12,9 @@ eta.html
 */
 
 // Keys shared across GuideRail that allow access to data
-const THEME_KEY = 'guideRail_theme';
-const GAMES_STORAGE_KEY = 'guideRail_games';
-const ETA_WEEKLY_STORAGE_KEY = 'guideRail_eta_weekly';
+const THEME_KEY = 'team03_guideRail_theme';
+const GAMES_STORAGE_KEY = 'team03_guideRail_games';
+const ETA_WEEKLY_STORAGE_KEY = 'team03_guideRail_eta_weekly';
 
 /*
  * Applies the selected theme(Blue/Green) to the page.

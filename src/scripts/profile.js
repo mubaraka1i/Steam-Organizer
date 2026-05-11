@@ -1,4 +1,4 @@
-const THEME_KEY = 'guideRail_theme';
+const THEME_KEY = 'team03_guideRail_theme';
 
 /**
  * Applies the selected theme to the page.
@@ -38,11 +38,11 @@ function initTheme() {
 const APPROXI_PROXY_BASE = 'https://approxi--approxi-65847.us-east4.hosted.app/p/aliappleton-project?url=';
 const APPROXI_PROXY_TOKEN = '68b1d5ba4cde33c593522d9dc0c0ac9898dd023bad0b33a0';
 const STEAM_PROXY_SECRET_PLACEHOLDER = '{STEAM_KEY}';
-const PROFILE_STORAGE_KEY = 'guideRail_profile';
-const GAMES_STORAGE_KEY = 'guideRail_games';
-const GAME_NAME_MAP_KEY = 'guideRail_game_name_map';
-const API_KEY_STORAGE_KEY = 'guideRail_api_key';
-const GAME_PREFERENCES_KEY = 'guideRail_game_preferences';
+const PROFILE_STORAGE_KEY = 'team03_guideRail_profile';
+const GAMES_STORAGE_KEY = 'team03_guideRail_games';
+const GAME_NAME_MAP_KEY = 'team03_guideRail_game_name_map';
+const API_KEY_STORAGE_KEY = 'team03_guideRail_api_key';
+const GAME_PREFERENCES_KEY = 'team03_guideRail_game_preferences';
 
 const DEFAULT_GAME_PREFERENCES = {
   search: '',
@@ -824,7 +824,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (exportBtn) {
       exportBtn.addEventListener('click', () => {
-        const data = localStorage.getItem('guideRail_games');
+        const data = localStorage.getItem('team03_guideRail_games');
 
         if (!data) {
           alert('No games to export.');

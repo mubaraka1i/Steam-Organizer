@@ -24,10 +24,10 @@
  *
  * to share the same saved user/game data.
  */
-const PROFILE_STORAGE_KEY = 'guideRail_profile';
-const GAMES_STORAGE_KEY = 'guideRail_games';
-const THEME_KEY = 'guideRail_theme';
-const ETA_WEEKLY_STORAGE_KEY = 'guideRail_eta_weekly';
+const PROFILE_STORAGE_KEY = 'team03_guideRail_profile';
+const GAMES_STORAGE_KEY = 'team03_guideRail_games';
+const THEME_KEY = 'team03_guideRail_theme';
+const ETA_WEEKLY_STORAGE_KEY = 'team03_guideRail_eta_weekly';
 
 const IGDB_BASE = 'https://api.igdb.com/v4';
 const APPROXI_PROXY_BASE = 'https://approxi--approxi-65847.us-east4.hosted.app/p/aliappleton-project?url=';
