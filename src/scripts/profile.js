@@ -1,12 +1,23 @@
 const THEME_KEY = 'guideRail_theme';
 
-
+/**
+ * Applies the selected theme to the page.
+ *
+ * Toggles the light-theme class depending on whether
+ * the user selected the blue theme.
+ *
+ * @param {string} theme - Theme name to apply.
+ */
 function applyTheme(theme) {
-  
   document.body.classList.toggle('light-theme', theme === 'blue');
 }
 
-
+/**
+ * Initializes theme functionality for the profile page.
+ *
+ * Loads the saved theme from localStorage and attaches
+ * the theme toggle button event listener.
+ */
 function initTheme() {
   const savedTheme = localStorage.getItem(THEME_KEY) || 'green';
   applyTheme(savedTheme);
@@ -50,7 +61,15 @@ const filterState = {
   playtime: 'all',
   sort: 'playtime-desc'
 };
-
+/**
+ * Parses a game title or IGDB URL into searchable values.
+ *
+ * Extracts the slug from an IGDB URL if present, otherwise
+ * generates a slug from plain text input.
+ *
+ * @param {string} value - Game title or IGDB URL.
+ * @returns {{title: string, slug: string}} Parsed title and slug.
+ */
 function parseIgdbInput(value) {
   const text = String(value || '').trim();
   if (!text) {
@@ -77,7 +96,15 @@ function parseIgdbInput(value) {
 
   return { title: text, slug };
 }
-
+/**
+ * Formats IGDB API response data into readable text.
+ *
+ * Handles successful responses, missing games,
+ * and raw completion time data formatting.
+ *
+ * @param {Object} result - IGDB response object.
+ * @returns {string} Formatted result string.
+ */
 function formatIgdbResult(result) {
   if (!result) return 'No result returned.';
   if (result.notFound) {
@@ -88,7 +115,16 @@ function formatIgdbResult(result) {
   }
   return JSON.stringify(result, null, 2);
 }
-
+/**
+ * Fetches completion time data from the IGDB API route.
+ *
+ * Sends a request to the backend API using the parsed
+ * title and slug values from the user input.
+ *
+ * @async
+ * @param {string} inputValue - Game title or IGDB URL.
+ * @returns {Promise<Object>} Completion time data object.
+ */
 async function fetchIgdbCompletionTimes(inputValue) {
   const parsed = parseIgdbInput(inputValue);
   const response = await fetch('/api/igdb-completion-times', {
@@ -116,31 +152,58 @@ function formatDate(unixSeconds) {
   }
   return new Date(unixSeconds * 1000).toLocaleString();
 }
-
+// Logs the user out
 function logout() {
   localStorage.removeItem(PROFILE_STORAGE_KEY);
   localStorage.removeItem(GAMES_STORAGE_KEY);
   renderGames([]);
   window.location.replace('index.html');
 }
-
+/**
+ * Displays a status message on the page.
+ *
+ * Updates the status element text and styling
+ * based on the provided message type.
+ *
+ * @param {string} message - Status text to display.
+ * @param {string} type - Status type class.
+ */
 function setStatus(message, type) {
   const statusEl = document.getElementById('status');
   statusEl.textContent = message;
   statusEl.className = `status-message ${type}`;
 }
-
+/**
+ * Builds the Steam image URL for a game icon.
+ *
+ * @param {number|string} appid - Steam application ID.
+ * @param {string} iconHash - Steam image hash.
+ * @returns {string} Full Steam image URL.
+ */
 function gameImageUrl(appid, iconHash) {
   if (!appid || !iconHash) {
     return '';
   }
   return `https://media.steampowered.com/steamcommunity/public/images/apps/${appid}/${iconHash}.jpg`;
 }
-
+/**
+ * Normalizes text for searching and comparison.
+ *
+ * Trims whitespace and converts text to lowercase.
+ *
+ * @param {*} value - Value to normalize.
+ * @returns {string} Normalized text string.
+ */
 function normalizeText(value) {
   return (value || '').toString().trim().toLowerCase();
 }
-
+/**
+ * Loads saved game preference settings from localStorage.
+ *
+ * Validates saved preference values before returning them.
+ *
+ * @returns {Object} User preference settings object.
+ */
 function loadGamePreferences() {
   const raw = localStorage.getItem(GAME_PREFERENCES_KEY);
   if (!raw) {
@@ -159,10 +222,21 @@ function loadGamePreferences() {
   }
 }
 
+/**
+ * Saves game preference settings into localStorage.
+ *
+ * @param {Object} preferences - Preference settings to save.
+ */
 function saveGamePreferences(preferences) {
   localStorage.setItem(GAME_PREFERENCES_KEY, JSON.stringify(preferences));
 }
 
+/**
+ * Reads the current values from the preference controls.
+ *
+ * @returns {{search: string, playtime: string, sort: string}}
+ * Current preference values.
+ */
 function readGamePreferenceControls() {
   return {
     search: document.getElementById('pref-search')?.value || '',
@@ -170,7 +244,13 @@ function readGamePreferenceControls() {
     sort: document.getElementById('pref-sort')?.value || DEFAULT_GAME_PREFERENCES.sort
   };
 }
-
+/**
+ * Applies saved preference values to all filter controls.
+ *
+ * Updates form fields and synchronizes the filter state.
+ *
+ * @param {Object} preferences - Preferences to apply.
+ */
 function applyGamePreferences(preferences) {
   const nextPreferences = {
     ...DEFAULT_GAME_PREFERENCES,
@@ -209,7 +289,14 @@ function setFilterStateFromControls() {
   filterState.playtime = document.getElementById('game-filter')?.value || 'all';
   filterState.sort = document.getElementById('game-sort')?.value || 'playtime-desc';
 }
-
+/**
+ * Determines the playtime category for a game.
+ *
+ * Categories include unplayed, light, and heavy.
+ *
+ * @param {Object} game - Steam game object.
+ * @returns {string} Playtime category.
+ */
 function getPlaytimeCategory(game) {
   const hours = (game.playtime_forever || 0) / 60;
 
@@ -223,7 +310,12 @@ function getPlaytimeCategory(game) {
 
   return 'heavy';
 }
-
+/**
+ * Filters and sorts games based on the active filter state.
+ *
+ * @param {Array<Object>} games - Array of game objects.
+ * @returns {Array<Object>} Visible sorted games array.
+ */
 function getVisibleGames(games) {
   const filteredGames = games.filter((game) => {
     const matchesSearch = !filterState.search || normalizeText(game.name).includes(filterState.search);
@@ -253,7 +345,12 @@ function getVisibleGames(games) {
 
   return sortedGames;
 }
-
+/**
+ * Updates the games summary text above the game grid.
+ *
+ * @param {number} totalCount - Total number of games.
+ * @param {number} visibleCount - Number of visible games.
+ */
 function updateGamesSummary(totalCount, visibleCount) {
   const summaryEl = document.getElementById('games-summary');
   if (!summaryEl) {
@@ -269,17 +366,31 @@ function updateGamesSummary(totalCount, visibleCount) {
     ? `${totalCount} games in your library.`
     : `${visibleCount} of ${totalCount} games shown.`;
 }
-
+/**
+ * Retrieves the map button element from the page.
+ *
+ * @returns {HTMLElement|null} Map button element.
+ */
 function getMapButton() {
   return document.getElementById('map-btn');
 }
-
+/**
+ * Shows or hides the map button depending on game availability.
+ *
+ * @param {boolean} hasGames - Whether games exist.
+ */
 function updateMapButtonVisibility(hasGames) {
   const mapBtn = getMapButton();
   if (mapBtn) {
     mapBtn.hidden = !hasGames;
   }
 }
+/**
+ * Builds a lookup map of Steam app IDs to game names.
+ *
+ * @param {Array<Object>} games - Array of game objects.
+ * @returns {Object} App ID to game name map.
+ */
 
 function buildGameMap(games) {
   const map = {};
@@ -290,7 +401,11 @@ function buildGameMap(games) {
   });
   return map;
 }
-
+/**
+ * Maps the currently loaded games and opens the map page.
+ *
+ * Saves the game map into localStorage before redirecting.
+ */
 function mapCurrentGames() {
   if (!storedGames.length) {
     setStatus('Fetch or import games first.', 'error');
@@ -302,7 +417,14 @@ function mapCurrentGames() {
   setStatus(`Mapped ${Object.keys(gameMap).length} games. Opening map...`, 'loading');
   window.location.href = 'map.html';
 }
-
+/**
+ * Renders all visible games into the game grid.
+ *
+ * Applies filtering and sorting before creating
+ * the game card elements.
+ *
+ * @param {Array<Object>} games - Array of game objects.
+ */
 function renderGames(games) {
   window.clearTimeout(searchRenderTimeout);
   const nextGames = Array.isArray(games) ? games : [];
@@ -353,13 +475,23 @@ function renderGames(games) {
 function refreshGamesView() {
   renderGames(storedGames);
 }
-
+/**
+ * Delays game rendering to reduce excessive updates
+ * during typing or rapid user input.
+ */
 function scheduleGamesRefresh() {
   window.clearTimeout(searchRenderTimeout);
   searchRenderTimeout = window.setTimeout(() => {
     renderGames(storedGames);
   }, 90);
 }
+/**
+ * Sends a request through the Approxi proxy server.
+ *
+ * @async
+ * @param {string} targetUrl - Target API URL.
+ * @returns {Promise<Response>} Fetch response object.
+ */
 async function fetchViaApproxi(targetUrl) {
   return fetch(`${APPROXI_PROXY_BASE}${encodeURIComponent(targetUrl)}`, {
     headers: {
@@ -367,6 +499,15 @@ async function fetchViaApproxi(targetUrl) {
     }
   });
 }
+/**
+ * Imports Steam games using the Steam Web API.
+ *
+ * Fetches owned games for the provided Steam ID
+ * and stores them in localStorage.
+ *
+ * @async
+ * @param {string} steamid - Steam user ID.
+ */
 
 async function importGames(steamid) {
   const importBtn = document.getElementById('import-btn');
@@ -398,6 +539,14 @@ async function importGames(steamid) {
   }
 }
 
+/**
+ * Imports games from a JSON file.
+ *
+ * Reads the uploaded file, validates its format,
+ * and stores the imported games.
+ *
+ * @param {File} file - Uploaded JSON file.
+ */
 function importGamesFromFile(file) {
   const reader = new FileReader();
   reader.onload = (ev) => {
@@ -429,7 +578,14 @@ function importGamesFromFile(file) {
   };
   reader.readAsText(file);
 }
-
+/**
+ * Normalizes imported game JSON into a games array.
+ *
+ * Supports multiple JSON structures from exports.
+ *
+ * @param {Object|Array} parsed - Parsed JSON data.
+ * @returns {Array|null} Normalized games array.
+ */
 function normalizeImportedGames(parsed) {
   if (Array.isArray(parsed)) {
     return parsed;
@@ -457,7 +613,12 @@ function restoreStoredGames() {
     renderGames([]);
   }
 }
-
+/**
+ * Initializes the profile page after login.
+ *
+ * Loads profile data, restores saved games,
+ * initializes filters, and attaches event listeners.
+ */
 function bootstrapProfile() {
   const rawProfile = localStorage.getItem(PROFILE_STORAGE_KEY);
   if (!rawProfile) {

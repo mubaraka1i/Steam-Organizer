@@ -1,3 +1,29 @@
+/*
+ * This file controls the interactive railroad map
+ * system used to organize the user's Steam backlog.
+ *
+ * 
+ * 1. Load saved Steam games from localStorage
+ * 2. Organize games into railroad tracks
+ * 3. Create visual game nodes/stations
+ * 4. Allow games to be moved between tracks
+ * 5. Estimate backlog completion progress
+ * 6. Support importing/exporting game data
+ * 7. Connect to IGDB for completion-time data
+ *
+ * This file acts as the main "game board"
+ * of the GuideRail application.
+ */
+
+/*
+ * Shared localStorage keys used throughout the app.
+ *
+ * - profile.html
+ * - map.html
+ * - eta.html
+ *
+ * to share the same saved user/game data.
+ */
 const PROFILE_STORAGE_KEY = 'guideRail_profile';
 const GAMES_STORAGE_KEY = 'guideRail_games';
 const THEME_KEY = 'guideRail_theme';
@@ -7,6 +33,13 @@ const IGDB_BASE = 'https://api.igdb.com/v4';
 const APPROXI_PROXY_BASE = 'https://approxi--approxi-65847.us-east4.hosted.app/p/aliappleton-project?url=';
 const APPROXI_PROXY_TOKEN = '68b1d5ba4cde33c593522d9dc0c0ac9898dd023bad0b33a0';
 
+/*
+ * Returns the secure proxy token used
+ * for authenticated proxy requests.
+ *
+ * - Steam
+ * - IGDB
+ */
 function getApproxiToken() {
   try {
     return APPROXI_PROXY_TOKEN || '';
@@ -15,11 +48,30 @@ function getApproxiToken() {
   }
 }
 
+/*
+ * Stores temporary IGDB access token data.
+ *
+ * Instead of requesting a new token every time,
+ * the token is cached until it expires.
+ *
+ * This improves performance and reduces
+ * unnecessary API requests.
+ */
 const igdbTokenCache = {
   accessToken: null,
   expiresAt: 0,
 };
 
+/*
+ * Parses game names or IGDB URLs entered by the user.
+ *
+ * Users can enter:
+ * - a plain game title
+ * - or a full IGDB game URL
+ *
+ * This function extracts the game title
+ * so it can later be searched through IGDB.
+ */
 function parseIgdbInput(value) {
   const text = String(value || '').trim();
   if (!text) {
@@ -47,6 +99,12 @@ function parseIgdbInput(value) {
   return { title: text, slug };
 }
 
+/*
+ * Formats IGDB API results into readable JSON text.
+ *
+ * Used mainly for debugging/testing the
+ * IGDB completion-time system.
+ */
 function formatIgdbResult(result) {
   if (!result) return 'No result returned.';
   if (result.notFound) {
@@ -57,7 +115,17 @@ function formatIgdbResult(result) {
   }
   return JSON.stringify(result, null, 2);
 }
-
+/*
+ * Fetches estimated completion times from IGDB.
+ *
+ * - main story hours
+ * - completionist hours
+ * - rushed playthrough hours
+ *
+ * This data helps GuideRail estimate
+ * how long the user's backlog may take
+ * to finish.
+ */
 async function fetchIgdbCompletionTimes(inputValue) {
   const parsed = parseIgdbInput(inputValue);
   const queryTitle = parsed.title.trim();
@@ -113,7 +181,19 @@ async function fetchIgdbCompletionTimes(inputValue) {
     throw new Error(`IGDB lookup failed: ${error.message}`);
   }
 }
-
+/*
+ * Requests an OAuth access token for IGDB/Twitch.
+ *
+ * IGDB requires an authenticated access token
+ * before game data can be requested.
+ *
+ * The token is requested through the proxy server
+ * so sensitive API credentials stay hidden
+ * from the frontend application.
+ *
+ * Tokens are cached temporarily to avoid
+ * repeatedly requesting new ones.
+ */
 async function getIgdbAccessToken() {
   if (igdbTokenCache.accessToken && Date.now() < igdbTokenCache.expiresAt) {
     return igdbTokenCache.accessToken;
@@ -147,7 +227,17 @@ async function getIgdbAccessToken() {
   igdbTokenCache.expiresAt = Date.now() + Math.max(60, (data.expires_in || 0) - 60) * 1000;
   return igdbTokenCache.accessToken;
 }
-
+/*
+ * Builds the HTTP headers required for IGDB requests.
+ *
+ * These headers include:
+ * - the Twitch client ID
+ * - the OAuth access token
+ * - content type information
+ *
+ * IGDB uses these headers to authenticate
+ * and validate incoming requests.
+ */
 async function buildIgdbHeaders(accessToken) {
   return {
     'Client-ID': TWITCH_CLIENT_ID,
@@ -156,7 +246,15 @@ async function buildIgdbHeaders(accessToken) {
     'Content-Type': 'text/plain',
   };
 }
-
+/*
+ * Sends a POST request to the IGDB API.
+ *
+ * This function acts as the main helper
+ * for communicating with IGDB endpoints.
+ *
+ * Requests are routed through the proxy server
+ * to protect API credentials and avoid CORS issues.
+ */
 async function igdbPost(pathname, body) {
   const accessToken = await getIgdbAccessToken();
   const igdbUrl = `${IGDB_BASE}${pathname}`;
@@ -182,7 +280,13 @@ async function igdbPost(pathname, body) {
 
   return response.json();
 }
-
+/*
+ * Applies the currently selected application theme.
+ *
+ * If the user selected the blue theme,
+ * the light-theme CSS class is added
+ * to the page body.
+ */
 function applyTheme(theme) {
   document.body.classList.toggle('light-theme', theme === 'blue');
 }
@@ -201,7 +305,14 @@ function initThemeToggle() {
     });
   }
 }
-
+/*
+ * Loads the current Steam user's display name.
+ *
+ * The profile data was originally saved
+ * during the login process in login.js.
+ *
+ * Used to personalize the map page.
+ */
 function loadProfileName() {
   try {
     const raw = localStorage.getItem(PROFILE_STORAGE_KEY);
@@ -212,7 +323,14 @@ function loadProfileName() {
     return 'Guest';
   }
 }
-
+/*
+ * Loads the current Steam user's display name.
+ *
+ * The profile data was originally saved
+ * during the login process in login.js.
+ *
+ * Used to personalize the map page.
+ */
 function loadGames() {
   try {
     const raw = localStorage.getItem(GAMES_STORAGE_KEY);
@@ -223,11 +341,22 @@ function loadGames() {
     return [];
   }
 }
-
+// Converts Steam minute playtime to hours
 function formatHours(playtimeForever) {
   return `${((playtimeForever || 0) / 60).toFixed(1)}h`;
 }
-
+/*
+ * Classifies a game's activity status
+ * based on total playtime.
+ *
+ * - unplayed
+ * - playing
+ * - active
+ * - complete
+ *
+ * These classifications help visually
+ * style game nodes on the railroad map.
+ */
 function classifyGame(game) {
   const hours = (game.playtime_forever || 0) / 60;
   if (hours === 0) return 'unplayed';
@@ -235,7 +364,15 @@ function classifyGame(game) {
   if (hours >= 20) return 'active';
   return 'playing';
 }
-
+/*
+ * Estimates the calendar year when the user
+ * may finish their backlog.
+ *
+ * This estimate is based on:
+ * - unplayed games
+ * - total playtime
+ * - estimated hours remaining
+ */
 function estimateEtaYear(games) {
   const totalBacklogHours = games
     .filter((game) => (game.playtime_forever || 0) === 0)
@@ -246,7 +383,12 @@ function estimateEtaYear(games) {
   const months = Math.max(1, Math.ceil(totalHours / 18));
   return currentYear + Math.ceil(months / 12);
 }
-
+/*
+ * Loads the user's saved weekly gaming schedule.
+ *
+ * This schedule is shared with eta.js
+ * and is used to estimate backlog completion speed.
+ */
 function loadEtaSchedule() {
   try {
     const raw = localStorage.getItem(ETA_WEEKLY_STORAGE_KEY);
@@ -257,7 +399,12 @@ function loadEtaSchedule() {
     return null;
   }
 }
-
+/*
+ * Loads the user's saved weekly gaming schedule.
+ *
+ * This schedule is shared with eta.js
+ * and is used to estimate backlog completion speed.
+ */
 function estimateBacklogHours(games) {
   return games.reduce((sum, game) => {
     const track = game.track || 'unassigned';
@@ -269,6 +416,14 @@ function estimateBacklogHours(games) {
     return sum + (Number(game.completionHours) || 0);
   }, 0);
 }
+/*
+ * Calculates the user's total weekly gaming hours
+ * from their saved ETA schedule.
+ *
+ * Monday: 2
+ * Tuesday: 3
+ * Total: 5
+ */
 
 function weeklyHoursFromSchedule(schedule) {
   const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
@@ -283,7 +438,21 @@ function formatEtaDays(backlogHours, weeklyHours) {
   return `${days.toFixed(1)} days`;
 }
 
-
+/*
+ * Creates a visual game node/station
+ * for the railroad map.
+ *
+ * Each node contains:
+ * - game title
+ * - playtime
+ * - completion estimate
+ * - status controls
+ * - track assignment controls
+ * - movement controls
+ *
+ * This is one of the main UI-building
+ * functions in the application.
+ */
 function createNode(game) {
   const card = document.createElement('article');
   card.className = `game-node ${classifyGame(game)}`;
@@ -420,6 +589,12 @@ function createNode(game) {
   return card;
 }
 
+/*
+ * Saves the current game library into localStorage.
+ *
+ * This allows map changes to persist
+ * across page refreshes and browser sessions.
+ */
 function saveGames(games) {
   try {
     localStorage.setItem(GAMES_STORAGE_KEY, JSON.stringify(games));
@@ -427,7 +602,13 @@ function saveGames(games) {
     console.error('Failed to save games', e);
   }
 }
-
+/*
+ * Moves a game forward or backward
+ * within its current railroad track.
+ *
+ * This changes the visual ordering
+ * of game nodes on the map.
+ */
 function moveGameWithinTrack(appid, dir) {
   try {
     const games = loadGames();
@@ -458,7 +639,10 @@ function moveGameWithinTrack(appid, dir) {
     console.error('Failed to move game', err);
   }
 }
-
+/*
+ * Adds a new game into the saved library
+ * and rerenders the map UI.
+ */
 function addGame(game) {
   const games = loadGames();
   games.push(game);
@@ -466,6 +650,15 @@ function addGame(game) {
   renderMap();
 }
 
+/*
+ * Exports the user's saved game library
+ * as a downloadable JSON file.
+ *
+ * This allows:
+ * - backups
+ * - sharing
+ * - importing later
+ */
 function exportGames() {
   const games = loadGames();
   const blob = new Blob([JSON.stringify(games, null, 2)], { type: 'application/json' });
@@ -478,7 +671,15 @@ function exportGames() {
   a.remove();
   URL.revokeObjectURL(url);
 }
-
+/*
+ * Exports the user's saved game library
+ * as a downloadable JSON file.
+ *
+ * This allows:
+ * - backups
+ * - sharing
+ * - importing later
+ */
 function handleImportFile(file) {
   const reader = new FileReader();
   reader.onload = (e) => {
@@ -494,7 +695,11 @@ function handleImportFile(file) {
   };
   reader.readAsText(file);
 }
-
+/*
+ * Validates imported game JSON structures.
+ *
+ * Supports multiple possible import formats.
+ */
 function normalizeGameImportPayload(parsed) {
   if (Array.isArray(parsed)) {
     return parsed;
@@ -508,6 +713,13 @@ function normalizeGameImportPayload(parsed) {
   return null;
 }
 
+/*
+ * Populates the add-game form with
+ * games from the user's Steam library.
+ *
+ * Allows users to quickly assign games
+ * onto railroad tracks.
+ */
 function populateAddForm(preselectAppid, preselectTrack) {
   const sel = document.getElementById('game-select');
   const urlInput = document.getElementById('game-url');
@@ -677,14 +889,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const importPreviewCancel = document.getElementById('map-import-cancel-btn');
   let pendingImportFile = null;
 
+  /*
+ * Hides the game import preview window.
+ *
+ * This clears the currently selected import file
+ * and removes the preview panel from the page.
+ */
   const hideImportPreview = () => {
     pendingImportFile = null;
     if (importPreview) {
       importPreview.hidden = true;
     }
   };
-
+/*
+ * Displays a preview of a game library file
+ * before importing it.
+ *
+ * This allows the user to:
+ * - verify the file format
+ * - preview game names
+ * - confirm the import safely
+ */
   const showImportPreview = async (file) => {
+    // Prevent previewing if required UI elements are missing
     if (!importPreview || !importPreviewSummary || !importPreviewSample) return;
 
     try {
@@ -696,6 +923,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       pendingImportFile = file;
+      // Display how many games were detected in the file
       importPreviewSummary.textContent = `${games.length} game${games.length === 1 ? '' : 's'} ready to import from ${file.name}.`;
       const sampleNames = games.slice(0, 3).map((game) => game.name || `App ${game.appid}`);
       importPreviewSample.textContent = sampleNames.length
@@ -709,7 +937,13 @@ document.addEventListener('DOMContentLoaded', () => {
       importPreview.hidden = false;
     }
   };
-
+/*
+ * Final confirmation button for importing games.
+ *
+ * Once confirmed:
+ * - the selected file is imported
+ * - the preview window closes
+ */
   if (importPreviewConfirm) {
     importPreviewConfirm.addEventListener('click', () => {
       if (!pendingImportFile) return;
@@ -723,20 +957,34 @@ document.addEventListener('DOMContentLoaded', () => {
       hideImportPreview();
     });
   }
-
+/*
+ * Updates the IGDB status message area.
+ *
+ * Used to display:
+ * - loading messages
+ * - success messages
+ * - error messages
+ */
   const setIgdbStatus = (message, type = '') => {
     if (igdbStatusEl) {
       igdbStatusEl.textContent = message;
       igdbStatusEl.className = `status-message ${type}`.trim();
     }
   };
-
+// If the value is already text, display it directly.
+// Otherwise convert the object into readable JSON text.
   const setIgdbOutput = (value) => {
     if (igdbOutputEl) {
       igdbOutputEl.textContent = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
     }
   };
-
+/*
+ * Handles IGDB completion-time lookups.
+ *
+ * Users can search for a game title
+ * and retrieve estimated completion times
+ * from the IGDB database.
+ */
   if (igdbTestBtn && igdbTitleInput) {
     igdbTestBtn.addEventListener('click', async () => {
       const title = igdbTitleInput.value.trim();
@@ -774,6 +1022,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const importBtn = document.getElementById('import-games-btn');
   const exportBtn = document.getElementById('export-games-btn');
 
+  /*
+ * Opens the add-game form when the user
+ * wants to place a game onto a railroad line.
+ */
   if (addBtn && addForm) {
     addBtn.addEventListener('click', () => {
       populateAddForm();
@@ -791,7 +1043,12 @@ document.addEventListener('DOMContentLoaded', () => {
         addForm.setAttribute('aria-hidden', 'true');
       });
     }
-
+/*
+ * Handles submission of the add-game form.
+ *
+ * This assigns a selected game
+ * to one of the railroad tracks.
+ */
     addForm.addEventListener('submit', (ev) => {
       ev.preventDefault();
       const appid = document.getElementById('game-select').value;
@@ -806,6 +1063,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Selected game not found in library. Try importing your library.');
         return;
       }
+      // Assign the game to the selected railroad line
       games[idx].track = track === 'unassigned' ? undefined : track;
       saveGames(games);
       addForm.reset();
@@ -825,7 +1083,9 @@ document.addEventListener('DOMContentLoaded', () => {
       importBtn.addEventListener('click', () => importInput.click());
     }
   }
-
+/*
+ * Drag-and-drop support for importing game libraries.
+ */
   const mapImportDropZone = document.querySelector('.map-controls') || document.querySelector('.controls-row');
   if (mapImportDropZone && importInput) {
     mapImportDropZone.addEventListener('dragover', (event) => {
