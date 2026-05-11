@@ -182,7 +182,7 @@ GuideRail integrates with the Steam Web API for:
 
 Steam API Documentation:
 
-[Steam Web API Documentation](https://developer.valvesoftware.com/wiki/Steam_Web_API?utm_source=chatgpt.com)
+[Steam Web API Documentation](https://developer.valvesoftware.com/wiki/Steam_Web_API)
 
 ---
 
@@ -198,7 +198,7 @@ Features include:
 
 IGDB Documentation:
 
-[IGDB API Documentation](https://api-docs.igdb.com/?utm_source=chatgpt.com#getting-started)
+[IGDB API Documentation](https://api-docs.igdb.com)
 
 ---
 
@@ -226,14 +226,22 @@ GuideRail primarily uses vanilla HTML, CSS, and JavaScript with minimal external
 
 ## Libraries / Services Used
 
+  - Steam Web API  
+  https://developer.valvesoftware.com/wiki/Steam_Web_API
+
+- IGDB API  
+  https://api-docs.igdb.com
+
 - Node.js HTTP Module  
   https://nodejs.org/api/http.html
 
-- Google Fonts (Nunito)  
+- Approxi Proxy Service  
+  Used to securely proxy Steam and IGDB API requests while preventing CORS issues and hiding sensitive credentials.  
+  Proxy Dashboard: https://approxi--approxi-65847.us-east4.hosted.app/dashboard
+
+  - Google Fonts (Nunito)  
   https://fonts.google.com/specimen/Nunito
 
-- Approxi Proxy Service  
-  Used to securely proxy Steam and IGDB API requests while preventing CORS issues and hiding sensitive credentials.
 
 ---
 
