@@ -183,6 +183,13 @@ function setLoadingStage(stageIndex, minProgress) {
   updateLoadingUI(loadingProgress, loadingMessages[safeIndex]);
 }
 
+/*
+ * Finishes the loading process.
+ *
+ * This sets progress to 100%
+ * and updates the UI to show
+ * that login completed successfully.
+ */
 function completeLoading() {
   loadingProgress = 100;
   updateLoadingUI(loadingProgress, 'All files verified.');
@@ -192,6 +199,15 @@ function completeLoading() {
   }
 }
 
+/*
+ * Resets the loading screen back
+ * to its default state.
+ *
+ * Used after:
+ * - failed login attempts
+ * - page reloads
+ * - returning to the login page
+ */
 function resetLoading() {
   loadingProgress = 0;
   updateLoadingUI(loadingProgress, loadingMessages[0]);
@@ -212,6 +228,14 @@ function clearErrorState(inputField) {
   }
 }
 
+/*
+ * Dynamically positions the error message box
+ * on the screen.
+ *
+ * This keeps the error message visually centered
+ * between the page header and login form,
+ * even when the browser window changes size.
+ */
 function positionErrorContainer() {
   const header = document.querySelector('.site-header');
   const main = document.querySelector('.site-main');
@@ -232,6 +256,16 @@ function positionErrorContainer() {
   errorContainer.style.top = `${Math.round(top)}px`;
 }
 
+/*
+ * Sends API requests through the Approxi proxy.
+ *
+ * Instead of directly contacting Steam,
+ * requests pass through the proxy server.
+ *
+ * - protect API secrets
+ * - avoid browser CORS restrictions
+ * - centralize API communication
+ */
 function fetchViaApproxi(targetUrl) {
   return fetch(`${APPROXI_PROXY_BASE}${encodeURIComponent(targetUrl)}`, {
     headers: {
@@ -472,6 +506,19 @@ function toggleFavoriteAccount(steamid) {
   }
 }
 
+/* Renders all saved Steam accounts onto the page.
+*
+* This creates the clickable account list shown
+* on the login screen.
+*
+* Each saved account can:
+* - quickly log in
+* - be favorited
+* - be deleted
+*
+* The accounts are loaded from localStorage
+* and displayed dynamically using JavaScript.
+*/
 function renderAccounts(showFavoritesOnly = false) {
   const container = document.getElementById('accountsList');
   if (!container) return;
@@ -516,7 +563,18 @@ function renderAccounts(showFavoritesOnly = false) {
     container.appendChild(li);
   }
 }
-
+/* Renders all saved Steam accounts onto the page.
+*
+* This creates the clickable account list shown
+* on the login screen.
+*
+* - quickly log in
+* - be favorited
+* - be deleted
+*
+* The accounts are loaded from localStorage
+* and displayed dynamically using JavaScript.
+*/
 function selectAccountToInputs(steamid) {
   const accounts = loadSavedAccounts();
   const acct = accounts.find(a => a.steamid === steamid);
@@ -526,7 +584,18 @@ function selectAccountToInputs(steamid) {
     usernameInput.focus();
   }
 }
-
+/*
+ * Automatically logs into a previously
+ * saved Steam account.
+ *
+ * - restores saved profile data
+ * - clears old game data
+ * - updates the last used timestamp
+ * - redirects to profile.html
+ *
+ * This creates a "quick boot" experience
+ * similar to saved accounts in real launchers.
+ */
 function bootIntoAccount(steamid) {
   const accounts = loadSavedAccounts();
   const acct = accounts.find(a => a.steamid === steamid);
@@ -546,6 +615,13 @@ function bootIntoAccount(steamid) {
   }
 }
 
+/*
+ * Exports saved account data into a JSON file.
+ *
+ * - back up their saved accounts
+ * - transfer accounts between browsers/devices
+ * - re-import them later
+ */
 function exportAccounts() {
   const accounts = loadSavedAccounts();
   const exportData = {
@@ -562,7 +638,13 @@ function exportAccounts() {
   link.click();
   URL.revokeObjectURL(url);
 }
-
+/*
+ * Imports saved accounts from a JSON file.
+ *
+ * Imported accounts are merged with any
+ * existing saved accounts already stored
+ * in localStorage.
+ */
 function importAccounts(file) {
   const reader = new FileReader();
   reader.onload = (event) => {
@@ -596,13 +678,29 @@ function importAccounts(file) {
   reader.readAsText(file);
 }
 
+/*
+ * Validates imported account JSON structure.
+ *
+ * Ensures the imported file actually contains
+ * an accounts array before importing it.
+ */
 function normalizeImportedAccounts(parsed) {
   if (parsed && Array.isArray(parsed.accounts)) {
     return parsed.accounts;
   }
   return null;
 }
-
+/*
+ * Displays an accessible login error message.
+ *
+ * - shows the error visually
+ * - updates accessibility attributes
+ * - focuses the input field
+ * - positions the error container correctly
+ *
+ * Used throughout the login flow whenever
+ * validation or API requests fail.
+ */
 function showError(message, inputField, helpId = 'username-help') {
   const errorDiv = document.getElementById('login-error');
   errorDiv.textContent = message;
@@ -631,6 +729,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
   const usernameInput = document.getElementById('username');
 
+  // Prevent Enter from accidentally submitting early
   if (usernameInput) {
     usernameInput.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
@@ -638,10 +737,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+  // Connect the login form to the main login handler
 
   if (form) {
     form.addEventListener('submit', handleLogin);
   }
+    // Toggle between themes
   const toggleBtn = document.getElementById('theme-toggle');
 
   if (toggleBtn) {
@@ -666,6 +767,16 @@ document.addEventListener('DOMContentLoaded', () => {
       renderAccounts(showFavoritesOnly);
     });
   }
+  /*
+   * Handles all button clicks inside the saved accounts list.
+   *
+   * - boot into an account
+   * - favorite/unfavorite an account
+   * - delete an account
+   *
+   * Event delegation is used here so one listener
+   * can manage every dynamically created account item.
+   */
 
   if (accountsList) {
     accountsList.addEventListener('click', (ev) => {
@@ -700,6 +811,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const importConfirmBtn = document.getElementById('accounts-import-confirm-btn');
   const importCancelBtn = document.getElementById('accounts-import-cancel-btn');
   let pendingImportFile = null;
+  /*
+ * Hides the account import preview panel.
+ *
+ * This clears the currently selected import file
+ * and removes the preview window from the page.
+
+ * - an import is canceled
+ * - an import finishes successfully
+ */
 
   const hideImportPreview = () => {
     pendingImportFile = null;
@@ -707,6 +827,17 @@ document.addEventListener('DOMContentLoaded', () => {
       importPreview.hidden = true;
     }
   };
+  /* Displays a preview of an account import file
+  * before actually importing it.
+  *
+  * This allows the user to verify
+  * - how many accounts were detected
+  * - sample account names
+  * - whether the file format is valid
+  *
+  * This creates a safer import experience
+  * by preventing accidental imports.
+  */
 
   const showImportPreview = async (file) => {
     if (!importPreview || !importPreviewSummary || !importPreviewSample) return;
@@ -743,6 +874,15 @@ document.addEventListener('DOMContentLoaded', () => {
       importFile.click();
     });
   }
+  /*
+   * Handles the final confirmation step
+   * for importing saved accounts.
+   *
+   * Once confirmed
+   * - the selected file is imported
+   * - accounts are saved to localStorage
+   * - the preview window closes
+   */
 
   if (importConfirmBtn) {
     importConfirmBtn.addEventListener('click', () => {
@@ -757,6 +897,13 @@ document.addEventListener('DOMContentLoaded', () => {
       hideImportPreview();
     });
   }
+  /*
+   * Handles account file selection from
+   * the user's computer.
+   *
+   * Once a file is selected, the app
+   * displays a preview before importing it.
+   */
 
   if (importFile) {
     importFile.addEventListener('change', (ev) => {
@@ -785,6 +932,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initial render
   renderAccounts();
 });
+/*
+ * Repositions the login error message whenever
+ * the browser window is resized.
+ *
+ * This keeps the error box visually centered
+ * and properly aligned on different screen sizes.
+ */
 
 window.addEventListener('resize', () => {
   const errorDiv = document.getElementById('login-error');
@@ -792,6 +946,14 @@ window.addEventListener('resize', () => {
     positionErrorContainer();
   }
 });
+/*
+ * Runs whenever the page is shown again
+ * through browser navigation.
+ *
+ * By using the browser back button
+, this resets the loading screen and
+ * restores proper UI positioning.
+ */
 
 window.addEventListener('pageshow', () => {
   resetLoading();
