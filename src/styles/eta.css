@@ -1,264 +1,305 @@
+/* ETA PAGE - Estimated Time Arrival Calculator */
+
+/* CSS VARIABLES - Design system for ETA page */
 .eta-page {
-  --eta-bg: linear-gradient(180deg, #4c5844 0%, #434f3b 100%);
-  --eta-text: #eff6ee;
-  --eta-muted: #a8b49e;
-  --eta-panel: rgba(63, 71, 56, 0.65);
-  --eta-panel-strong: rgba(63, 71, 56, 0.85);
-  --eta-panel-border: rgba(128, 128, 128, 0.24);
-  --eta-accent: #c2af3f;
-  --eta-shadow: rgba(0, 0, 0, 0.18);
-  background: var(--eta-bg);
-  color: var(--eta-text);
+  /* Color palette for dark theme */
+  --eta-bg: linear-gradient(180deg, #4c5844 0%, #434f3b 100%);  /* Green gradient background */
+  --eta-text: #eff6ee;  /* Off-white text */
+  --eta-muted: #a8b49e;  /* Muted light text */
+  --eta-panel: rgba(63, 71, 56, 0.65);  /* Semi-transparent panel */
+  --eta-panel-strong: rgba(63, 71, 56, 0.85);  /* More opaque panel */
+  --eta-panel-border: rgba(128, 128, 128, 0.24);  /* Subtle border */
+  --eta-accent: #c2af3f;  /* Yellow accent color */
+  --eta-shadow: rgba(0, 0, 0, 0.18);  /* Subtle shadow */
+  background: var(--eta-bg);  /* Apply gradient background */
+  color: var(--eta-text);  /* Apply text color */
 }
 
+/* LIGHT THEME VARIABLES - Alternative color scheme */
 .light-theme.eta-page {
-  --eta-bg: #2a475e;
-  --eta-text: #c7d5e0;
-  --eta-muted: #9fb7c5;
-  --eta-panel: #1b2838;
-  --eta-panel-strong: #1b2838;
-  --eta-panel-border: #000000;
-  --eta-accent: #b77cff;
-  --eta-shadow: rgba(0, 0, 0, 0.2);
+  --eta-bg: #2a475e;  /* Light blue background */
+  --eta-text: #c7d5e0;  /* Light text */
+  --eta-muted: #9fb7c5;  /* Light muted text */
+  --eta-panel: #1b2838;  /* Dark panel */
+  --eta-panel-strong: #1b2838;  /* Dark panel (strong) */
+  --eta-panel-border: #000000;  /* Dark border */
+  --eta-accent: #b77cff;  /* Purple accent */
+  --eta-shadow: rgba(0, 0, 0, 0.2);  /* Darker shadow */
 }
 
+/* ETA HEADER - Navigation header styling */
 .eta-header {
-  border-bottom: 1px solid #282e22;
-  box-shadow: inset 0 0 0 #282e22;
+  border-bottom: 1px solid #282e22;  /* Dark bottom border */
+  box-shadow: inset 0 0 0 #282e22;  /* Inset shadow effect */
 }
 
+/* NAV LINKS AND BUTTONS - Navigation styling */
 .eta-nav a,
 .eta-nav button {
-  color: #eff6ee;
-  text-decoration: none;
-  padding: 6px 14px;
-  border-top: 1px solid #808080;
+  color: #eff6ee;  /* Off-white text */
+  text-decoration: none;  /* No underlines */
+  padding: 6px 14px;  /* Button padding */
+  border-top: 1px solid #808080;  /* Retro 3D borders */
   border-left: 1px solid #808080;
-  border-bottom: 1px solid #282e22;
+  border-bottom: 1px solid #282e22;  /* Dark borders */
   border-right: 1px solid #282e22;
-  background-color: #4c5844;
-  font: inherit;
+  background-color: #4c5844;  /* Green background */
+  font: inherit;  /* Inherit font from parent */
 }
 
+/* ETA MAIN - Main content area with padding */
 .eta-main {
-  padding: 22px 24px 32px;
+  padding: 22px 24px 32px;  /* Asymmetric padding */
 }
 
+/* ETA SHELL - Content wrapper with max width */
 .eta-shell {
-  width: min(980px, 100%);
-  margin: 0 auto;
-  display: grid;
-  gap: 18px;
+  width: min(980px, 100%);  /* Maximum 980px or full width */
+  margin: 0 auto;  /* Center on page */
+  display: grid;  /* Grid layout */
+  gap: 18px;  /* Space between grid items */
 }
 
+/* ETA PANELS - Common styling for hero, card, and results */
 .eta-hero,
 .eta-card,
 .eta-results {
-  border: 1px solid var(--eta-panel-border);
-  background: var(--eta-panel);
-  padding: 18px 20px;
-  box-shadow: 0 16px 32px var(--eta-shadow);
+  border: 1px solid var(--eta-panel-border);  /* Using CSS variable */
+  background: var(--eta-panel);  /* Semi-transparent background */
+  padding: 18px 20px;  /* Interior spacing */
+  box-shadow: 0 16px 32px var(--eta-shadow);  /* Soft shadow */
 }
 
+/* PANEL HEADINGS - Titles in panels */
 .eta-hero h2,
 .eta-card h3 {
-  margin: 0 0 10px;
-  color: var(--eta-accent);
+  margin: 0 0 10px;  /* Bottom spacing only */
+  color: var(--eta-accent);  /* Using accent color */
 }
 
+/* EYEBROW TEXT - Small caps label text */
 .eyebrow {
-  margin: 0 0 8px;
-  color: var(--eta-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 12px;
+  margin: 0 0 8px;  /* Bottom spacing */
+  color: var(--eta-muted);  /* Muted color */
+  text-transform: uppercase;  /* All caps */
+  letter-spacing: 0.08em;  /* Wider spacing */
+  font-size: 12px;  /* Small size */
 }
 
+/* ETA COPY - Body text in panels */
 .eta-copy {
-  margin: 0;
-  color: var(--eta-text);
-  line-height: 1.5;
+  margin: 0;  /* No margin */
+  color: var(--eta-text);  /* Text color */
+  line-height: 1.5;  /* Line spacing */
 }
 
+/* ETA FORM - Two-column input form */
 .eta-form {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  display: grid;  /* Grid layout */
+  grid-template-columns: repeat(2, minmax(0, 1fr));  /* Two equal columns */
+  gap: 12px;  /* Space between items */
 }
 
+/* FORM LABEL - Field label with input */
 .eta-form label {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  color: var(--eta-text);
+  display: flex;  /* Flexbox layout */
+  flex-direction: column;  /* Stack vertically */
+  gap: 8px;  /* Space between label and input */
+  color: var(--eta-text);  /* Text color */
 }
 
+/* NUMBER INPUT - Numeric input field */
 .eta-form input[type="number"] {
-  width: 100%;
-  padding: 8px 10px;
-  border: 1px solid var(--eta-panel-border);
-  background: rgba(0, 0, 0, 0.12);
-  color: var(--eta-text);
-  font: inherit;
+  width: 100%;  /* Full width */
+  padding: 8px 10px;  /* Interior padding */
+  border: 1px solid var(--eta-panel-border);  /* Panel border */
+  background: rgba(0, 0, 0, 0.12);  /* Dark semi-transparent */
+  color: var(--eta-text);  /* Text color */
+  font: inherit;  /* Inherit font */
 }
 
+/* ETA ACTIONS - Container for action buttons below form */
 .eta-actions {
-  grid-column: 1 / -1;
-  display: flex;
-  gap: 8px;
-  justify-content: flex-start;
-  align-items: center;
-  margin-top: 8px;
+  grid-column: 1 / -1;  /* Span full form width */
+  display: flex;  /* Horizontal layout */
+  gap: 8px;  /* Space between buttons */
+  justify-content: flex-start;  /* Align left */
+  align-items: center;  /* Vertically center */
+  margin-top: 8px;  /* Space above */
 }
 
+/* ACTION BUTTONS - Standard button in action area */
 .eta-actions .btn {
-  padding: 6px 10px;
-  font-size: 13px;
+  padding: 6px 10px;  /* Button padding */
+  font-size: 13px;  /* Button font size */
 }
 
+/* PRIMARY ACTION BUTTON - Main action button */
 .eta-actions .btn.btn-primary {
-  padding: 6px 10px;
-  font-size: 13px;
+  padding: 6px 10px;  /* Button padding */
+  font-size: 13px;  /* Button font size */
 }
 
-/* Override global submit button sizing for ETA actions */
+/* SUBMIT BUTTON IN ACTIONS - Override global sizing */
 .eta-actions .btn[type="submit"] {
-  width: auto;
-  margin-left: 0;
-  display: inline-block;
-  padding: 10px 12px; /* increase vertical padding for better height */
-  font-size: 13px;
-  min-width: 60px; /* reduce min width so button isn't too long */
-  max-width: 220px;
-  text-align: center;
-  line-height: .75;
+  width: auto;  /* Auto width */
+  margin-left: 0;  /* No left margin */
+  display: inline-block;  /* Inline-block display */
+  padding: 10px 12px;  /* Increased padding */
+  font-size: 13px;  /* Font size */
+  min-width: 60px;  /* Minimum width */
+  max-width: 220px;  /* Maximum width */
+  text-align: center;  /* Center text */
+  line-height: .75;  /* Tight line height */
 }
 
+/* ETA RESULTS - Container for calculation results */
 .eta-results {
-  color: var(--eta-text);
-  min-height: 72px;
+  color: var(--eta-text);  /* Text color */
+  min-height: 72px;  /* Minimum height */
 }
 
+/* RESULTS HIDDEN STATE - Hide results when not active */
 .eta-results[hidden] {
-  display: none;
+  display: none;  /* Hidden state */
 }
 
+/* RESPONSIVE - Tablet (max 720px) */
 @media (max-width: 720px) {
+  /* Reduce main padding */
   .eta-main {
-    padding: 16px 12px 20px;
+    padding: 16px 12px 20px;  /* Smaller padding */
   }
 
+  /* Single column form on tablets */
   .eta-form {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr;  /* Single column */
   }
 }
 
+/* RESPONSIVE - Mobile (max 480px) */
 @media (max-width: 480px) {
+  /* Adjust header padding and spacing */
   .eta-header {
-    padding: 8px 4px;
-    gap: 8px;
+    padding: 8px 4px;  /* Smaller padding */
+    gap: 8px;  /* Smaller gap */
   }
 
+  /* Smaller title on mobile */
   .site-title {
-    font-size: 14px;
+    font-size: 14px;  /* Smaller title */
   }
 
+  /* Responsive navigation */
   .eta-nav {
-    gap: 2px;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
+    gap: 2px;  /* Tiny gaps */
+    flex-wrap: wrap;  /* Allow wrapping */
+    justify-content: center;  /* Center nav */
+    width: 100%;  /* Full width */
   }
 
+  /* Smaller nav buttons */
   .eta-nav a,
   .eta-nav button {
-    padding: 6px 8px;
-    font-size: 11px;
-    border: 1px solid #808080;
+    padding: 6px 8px;  /* Smaller padding */
+    font-size: 11px;  /* Smaller font */
+    border: 1px solid #808080;  /* Consistent border */
   }
 
+  /* Reduce main padding */
   .eta-main {
-    padding: 12px 8px 16px;
+    padding: 12px 8px 16px;  /* Minimal padding */
   }
 
+  /* Smaller grid gap */
   .eta-shell {
-    gap: 12px;
+    gap: 12px;  /* Smaller gap */
   }
 
+  /* Adjust panel padding and shadow */
   .eta-hero,
   .eta-card,
   .eta-results {
-    padding: 14px 12px;
-    box-shadow: 0 8px 16px var(--eta-shadow);
+    padding: 14px 12px;  /* Smaller padding */
+    box-shadow: 0 8px 16px var(--eta-shadow);  /* Smaller shadow */
   }
 
+  /* Smaller eyebrow text */
   .eyebrow {
-    font-size: 11px;
-    margin: 0 0 6px;
+    font-size: 11px;  /* Smaller */
+    margin: 0 0 6px;  /* Smaller margin */
   }
 
+  /* Responsive headings */
   .eta-hero h2,
   .eta-card h3 {
-    font-size: 16px;
-    margin: 0 0 8px;
+    font-size: 16px;  /* Smaller heading */
+    margin: 0 0 8px;  /* Smaller margin */
   }
 
+  /* Responsive body text */
   .eta-copy {
-    font-size: 14px;
-    line-height: 1.4;
+    font-size: 14px;  /* Larger for readability */
+    line-height: 1.4;  /* Tighter line height */
   }
 
+  /* Single column form on mobile */
   .eta-form {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    grid-template-columns: 1fr;  /* Single column */
+    gap: 10px;  /* Smaller gap */
   }
 
+  /* Responsive form labels */
   .eta-form label {
-    gap: 6px;
-    font-size: 14px;
+    gap: 6px;  /* Smaller gap */
+    font-size: 14px;  /* Larger text */
   }
 
+  /* Responsive number inputs */
   .eta-form input[type="number"] {
-    padding: 8px 10px;
-    font-size: 14px;
+    padding: 8px 10px;  /* Padding */
+    font-size: 14px;  /* Larger font */
   }
 
+  /* Mobile action buttons */
   .eta-actions {
-    margin-top: 6px;
-    gap: 6px;
-    /* Stretch buttons to equal height on small screens */
-    align-items: stretch;
+    margin-top: 6px;  /* Smaller margin */
+    gap: 6px;  /* Smaller gap */
+    align-items: stretch;  /* Stretch buttons */
   }
 
+  /* Mobile button styling */
   .eta-actions .btn {
-    padding: 8px 12px;
-    font-size: 12px;
-    flex: 1 1 0;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    min-width: 0;
-    line-height: 1.2;
+    padding: 8px 12px;  /* Button padding */
+    font-size: 12px;  /* Smaller font */
+    flex: 1 1 0;  /* Equal width distribution */
+    text-align: center;  /* Center text */
+    display: flex;  /* Flexbox */
+    align-items: center;  /* Vertically center */
+    justify-content: center;  /* Horizontally center */
+    box-sizing: border-box;  /* Include border in size */
+    min-width: 0;  /* Allow shrinking */
+    line-height: 1.2;  /* Line height */
   }
 
+  /* Mobile submit button */
   .eta-actions .btn[type="submit"] {
-    width: auto;
-    min-width: 0;
-    padding: 8px 12px;
-    line-height: 1.2;
+    width: auto;  /* Auto width */
+    min-width: 0;  /* Allow shrinking */
+    padding: 8px 12px;  /* Button padding */
+    line-height: 1.2;  /* Line height */
   }
 
-  /* Ensure buttons can shrink and distribute evenly on very small screens */
+  /* Ensure buttons can shrink evenly */
   .eta-actions .btn {
-    box-sizing: border-box;
-    min-width: 0; /* allow flex children to be equal width */
+    box-sizing: border-box;  /* Include border */
+    min-width: 0;  /* Allow equal width */
   }
 
+  /* Small nav buttons */
   .eta-nav a,
   .eta-nav button {
-    padding: 6px 8px;
-    font-size: 11px;
+    padding: 6px 8px;  /* Button padding */
+    font-size: 11px;  /* Small font */
   }
 }

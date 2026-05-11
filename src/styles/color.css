@@ -1,18 +1,19 @@
-/* #4c5844 - Green */
-/* #3f4738 - Dark Green */
-/* #a1ae9a- Light Green (Text) */
-/* #968732 - Yellow (Text) */
-/* #eff6ee - White (Text) */
-/* #808080 - Gray Accent (Border) */
-/* #282e22 - Pine Green Accent (Border) */
+/* COLOR PALETTE - Retro Steam Aesthetic */
+/* #4c5844 - Primary Green (background) */
+/* #3f4738 - Dark Green (panels/headers) */
+/* #a1ae9a - Light Green (muted text) */
+/* #968732 - Yellow (highlights) */
+/* #eff6ee - Off-White (primary text) */
+/* #808080 - Gray (light borders) */
+/* #282e22 - Pine Green (dark borders) */
 
-/* Color contrast ratios (WCAG AA compliant):
- * #eff6ee on #4c5844: 12.1:1 ✓
- * #a1ae9a on #4c5844: 3.2:1 ✓
- * #968732 on #4c5844: 4.8:1 ✓
- * #eff6ee on #3f4738: 11.8:1 ✓
- */
+/* WCAG AA Compliant Color Contrast Ratios */
+/* #eff6ee on #4c5844: 12.1:1 ✓ */
+/* #a1ae9a on #4c5844: 3.2:1 ✓ */
+/* #968732 on #4c5844: 4.8:1 ✓ */
+/* #eff6ee on #3f4738: 11.8:1 ✓ */
 
+/* GLOBAL FONT SETTINGS - Apply Tahoma across all interactive elements */
 body,
 button,
 input,
@@ -25,479 +26,536 @@ label,
     font-size: 13px;
 }
 
+/* RESET - Apply border-box sizing model to all elements */
 * {
     box-sizing: border-box;
 }
 
+/* PAGE BODY - Full height flex container with retro green background */
 body {
     margin: 0;
-    background-color: #4c5844;
-    color: #c7d5e0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+    background-color: #4c5844;  /* Primary green background */
+    color: #c7d5e0;  /* Light text color */
+    min-height: 100vh;  /* Full viewport height */
+    display: flex;  /* Flexbox layout */
+    flex-direction: column;  /* Stack children vertically */
 }
 
+/* SITE HEADER - Navigation bar with dark green background and retro border */
 .site-header {
     position: relative;
-    width: 100%;
-    border-bottom: 1px solid #282e22;
-    background-color: #3f4738;
-    padding: 10px 14px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 14px;
+    width: 100%;  /* Full width */
+    border-bottom: 1px solid #282e22;  /* Dark border */
+    background-color: #3f4738;  /* Dark green background */
+    padding: 10px 14px;  /* Interior spacing */
+    display: flex;  /* Flexbox layout for horizontal arrangement */
+    justify-content: space-between;  /* Space between logo and nav */
+    align-items: center;  /* Vertically center items */
+    gap: 14px;  /* Space between header elements */
 }
 
+/* THEME TOGGLE - Center positioned button in header */
 #theme-toggle {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    position: absolute;  /* Absolute positioning */
+    left: 50%;  /* Horizontally center */
+    top: 50%;  /* Vertically center */
+    transform: translate(-50%, -50%);  /* Adjust for button center point */
 }
 
+/* SITE TITLE - Main logo/title text in header */
 .site-title {
-    margin: 0;
-    color: #eff6ee;
-    font-size: 16px;
-    font-weight: 600;
+    margin: 0;  /* Remove default margin */
+    color: #eff6ee;  /* Off-white text */
+    font-size: 16px;  /* Larger title size */
+    font-weight: 600;  /* Semi-bold */
 }
 
+/* NAVIGATION MENU - Flex container for nav links */
 .site-nav {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+    display: flex;  /* Horizontal layout */
+    gap: 10px;  /* Space between links */
+    flex-wrap: wrap;  /* Wrap on smaller screens */
 }
 
+/* NAV LINKS - Styled buttons with retro 3D borders */
 .site-nav a {
-    color: #eff6ee;
-    text-decoration: none;
-    padding: 4px 8px;
-    border-top: 1px solid #808080;
+    color: #eff6ee;  /* Off-white text */
+    text-decoration: none;  /* Remove underline */
+    padding: 4px 8px;  /* Button padding */
+    border-top: 1px solid #808080;  /* Light top/left (beveled effect) */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark bottom/right (beveled effect) */
     border-right: 1px solid #282e22;
-    background-color: #4c5844;
+    background-color: #4c5844;  /* Green button background */
 }
 
+/* ACTIVE NAV LINK - Highlight current page */
 .site-nav a[aria-current="page"] {
-    color: #e8d469;
+    color: #e8d469;  /* Yellow text */
 }
 
+/* MAIN CONTENT AREA - Centered container for page content */
 .site-main {
-    width: 100%;
-    flex: 1;
-    padding: 16px;
-    display: flex;
-    justify-content: center;
+    width: 100%;  /* Full width */
+    flex: 1;  /* Expand to fill available space */
+    padding: 16px;  /* Content padding */
+    display: flex;  /* Flexbox layout */
+    justify-content: center;  /* Center content horizontally */
 }
 
+/* FOOTER - Stick to bottom of page */
 .site-footer {
-    width: 100%;
-    margin-top: auto;
+    width: 100%;  /* Full width */
+    margin-top: auto;  /* Push to bottom */
 }
 
+/* AUTH STACK - Vertical container for login/account boxes */
 .auth-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: fit-content;
+    display: flex;  /* Flexbox layout */
+    flex-direction: column;  /* Stack vertically */
+    gap: 12px;  /* Space between boxes */
+    width: fit-content;  /* Auto width based on content */
 }
 
+/* LOGIN BOX - Retro styled login form container with 3D borders */
 .login-box {
-    position: relative;
-    background-color: #4c5844;
-    padding: 28px 60px 25px;
-    border-top: 1px solid #808080;
+    position: relative;  /* For positioning child elements */
+    background-color: #4c5844;  /* Green background */
+    padding: 28px 60px 25px;  /* Interior spacing */
+    border-top: 1px solid #808080;  /* Light borders (top/left) create raised effect */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark borders (bottom/right) */
     border-right: 1px solid #282e22;
 }
 
-/* Label and input side by side */
+/* INPUT GROUP - Label and input field on same row */
 .input-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
+    display: flex;  /* Horizontal layout */
+    align-items: center;  /* Vertically align items */
+    gap: 10px;  /* Space between label and input */
+    margin-bottom: 12px;  /* Space below group */
 }
 
+/* LABELS - Standard form label styling */
 label {
-    color: #c7d5e0;
+    color: #c7d5e0;  /* Light muted text */
 }
 
+/* LOGIN BOX LABELS - Fixed width for alignment */
 .login-box .input-group label {
-    width: 92px;
-    flex: 0 0 92px;
+    width: 92px;  /* Fixed width */
+    flex: 0 0 92px;  /* Don't grow or shrink */
 }
 
+/* API KEY HELP SECTION - Indented help text below API key field */
 .api-key-help {
-    margin: -6px 0 12px 102px;
-    width: 340px;
-    color: #c7d5e0;
+    margin: -6px 0 12px 102px;  /* Align under input, below label */
+    width: 340px;  /* Match input width */
+    color: #c7d5e0;  /* Muted text */
 }
 
+/* API HELP PARAGRAPHS AND LISTS - Default spacing */
 .api-key-help p,
 .api-key-help ol {
-    margin: 0 0 8px 0;
+    margin: 0 0 8px 0;  /* Bottom spacing only */
 }
 
+/* API HELP ORDERED LIST - Add indentation */
 .api-key-help ol {
-    padding-left: 18px;
+    padding-left: 18px;  /* List item indentation */
 }
 
+/* API HELP LIST ITEMS - Spacing between items */
 .api-key-help li {
-    margin-bottom: 6px;
+    margin-bottom: 6px;  /* Space between list items */
 }
 
+/* API HELP SUMMARY - Clickable collapsible header (yellow) */
 .api-key-help summary {
-    cursor: pointer;
-    color: #e8d469;
-    text-decoration: underline;
-    margin-bottom: 8px;
+    cursor: pointer;  /* Show clickable cursor */
+    color: #e8d469;  /* Yellow highlight color */
+    text-decoration: underline;  /* Underline for link-like appearance */
+    margin-bottom: 8px;  /* Space below */
 }
 
+/* API HELP LINKS - Off-white color */
 .api-key-help a {
-    color: #eff6ee;
+    color: #eff6ee;  /* Off-white */
 }
 
+/* API HELP INTERACTIVE STATES - Maintain color on hover/focus */
 .api-key-help a:hover,
 .api-key-help a:focus,
 .api-key-help summary:hover,
 .api-key-help summary:focus {
-    color: #eff6ee;
+    color: #eff6ee;  /* Keep off-white */
 }
 
+/* TEXT INPUT FIELDS - Inverted borders (sunken effect) */
 input[type="text"] {
-    color: #eff6ee;
-    background-color: #3f4738;
-    border-top: 1px solid #282e22;
+    color: #eff6ee;  /* Off-white text */
+    background-color: #3f4738;  /* Dark green background */
+    border-top: 1px solid #282e22;  /* Dark borders (inverted for sunken look) */
     border-left: 1px solid #282e22;
-    border-bottom: 1px solid #808080;
+    border-bottom: 1px solid #808080;  /* Light borders */
     border-right: 1px solid #808080;
-    padding: 4px 6px;
-    width: 340px;
-    font-size: 13px;
+    padding: 4px 6px;  /* Inner padding */
+    width: 340px;  /* Fixed width */
+    font-size: 13px;  /* Match global font size */
 }
 
-/* Button under the input box, aligned to where the INPUT starts (not the label) */
+/* SUBMIT BUTTONS - Positioned to align with input field (not label) */
 button[type="submit"] {
-    background-color: #4c5844;
-    color: #eff6ee;
-    border-top: 1px solid #808080;
+    background-color: #4c5844;  /* Green background */
+    color: #eff6ee;  /* Off-white text */
+    border-top: 1px solid #808080;  /* Light borders (raised effect) */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark borders */
     border-right: 1px solid #282e22;
-    cursor: pointer;
-    font-size: 13px;
-    text-align: left;
-    padding: 6px 14px;
-    width: 170px;
-    margin-left: 102px;
-    /* 92px label + 10px gap to match input start */
-    display: block;
+    cursor: pointer;  /* Clickable cursor */
+    font-size: 13px;  /* Match global font */
+    text-align: left;  /* Align text left */
+    padding: 6px 14px;  /* Button padding */
+    width: 170px;  /* Fixed width */
+    margin-left: 102px;  /* Align with input (92px label + 10px gap) */
+    display: block;  /* Block layout */
 }
 
+/* ALL BUTTONS - Default button styling */
 button {
-    background-color: #4c5844;
-    color: #eff6ee;
-    border-top: 1px solid #808080;
+    background-color: #4c5844;  /* Green background */
+    color: #eff6ee;  /* Off-white text */
+    border-top: 1px solid #808080;  /* Light borders (raised) */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark borders */
     border-right: 1px solid #282e22;
-    cursor: pointer;
-    font-size: 13px;
-    padding: 6px 14px;
+    cursor: pointer;  /* Clickable cursor */
+    font-size: 13px;  /* Match global font */
+    padding: 6px 14px;  /* Button padding */
 }
 
+/* BUTTON ACTIVE STATE - Inverted borders for pressed effect */
 button:active {
-    border-top: 1px solid #282e22;
+    border-top: 1px solid #282e22;  /* Dark borders (pressed) */
     border-left: 1px solid #282e22;
-    border-bottom: 1px solid #808080;
+    border-bottom: 1px solid #808080;  /* Light borders */
     border-right: 1px solid #808080;
 }
 
+/* SUBMIT BUTTON ACTIVE - Same pressed effect */
 button[type="submit"]:active {
-    /* Inverted border colors on click for a pressed effect */
-    border-top: 1px solid #282e22;
+    border-top: 1px solid #282e22;  /* Inverted for 3D pressed appearance */
     border-left: 1px solid #282e22;
     border-bottom: 1px solid #808080;
     border-right: 1px solid #808080;
 }
 
+/* WINDOW TITLE - Retro window header label */
 .window-title {
-    font-weight: 400;
-    color: #eff6ee;
-    font-size: 15px;
-    background-color: #4c5844;
-    padding: 5px 10px 5px 5px;
-    margin: 0;
+    font-weight: 400;  /* Normal weight */
+    color: #eff6ee;  /* Off-white text */
+    font-size: 15px;  /* Slightly larger */
+    background-color: #4c5844;  /* Green background */
+    padding: 5px 10px 5px 5px;  /* Asymmetric padding */
+    margin: 0;  /* No margin */
 }
 
+/* LOGIN BOX WINDOW TITLE - Positioned over box border */
 .login-box .window-title {
-    position: absolute;
-    top: -11px;
-    left: 8px;
-    display: inline-block;
-    padding: 4px 10px 4px 6px;
-    font-size: 14px;
+    position: absolute;  /* Overlay on border */
+    top: -11px;  /* Half above box */
+    left: 8px;  /* Inset from left */
+    display: inline-block;  /* Fit to content */
+    padding: 4px 10px 4px 6px;  /* Smaller padding */
+    font-size: 14px;  /* Smaller than default */
 }
 
+/* LOGIN PAGE - Hide overflow for layout control */
 .login-page {
-    overflow: hidden;
+    overflow: hidden;  /* Prevent scrolling */
 }
 
+/* LOGIN PAGE MAIN CONTENT - Center everything */
 .login-page .site-main {
-    flex-direction: column;
-    align-items: center;
-    position: relative;
+    flex-direction: column;  /* Stack vertically */
+    align-items: center;  /* Center horizontally */
+    position: relative;  /* For child positioning */
 }
 
+/* LOADING PANEL - Status display during authentication */
 .loading-panel {
-    margin-top: 14px;
-    background: #4c5844;
-    padding: 10px 12px;
-    border-top: 1px solid #808080;
+    margin-top: 14px;  /* Space above */
+    background: #4c5844;  /* Green background */
+    padding: 10px 12px;  /* Interior spacing */
+    border-top: 1px solid #808080;  /* Retro 3D borders */
     border-left: 1px solid #808080;
     border-bottom: 1px solid #282e22;
     border-right: 1px solid #282e22;
-    width: 100%;
-    box-sizing: border-box;
+    width: 100%;  /* Full width */
+    box-sizing: border-box;  /* Include border in width */
 }
 
+/* LOADING TITLE - Main status text */
 .loading-title {
-    color: #eff6ee;
-    margin: 0 0 8px;
+    color: #eff6ee;  /* Off-white text */
+    margin: 0 0 8px;  /* Bottom spacing only */
 }
 
+/* LOADING STATUS AND PERCENT - Secondary text */
 .loading-status,
 .loading-percent {
-    color: #c7d5e0;
-    margin: 0 0 6px;
+    color: #c7d5e0;  /* Muted text */
+    margin: 0 0 6px;  /* Bottom spacing */
 }
 
+/* LOADING PERCENT - Override margin for spacing */
 .loading-percent {
-    margin: 6px 0 0;
+    margin: 6px 0 0;  /* Top spacing instead */
 }
 
+/* LOADING TRACK - Container for progress bar segments */
 .loading-track {
-    background: #3f4738;
-    border-top: 1px solid #282e22;
+    background: #3f4738;  /* Dark background */
+    border-top: 1px solid #282e22;  /* Inverted borders (sunken) */
     border-left: 1px solid #282e22;
-    border-bottom: 1px solid #808080;
+    border-bottom: 1px solid #808080;  /* Light borders */
     border-right: 1px solid #808080;
-    height: 16px;
-    width: 100%;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    padding: 2px;
-    box-sizing: border-box;
-    gap: 2px;
+    height: 16px;  /* Fixed height */
+    width: 100%;  /* Full width */
+    margin-bottom: 6px;  /* Space below */
+    display: flex;  /* Flexbox for bar segments */
+    align-items: center;  /* Vertically center bars */
+    padding: 2px;  /* Small padding around bars */
+    box-sizing: border-box;  /* Include padding in size */
+    gap: 2px;  /* Space between bars */
 }
 
+/* LOADING BARS - Flex container for individual bar segments */
 .loading-bars {
-    display: flex;
-    gap: 2px;
-    width: 100%;
-    height: 100%;
+    display: flex;  /* Horizontal layout */
+    gap: 2px;  /* Space between bars */
+    width: 100%;  /* Full track width */
+    height: 100%;  /* Full track height */
 }
 
+/* INDIVIDUAL LOADING BAR - Animated progress segment */
 .loading-bar {
-    flex: 1;
-    height: 100%;
-    background: #3f4738;
-    transition: background-color 0.1s linear;
+    flex: 1;  /* Equal width distribution */
+    height: 100%;  /* Full height */
+    background: #3f4738;  /* Initial dark color */
+    transition: background-color 0.1s linear;  /* Smooth color animation */
 }
 
+/* LOGIN BOX PSEUDO-ELEMENT - Remove before content */
 .login-box::before {
-    content: none;
+    content: none;  /* Disable pseudo-element */
 }
 
-/* Accounts box (saved accounts on login page) */
+/* ACCOUNTS BOX - Container for saved accounts on login page */
 .accounts-box {
-    background-color: #4c5844;
-    padding: 28px 20px 18px;
-    border-top: 1px solid #808080;
+    background-color: #4c5844;  /* Green background */
+    padding: 28px 20px 18px;  /* Interior spacing with title room */
+    border-top: 1px solid #808080;  /* Retro 3D borders */
     border-left: 1px solid #808080;
     border-bottom: 1px solid #282e22;
     border-right: 1px solid #282e22;
-    width: 100%;
-    box-sizing: border-box;
-    position: relative;
+    width: 100%;  /* Full width */
+    box-sizing: border-box;  /* Include border in width */
+    position: relative;  /* For title positioning */
 }
 
+/* ACCOUNTS BOX WINDOW TITLE - Label positioned over border */
 .accounts-box .window-title {
-    position: absolute;
-    top: -11px;
-    left: 8px;
-    margin: 0;
-    padding: 4px 10px 4px 6px;
-    display: inline-block;
-    background-color: #4c5844;
-    font-size: 14px;
+    position: absolute;  /* Overlay on border */
+    top: -11px;  /* Half above box */
+    left: 8px;  /* Inset from left */
+    margin: 0;  /* No margin */
+    padding: 4px 10px 4px 6px;  /* Label padding */
+    display: inline-block;  /* Fit to content */
+    background-color: #4c5844;  /* Match box background */
+    font-size: 14px;  /* Smaller font */
 }
 
+/* ACCOUNTS CONTROLS - Right-aligned buttons above account list */
 .accounts-controls {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 8px;
+    display: flex;  /* Horizontal layout */
+    justify-content: flex-end;  /* Align to right */
+    margin-bottom: 8px;  /* Space below */
 }
 
+/* ACCOUNTS LIST - Unordered list of saved accounts */
 .accounts-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    list-style: none;  /* Remove bullets */
+    margin: 0;  /* No margin */
+    padding: 0;  /* No padding */
+    display: flex;  /* Flexbox layout */
+    flex-direction: column;  /* Stack vertically */
+    gap: 8px;  /* Space between items */
 }
 
+/* ACCOUNT ITEM - Single saved account row */
 .account-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: flex;  /* Horizontal layout */
+    align-items: center;  /* Vertically align */
+    gap: 8px;  /* Space between controls */
 }
 
+/* EMPTY ACCOUNT ITEM - Message when no accounts saved */
 .account-item.empty {
-    color: #c7d5e0;
-    margin-top: -4px;
+    color: #c7d5e0;  /* Muted text */
+    margin-top: -4px;  /* Adjust vertical alignment */
 }
 
+/* ACCOUNT SELECT BUTTON - Click to switch accounts */
 .account-select {
-    flex: 1 1 auto;
-    text-align: left;
-    background: transparent;
-    color: #eff6ee;
-    border-top: 1px solid #808080;
+    flex: 1 1 auto;  /* Expand to fill space */
+    text-align: left;  /* Left-align text */
+    background: transparent;  /* Transparent background */
+    color: #eff6ee;  /* Off-white text */
+    border-top: 1px solid #808080;  /* Retro borders */
     border-left: 1px solid #808080;
     border-bottom: 1px solid #282e22;
     border-right: 1px solid #282e22;
-    padding: 6px 8px;
+    padding: 6px 8px;  /* Button padding */
 }
 
+/* ACCOUNT SELECT FOCUS - Keyboard navigation */
 .account-select:focus {
-    outline: 2px solid #eff6ee;
-    outline-offset: 2px;
+    outline: 2px solid #eff6ee;  /* White outline */
+    outline-offset: 2px;  /* Space from button */
 }
 
+/* ACCOUNT FAVORITE BUTTON - Small star/favorite button */
 .account-fav {
-    width: 42px;
-    flex: 0 0 42px;
-    text-align: center;
-    align-self: flex-start;
-    margin-top: -4px;
-    margin-left: 8px;
+    width: 42px;  /* Fixed width */
+    flex: 0 0 42px;  /* Don't grow or shrink */
+    text-align: center;  /* Center text */
+    align-self: flex-start;  /* Align to top */
+    margin-top: -4px;  /* Align with other controls */
+    margin-left: 8px;  /* Space from select button */
 }
 
+/* ACCOUNT DELETE BUTTON - Red warning button */
 .account-delete {
-    background-color: #3f2b2b;
-    color: #fff;
-    border: 1px solid #8a1a1a;
-    align-self: flex-start;
-    margin-top: -4px;
+    background-color: #3f2b2b;  /* Dark red background */
+    color: #fff;  /* White text */
+    border: 1px solid #8a1a1a;  /* Red border */
+    align-self: flex-start;  /* Align to top */
+    margin-top: -4px;  /* Align with other controls */
 }
 
+/* RESPONSIVE - Tablet/Mobile (max 600px) */
 @media (max-width: 600px) {
+    /* Reduce padding on login box */
     .login-box {
         padding: 28px 12px 18px;
     }
 
+    /* Stack label and input vertically on small screens */
     .login-box .input-group {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 6px;
+        flex-direction: column;  /* Stack vertically */
+        align-items: stretch;  /* Full width children */
+        gap: 6px;  /* Smaller gap */
     }
 
+    /* Labels take full width */
     .login-box .input-group label {
-        width: auto;
-        flex: none;
+        width: auto;  /* Don't fix width */
+        flex: none;  /* Don't flex */
     }
 
+    /* Inputs expand to full width */
     .login-box input[type="text"] {
-        width: 100%;
+        width: 100%;  /* Full width */
     }
 
+    /* Help text moves to left edge */
     .api-key-help {
-        margin: -2px 0 12px 0;
-        width: 100%;
-        max-width: 100%;
+        margin: -2px 0 12px 0;  /* Remove left margin */
+        width: 100%;  /* Full width */
+        max-width: 100%;  /* Maximum width */
     }
 
+    /* Submit button takes full width */
     button[type="submit"] {
-        margin-left: 0;
-        width: 100%;
+        margin-left: 0;  /* Remove left margin */
+        width: 100%;  /* Full width */
     }
 
+    /* Accounts box responsive sizing */
     .accounts-box {
-        width: 100%;
-        padding: 12px;
+        width: 100%;  /* Full width */
+        padding: 12px;  /* Reduce padding */
     }
     .account-fav {
-        width: 40px;
-        padding: 8px 6px;
+        width: 40px;  /* Smaller button */
+        padding: 8px 6px;  /* Smaller padding */
     }
 }
 
+/* FOOTER LINKS - Navigation links in footer */
 .footer-links {
-    padding: 10px;
-    text-align: center;
-    border-top: 1px solid #282e22;
-    background-color: #3f4738;
+    padding: 10px;  /* Interior spacing */
+    text-align: center;  /* Center text */
+    border-top: 1px solid #282e22;  /* Dark top border */
+    background-color: #3f4738;  /* Dark green background */
 }
 
+/* FOOTER LINK STYLING - Yellow links */
 .footer-links a {
-    color: #e8d469;
-    text-decoration: none;
-    cursor: pointer;
+    color: #e8d469;  /* Yellow text */
+    text-decoration: none;  /* No underline */
+    cursor: pointer;  /* Clickable cursor */
 }
 
+/* FOOTER LINK HOVER - Underline on hover */
 .footer-links a:hover {
-    text-decoration: underline;
+    text-decoration: underline;  /* Underline on hover */
 }
 
+/* FOOTER DIVIDER - Separator between links */
 .divider {
-    color: #e8d469;
-    margin: 0 8px;
+    color: #e8d469;  /* Yellow color */
+    margin: 0 8px;  /* Side margins */
 }
 
-/* Screen reader only text */
+/* SCREEN READER ONLY - Hidden from view but available to assistive tech */
 .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+    position: absolute;  /* Absolute positioning */
+    width: 1px;  /* Minimal width */
+    height: 1px;  /* Minimal height */
+    padding: 0;  /* No padding */
+    margin: -1px;  /* Negative margin to hide */
+    overflow: hidden;  /* Hide overflow */
+    clip: rect(0, 0, 0, 0);  /* Legacy clip */
+    white-space: nowrap;  /* Prevent wrapping */
+    border: 0;  /* No border */
 }
 
-/* Focus indicators for accessibility */
+/* FOCUS INDICATORS - Keyboard navigation visibility */
 input[type="text"]:focus,
 button[type="submit"]:focus,
 .site-nav a:focus {
-    outline: 2px solid #eff6ee;
-    outline-offset: 2px;
+    outline: 2px solid #eff6ee;  /* White outline */
+    outline-offset: 2px;  /* Space from element */
 }
 
+/* FOOTER LINK FOCUS - Same keyboard indicator */
 .footer-links a:focus {
-    outline: 2px solid #eff6ee;
-    outline-offset: 2px;
+    outline: 2px solid #eff6ee;  /* White outline */
+    outline-offset: 2px;  /* Space from element */
 }
 
-/* Login error message */
+/* LOGIN ERROR MESSAGE - Alert for failed authentication */
 .login-error {
-    color: #2b0808;
-    background-color: #fbe9e9;
-    border: 2px solid #8a1a1a;
-    padding: 10px 12px;
-    font-size: 14px;
-    text-align: left;
-    line-height: 1.4;
-    width: 100%;
+    color: #2b0808;  /* Dark red text */
+    background-color: #fbe9e9;  /* Light red background */
+    border: 2px solid #8a1a1a;  /* Red border */
+    padding: 10px 12px;  /* Interior spacing */
+    font-size: 14px;  /* Slightly larger text */
+    text-align: left;  /* Left-align text */
+    line-height: 1.4;  /* Better readability */
+    width: 100%;  /* Full width */
 }
 
 /* Needs to be above the login box in the stacking order to be visible */

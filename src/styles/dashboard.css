@@ -1,224 +1,256 @@
-/* Dashboard Styling - Retro Steam Web Aesthetic */
+/* DASHBOARD PAGE - Retro Steam Web Aesthetic */
 
+/* PAGE BODY - Customize background and spacing */
 body {
-    background-color: #4c5844;
-    color: #c7d5e0;
-    padding: 20px;
-    overflow: auto;
-    height: auto;
+    background-color: #4c5844;  /* Primary green */
+    color: #c7d5e0;  /* Light text */
+    padding: 20px;  /* Content spacing */
+    overflow: auto;  /* Allow scrolling */
+    height: auto;  /* Auto height */
 }
 
+/* DASHBOARD CONTAINER - Main content wrapper with max width */
 .dashboard-container {
-    max-width: 1000px;
-    margin: 0 auto;
+    max-width: 1000px;  /* Maximum width constraint */
+    margin: 0 auto;  /* Center on page */
 }
 
+/* DASHBOARD HEADER - Top bar with user info and logout */
 .dashboard-header {
-    background-color: #3f4738;
-    border-top: 1px solid #808080;
+    background-color: #3f4738;  /* Dark green background */
+    border-top: 1px solid #808080;  /* Retro 3D borders */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark borders */
     border-right: 1px solid #282e22;
-    padding: 20px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 20px;  /* Interior spacing */
+    margin-bottom: 20px;  /* Space below header */
+    display: flex;  /* Horizontal layout */
+    justify-content: space-between;  /* Separate logo and user info */
+    align-items: center;  /* Vertically center */
 }
 
+/* DASHBOARD TITLE - Main heading */
 .dashboard-header h1 {
-    color: #eff6ee;
-    font-size: 20px;
-    margin: 0;
+    color: #eff6ee;  /* Off-white text */
+    font-size: 20px;  /* Larger heading */
+    margin: 0;  /* No margin */
 }
 
+/* USER INFO SECTION - Container for avatar and user details */
 .user-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    display: flex;  /* Horizontal layout */
+    align-items: center;  /* Vertically align */
+    gap: 12px;  /* Space between avatar and text */
 }
 
+/* USER AVATAR - Profile picture */
 .user-avatar {
-    width: 50px;
+    width: 50px;  /* Square dimensions */
     height: 50px;
-    border: 1px solid #808080;
-    background-color: #282e22;
+    border: 1px solid #808080;  /* Light border */
+    background-color: #282e22;  /* Dark placeholder */
 }
 
+/* USERNAME TEXT - Displayed next to avatar */
 .user-name {
-    color: #eff6ee;
-    font-size: 14px;
-    margin: 0 0 4px 0;
+    color: #eff6ee;  /* Off-white text */
+    font-size: 14px;  /* Smaller text */
+    margin: 0 0 4px 0;  /* Bottom spacing only */
 }
 
+/* LOGOUT BUTTON - Sign out button in header */
 .logout-btn {
-    background-color: #4c5844;
-    color: #eff6ee;
-    border-top: 1px solid #808080;
+    background-color: #4c5844;  /* Green background */
+    color: #eff6ee;  /* Off-white text */
+    border-top: 1px solid #808080;  /* Retro borders */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark borders */
     border-right: 1px solid #282e22;
-    cursor: pointer;
-    font-size: 12px;
-    padding: 4px 12px;
-    font-family: Tahoma, Arial, sans-serif;
+    cursor: pointer;  /* Clickable cursor */
+    font-size: 12px;  /* Small text */
+    padding: 4px 12px;  /* Button padding */
+    font-family: Tahoma, Arial, sans-serif;  /* Consistent font */
 }
 
+/* LOGOUT HOVER STATE - Darken on hover */
 .logout-btn:hover {
-    background-color: #3f4738;
+    background-color: #3f4738;  /* Darker background */
 }
 
+/* LOGOUT ACTIVE STATE - Inverted borders for pressed effect */
 .logout-btn:active {
-    border-top: 1px solid #282e22;
+    border-top: 1px solid #282e22;  /* Inverted */
     border-left: 1px solid #282e22;
-    border-bottom: 1px solid #808080;
+    border-bottom: 1px solid #808080;  /* Light borders */
     border-right: 1px solid #808080;
 }
 
+/* DASHBOARD MAIN - Vertical flex container for sections */
 .dashboard-main {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    display: flex;  /* Flexbox layout */
+    flex-direction: column;  /* Stack vertically */
+    gap: 20px;  /* Space between sections */
 }
 
+/* IMPORT AND GAMES SECTIONS - Shared panel styling */
 .import-section,
 .games-section {
-    background-color: #3f4738;
-    border-top: 1px solid #808080;
+    background-color: #3f4738;  /* Dark green background */
+    border-top: 1px solid #808080;  /* Retro 3D borders */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark borders */
     border-right: 1px solid #282e22;
-    padding: 20px;
+    padding: 20px;  /* Interior spacing */
 }
 
+/* SECTION TITLES - Main headings within sections */
 .import-section h2,
 .games-section h2 {
-    color: #eff6ee;
-    font-size: 16px;
-    margin-top: 0;
-    border-bottom: 1px solid #282e22;
-    padding-bottom: 8px;
+    color: #eff6ee;  /* Off-white text */
+    font-size: 16px;  /* Medium size */
+    margin-top: 0;  /* No top margin */
+    border-bottom: 1px solid #282e22;  /* Dark separator line */
+    padding-bottom: 8px;  /* Space below heading */
 }
 
+/* IMPORT SECTION PARAGRAPH - Description text */
 .import-section p {
-    color: #c7d5e0;
-    font-size: 12px;
-    margin: 8px 0;
+    color: #c7d5e0;  /* Muted text */
+    font-size: 12px;  /* Small text */
+    margin: 8px 0;  /* Vertical spacing */
 }
 
+/* IMPORT AND SUBMIT BUTTONS - Action buttons */
 .import-btn,
 button[type="submit"] {
-    background-color: #4c5844;
-    color: #eff6ee;
-    border-top: 1px solid #808080;
+    background-color: #4c5844;  /* Green background */
+    color: #eff6ee;  /* Off-white text */
+    border-top: 1px solid #808080;  /* Retro borders */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark borders */
     border-right: 1px solid #282e22;
-    cursor: pointer;
-    font-size: 12px;
-    padding: 6px 16px;
-    font-family: Tahoma, Arial, sans-serif;
-    margin-top: 8px;
+    cursor: pointer;  /* Clickable cursor */
+    font-size: 12px;  /* Small text */
+    padding: 6px 16px;  /* Button padding */
+    font-family: Tahoma, Arial, sans-serif;  /* Consistent font */
+    margin-top: 8px;  /* Space above button */
 }
 
+/* IMPORT BUTTON HOVER - Darken on hover */
 .import-btn:hover {
-    background-color: #3f4738;
+    background-color: #3f4738;  /* Darker background */
 }
 
+/* IMPORT BUTTON ACTIVE/DISABLED - Pressed effect */
 .import-btn:active,
 .import-btn:disabled {
-    border-top: 1px solid #282e22;
+    border-top: 1px solid #282e22;  /* Inverted borders */
     border-left: 1px solid #282e22;
-    border-bottom: 1px solid #808080;
+    border-bottom: 1px solid #808080;  /* Light borders */
     border-right: 1px solid #808080;
 }
 
+/* IMPORT BUTTON DISABLED - Reduced opacity */
 .import-btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+    opacity: 0.7;  /* Semi-transparent */
+    cursor: not-allowed;  /* Disabled cursor */
 }
 
+/* STATUS MESSAGE - Dynamic feedback messages */
 .status-message {
-    margin-top: 12px;
-    font-size: 12px;
-    padding: 8px 12px;
-    border: 1px solid #282e22;
+    margin-top: 12px;  /* Space above */
+    font-size: 12px;  /* Small text */
+    padding: 8px 12px;  /* Interior spacing */
+    border: 1px solid #282e22;  /* Dark border */
 }
 
+/* LOADING STATUS - Messages during operations */
 .status-message.loading {
-    color: #e8d469;
-    background-color: #4c5844;
+    color: #e8d469;  /* Yellow text */
+    background-color: #4c5844;  /* Green background */
 }
 
+/* SUCCESS STATUS - Confirmation messages */
 .status-message.success {
-    color: #c7d5e0;
-    background-color: #4c5844;
+    color: #c7d5e0;  /* Light text */
+    background-color: #4c5844;  /* Green background */
 }
 
+/* ERROR STATUS - Error messages */
 .status-message.error {
-    color: #e8d469;
-    background-color: #4c5844;
+    color: #e8d469;  /* Yellow text */
+    background-color: #4c5844;  /* Green background */
 }
 
+/* GAMES GRID - Responsive grid layout for game cards */
 .games-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 12px;
-    margin-top: 12px;
+    display: grid;  /* Grid layout */
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));  /* Responsive columns */
+    gap: 12px;  /* Space between cards */
+    margin-top: 12px;  /* Space above grid */
 }
 
+/* GAME CARD - Individual game display card */
 .game-card {
-    background-color: #4c5844;
-    border: 1px solid #282e22;
-    padding: 8px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s;
+    background-color: #4c5844;  /* Green background */
+    border: 1px solid #282e22;  /* Dark border */
+    padding: 8px;  /* Interior spacing */
+    text-align: center;  /* Center text */
+    cursor: pointer;  /* Clickable cursor */
+    transition: border-color 0.2s;  /* Smooth hover transition */
 }
 
+/* GAME CARD HOVER - Highlight on hover */
 .game-card:hover {
-    border: 1px solid #808080;
+    border: 1px solid #808080;  /* Light border on hover */
 }
 
+/* GAME IMAGE - Thumbnail image in game card */
 .game-image {
-    width: 100%;
-    height: 100px;
-    background-size: cover;
-    background-position: center;
-    background-color: #282e22;
-    margin-bottom: 8px;
-    border: 1px solid #282e22;
+    width: 100%;  /* Full card width */
+    height: 100px;  /* Fixed height */
+    background-size: cover;  /* Fill image space */
+    background-position: center;  /* Center image */
+    background-color: #282e22;  /* Placeholder color */
+    margin-bottom: 8px;  /* Space below image */
+    border: 1px solid #282e22;  /* Dark border */
 }
 
+/* GAME TITLE - Game name text */
 .game-card h3 {
-    color: #eff6ee;
-    font-size: 11px;
-    margin: 0 0 4px 0;
-    word-wrap: break-word;
-    line-height: 1.3;
+    color: #eff6ee;  /* Off-white text */
+    font-size: 11px;  /* Small text */
+    margin: 0 0 4px 0;  /* Bottom spacing only */
+    word-wrap: break-word;  /* Wrap long titles */
+    line-height: 1.3;  /* Line spacing */
 }
 
+/* PLAYTIME - Game playtime info */
 .game-card .playtime {
-    color: #e8d469;
-    font-size: 10px;
-    margin: 0;
+    color: #e8d469;  /* Yellow text */
+    font-size: 10px;  /* Tiny text */
+    margin: 0;  /* No margin */
 }
 
+/* PLACEHOLDER TEXT - Message when no games to display */
 .placeholder-text {
-    color: #c7d5e0;
-    font-size: 12px;
-    text-align: center;
-    padding: 20px;
-    grid-column: 1 / -1;
+    color: #c7d5e0;  /* Muted text */
+    font-size: 12px;  /* Small text */
+    text-align: center;  /* Center text */
+    padding: 20px;  /* Interior spacing */
+    grid-column: 1 / -1;  /* Span full grid width */
 }
 
+/* RESPONSIVE - Tablet/Mobile (max 768px) */
 @media (max-width: 768px) {
+    /* Stack header items vertically */
     .dashboard-header {
-        flex-direction: column;
-        gap: 12px;
+        flex-direction: column;  /* Stack vertically */
+        gap: 12px;  /* Space between items */
     }
 
+    /* Adjust game grid for smaller screens */
     .games-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));  /* Smaller minimum width */
     }
 }

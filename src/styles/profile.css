@@ -1,338 +1,388 @@
+/* PROFILE PAGE - User profile and game management */
+
+/* PAGE BODY - Background and text color */
 body {
-    background-color: #4c5844;
-    color: #c7d5e0;
-    overflow: auto;
-    min-height: 100vh;
+    background-color: #4c5844;  /* Primary green */
+    color: #c7d5e0;  /* Light text */
+    overflow: auto;  /* Allow scrolling */
+    min-height: 100vh;  /* Full viewport height */
 }
 
+/* PROFILE PAGE MAIN - Full width container */
 .profile-page-main {
-    width: 100%;
+    width: 100%;  /* Full width */
 }
 
+/* PROFILE CONTAINER - Main profile panel with retro border */
 .profile-container {
-    max-width: 920px;
-    width: min(920px, 100%);
-    margin: 16px auto 80px;
-    background-color: #3f4738;
-    border-top: 1px solid #808080;
+    max-width: 920px;  /* Maximum width constraint */
+    width: min(920px, 100%);  /* Use smaller of max or full width */
+    margin: 16px auto 80px;  /* Center with bottom margin */
+    background-color: #3f4738;  /* Dark green background */
+    border-top: 1px solid #808080;  /* Retro 3D borders */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark borders */
     border-right: 1px solid #282e22;
-    padding: 20px;
-    box-sizing: border-box;
+    padding: 20px;  /* Interior spacing */
+    box-sizing: border-box;  /* Include border in size */
 }
 
+/* PANEL TITLE - Main heading for profile */
 .panel-title {
-    color: #eff6ee;
-    margin: 0 0 14px;
-    border-bottom: 1px solid #282e22;
-    padding-bottom: 8px;
-    font-size: 18px;
+    color: #eff6ee;  /* Off-white text */
+    margin: 0 0 14px;  /* Bottom spacing only */
+    border-bottom: 1px solid #282e22;  /* Dark separator line */
+    padding-bottom: 8px;  /* Space below title */
+    font-size: 18px;  /* Large heading */
 }
 
+/* PROFILE HEADER - Top section with avatar and user info */
 .profile-header {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 18px;
+    display: flex;  /* Flexbox layout */
+    gap: 16px;  /* Space between avatar and info */
+    margin-bottom: 18px;  /* Space below header */
 }
 
+/* PROFILE AVATAR - User profile picture */
 .profile-avatar {
-    width: 96px;
+    width: 96px;  /* Square dimensions */
     height: 96px;
-    border: 1px solid #808080;
-    background-color: #282e22;
+    border: 1px solid #808080;  /* Light border */
+    background-color: #282e22;  /* Dark placeholder */
 }
 
+/* PROFILE INFO - User details section */
 .profile-info {
-    color: #c7d5e0;
-    font-size: 12px;
+    color: #c7d5e0;  /* Muted text */
+    font-size: 12px;  /* Small text */
 }
 
+/* PROFILE INFO PARAGRAPH - Individual info line */
 .profile-info p {
-    margin: 5px 0;
+    margin: 5px 0;  /* Small vertical spacing */
 }
 
+/* USERNAME - User's name display */
 .username {
-    margin: 0 0 6px;
-    color: #eff6ee;
-    font-size: 16px;
+    margin: 0 0 6px;  /* Bottom spacing */
+    color: #eff6ee;  /* Off-white text */
+    font-size: 16px;  /* Larger heading */
 }
 
+/* PANELS - Import, preferences, and games sections */
 .import-panel,
 .preferences-panel,
 .games-section {
-    background-color: #4c5844;
-    border-top: 1px solid #808080;
+    background-color: #4c5844;  /* Green background */
+    border-top: 1px solid #808080;  /* Retro 3D borders */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark borders */
     border-right: 1px solid #282e22;
-    padding: 14px;
-    margin-top: 12px;
+    padding: 14px;  /* Interior spacing */
+    margin-top: 12px;  /* Space above panel */
 }
 
+/* IMPORT PANEL - Vertical flex container */
 .import-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    display: flex;  /* Flexbox layout */
+    flex-direction: column;  /* Stack vertically */
+    gap: 10px;  /* Space between items */
 }
 
+/* IMPORT ACTIONS - Container for import/export buttons */
 .import-panel .import-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 0;
+    display: flex;  /* Flexbox layout */
+    flex-direction: column;  /* Stack vertically */
+    gap: 8px;  /* Space between buttons */
+    margin-bottom: 0;  /* No bottom margin */
 }
 
+/* SECTION HEADINGS - H3 titles in panels */
 .import-panel h3,
 .preferences-panel h3,
 .games-section h3 {
-    margin: 0 0 8px;
-    color: #eff6ee;
-    font-size: 14px;
+    margin: 0 0 8px;  /* Bottom spacing only */
+    color: #eff6ee;  /* Off-white text */
+    font-size: 14px;  /* Medium size */
 }
 
+/* PANEL PARAGRAPHS - Text in panels */
 .import-panel p,
 .preferences-panel p {
-    margin: 0;
+    margin: 0;  /* No margin */
 }
 
+/* GAMES SECTION HEADER - Title and controls container */
 .games-section-header {
-    display: flex;
-    justify-content: space-between;
-    gap: 14px;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    margin-bottom: 14px;
+    display: flex;  /* Flexbox layout */
+    justify-content: space-between;  /* Separate title and controls */
+    gap: 14px;  /* Space between items */
+    align-items: flex-start;  /* Align to top */
+    flex-wrap: wrap;  /* Wrap on smaller screens */
+    margin-bottom: 14px;  /* Space below header */
 }
 
+/* GAMES SUMMARY - Small info text below title */
 .games-summary {
-    margin: 4px 0 0;
-    color: #c7d5e0;
-    font-size: 12px;
+    margin: 4px 0 0;  /* Top spacing */
+    color: #c7d5e0;  /* Muted text */
+    font-size: 12px;  /* Small text */
 }
 
+/* GAMES CONTROLS - Grid of search/filter/sort fields */
 .games-controls {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
-    width: min(100%, 540px);
-    margin-bottom: 16px;
+    display: grid;  /* Grid layout */
+    grid-template-columns: repeat(3, minmax(0, 1fr));  /* Three columns */
+    gap: 10px;  /* Space between fields */
+    width: min(100%, 540px);  /* Maximum width 540px */
+    margin-bottom: 16px;  /* Space below controls */
 }
 
+/* CONTROL FIELD - Individual search/filter field */
 .control-field {
-    display: grid;
-    gap: 4px;
-    font-size: 11px;
-    color: #eff6ee;
+    display: grid;  /* Grid layout for label + input */
+    gap: 4px;  /* Space between label and input */
+    font-size: 11px;  /* Small text */
+    color: #eff6ee;  /* Off-white text */
 }
 
+/* CONTROL FIELD INPUTS - Search, filter, and sort inputs */
 .control-field input,
 .control-field select {
-    width: 100%;
-    box-sizing: border-box;
-    background-color: #4c5844;
-    color: #eff6ee;
-    border-top: 1px solid #808080;
+    width: 100%;  /* Full width */
+    box-sizing: border-box;  /* Include border in size */
+    background-color: #4c5844;  /* Green background */
+    color: #eff6ee;  /* Off-white text */
+    border-top: 1px solid #808080;  /* Retro borders */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark borders */
     border-right: 1px solid #282e22;
-    padding: 6px 8px;
-    font: inherit;
+    padding: 6px 8px;  /* Interior padding */
+    font: inherit;  /* Inherit font */
 }
 
+/* CONTROL FIELD FOCUS - Keyboard navigation indicator */
 .control-field input:focus,
 .control-field select:focus,
 .import-btn:focus,
 .logout-btn:focus {
-    outline: 2px solid #e8d469;
-    outline-offset: 2px;
+    outline: 2px solid #e8d469;  /* Yellow outline */
+    outline-offset: 2px;  /* Space from element */
 }
 
+/* ACTION BUTTONS - Import and logout buttons */
 .import-btn,
 .logout-btn {
-    background-color: #4c5844;
-    color: #eff6ee;
-    border-top: 1px solid #808080;
+    background-color: #4c5844;  /* Green background */
+    color: #eff6ee;  /* Off-white text */
+    border-top: 1px solid #808080;  /* Retro borders */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark borders */
     border-right: 1px solid #282e22;
-    padding: 6px 14px;
-    cursor: pointer;
-    font-size: 12px;
-    margin: 0;
-    width: 110px;
+    padding: 6px 14px;  /* Button padding */
+    cursor: pointer;  /* Clickable cursor */
+    font-size: 12px;  /* Small text */
+    margin: 0;  /* No margin */
+    width: 110px;  /* Fixed width */
 }
 
+/* BUTTON ACTIVE/DISABLED STATE - Pressed effect */
 .import-btn:active,
 .logout-btn:active,
 .import-btn:disabled {
-    border-top: 1px solid #282e22;
+    border-top: 1px solid #282e22;  /* Inverted borders */
     border-left: 1px solid #282e22;
-    border-bottom: 1px solid #808080;
+    border-bottom: 1px solid #808080;  /* Light borders */
     border-right: 1px solid #808080;
 }
 
+/* DISABLED BUTTON STATE - Reduced opacity and wait cursor */
 .import-btn:disabled {
-    opacity: 0.7;
-    cursor: wait;
+    opacity: 0.7;  /* Semi-transparent */
+    cursor: wait;  /* Wait cursor */
 }
 
+/* LOGOUT BUTTON - Separate from other buttons */
 .logout-btn {
-    margin-top: 16px;
+    margin-top: 16px;  /* Space above */
 }
 
+/* STATUS MESSAGES - Feedback messages for user actions */
 .status-message {
-    margin: 0;
-    min-height: 0px;
-    font-size: 12px;
+    margin: 0;  /* No margin */
+    min-height: 0px;  /* No minimum height */
+    font-size: 12px;  /* Small text */
 }
 
+/* LOADING STATUS - Message during operations */
 .status-message.loading {
-    color: #e8d469;
+    color: #e8d469;  /* Yellow text */
 }
 
+/* SUCCESS STATUS - Confirmation message */
 .status-message.success {
-    color: #eff6ee;
+    color: #eff6ee;  /* Off-white text */
 }
 
+/* ERROR STATUS - Error message */
 .status-message.error {
-    color: #ffe6a6;
+    color: #ffe6a6;  /* Light yellow text */
 }
 
+/* GAMES GRID - Responsive grid of game cards */
 .games-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px;
-    margin-top: 4px;
+    display: grid;  /* Grid layout */
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));  /* Responsive columns */
+    gap: 12px;  /* Space between cards */
+    margin-top: 4px;  /* Space above grid */
 }
 
+/* GAME CARD - Individual game display */
 .game-card {
-    background-color: #3f4738;
-    border-top: 1px solid #808080;
+    background-color: #3f4738;  /* Dark green background */
+    border-top: 1px solid #808080;  /* Retro 3D borders */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark borders */
     border-right: 1px solid #282e22;
-    padding: 8px;
+    padding: 8px;  /* Interior spacing */
 }
 
+/* GAME CARD IMAGE - Game thumbnail */
 .game-card-image {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    object-fit: cover;
-    display: block;
-    margin-bottom: 6px;
-    background-color: #282e22;
-    border: 1px solid #282e22;
+    width: 100%;  /* Full width */
+    aspect-ratio: 16 / 9;  /* Video aspect ratio */
+    object-fit: cover;  /* Cover without distortion */
+    display: block;  /* Block display */
+    margin-bottom: 6px;  /* Space below image */
+    background-color: #282e22;  /* Placeholder color */
+    border: 1px solid #282e22;  /* Border */
 }
 
+/* GAME TITLE - Game name */
 .game-title {
-    margin: 0;
-    color: #eff6ee;
-    font-size: 11px;
-    line-height: 1.4;
+    margin: 0;  /* No margin */
+    color: #eff6ee;  /* Off-white text */
+    font-size: 11px;  /* Small text */
+    line-height: 1.4;  /* Line spacing */
 }
 
+/* GAME META - Game metadata (platform, publisher) */
 .game-meta {
-    margin: 4px 0 0;
-    color: #e8d469;
-    font-size: 10px;
+    margin: 4px 0 0;  /* Top spacing */
+    color: #e8d469;  /* Yellow text */
+    font-size: 10px;  /* Tiny text */
 }
 
+/* GAME PRICE - Price display */
 .game-price {
-    margin: 3px 0 0;
-    color: #6ba53d;
-    font-size: 10px;
-    font-weight: bold;
+    margin: 3px 0 0;  /* Top spacing */
+    color: #6ba53d;  /* Green text */
+    font-size: 10px;  /* Tiny text */
+    font-weight: bold;  /* Bold text */
 }
 
+/* EMPTY STATE - Message when no games */
 .empty-state {
-    margin: 0;
-    color: #c7d5e0;
-    font-size: 12px;
+    margin: 0;  /* No margin */
+    color: #c7d5e0;  /* Muted text */
+    font-size: 12px;  /* Small text */
 }
 
+/* RESPONSIVE - Mobile (max 600px) */
 @media (max-width: 600px) {
+    /* Reduce container padding */
     .profile-container {
-        margin-top: 8px;
-        padding: 14px;
+        margin-top: 8px;  /* Smaller margin */
+        padding: 14px;  /* Reduced padding */
     }
 
+    /* Stack profile header vertically */
     .profile-header {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: column;  /* Stack vertically */
+        align-items: flex-start;  /* Align left */
     }
 
+    /* Smaller avatar on mobile */
     .profile-avatar {
-        width: 88px;
+        width: 88px;  /* Smaller dimensions */
         height: 88px;
     }
 
+    /* Adjust game grid for mobile */
     .games-grid {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 8px;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));  /* Smaller minimum width */
+        gap: 8px;  /* Smaller gap */
     }
 
+    /* Single column controls on mobile */
     .games-controls {
-        grid-template-columns: 1fr;
-        width: 100%;
+        grid-template-columns: 1fr;  /* Single column */
+        width: 100%;  /* Full width */
     }
 }
 
+/* LIGHT THEME - Alternative color scheme for light theme */
+
+/* Light theme panels */
 .light-theme .preferences-panel,
 .light-theme .preferences-panel {
-    background-color: #1b2838;
-    color: #c7d5e0;
-}
-.light-theme .import-panel,
-.light-theme .games-section {
-    background-color: #1b2838;
-    color: #c7d5e0;
+    background-color: #1b2838;  /* Dark blue background */
+    color: #c7d5e0;  /* Light text */
 }
 
-/* Fix search/filter/sort boxes */
+.light-theme .import-panel,
+.light-theme .games-section {
+    background-color: #1b2838;  /* Dark blue background */
+    color: #c7d5e0;  /* Light text */
+}
+
+/* Light theme form inputs */
 .light-theme .control-field input,
 .light-theme .control-field select {
-    background-color: #1b2838;
-    color: #c7d5e0;
-    border-top: 1px solid #66c0f4;
+    background-color: #1b2838;  /* Dark blue */
+    color: #c7d5e0;  /* Light text */
+    border-top: 1px solid #66c0f4;  /* Blue borders */
     border-left: 1px solid #66c0f4;
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid #000;  /* Dark borders */
     border-right: 1px solid #000;
 }
 
-/* Fix game cards */
+/* Light theme game cards */
 .light-theme .game-card {
-    background-color: #2a475e;
+    background-color: #2a475e;  /* Light blue background */
 }
 
-/* Fix text colors */
+/* Light theme game card text */
 .light-theme .game-title {
-    color: #ffffff;
+    color: #ffffff;  /* White text */
 }
 
 .light-theme .game-meta {
-    color: #66c0f4;
+    color: #66c0f4;  /* Blue text */
 }
 
 .light-theme .game-price {
-    color: #a4d41e;
+    color: #a4d41e;  /* Green text */
 }
+
+/* Light theme profile container */
 .light-theme .profile-container {
-    background-color: #2a475e;
-
-    border-top: 1px solid #66c0f4;
+    background-color: #2a475e;  /* Light blue background */
+    border-top: 1px solid #66c0f4;  /* Blue borders */
     border-left: 1px solid #66c0f4;
-
-    border-bottom: 1px solid #16202d;
+    border-bottom: 1px solid #16202d;  /* Dark borders */
     border-right: 1px solid #16202d;
 }
 
+/* Light theme games section and related elements */
 .light-theme .games-section,
 .light-theme .games-section-header,
 .light-theme .games-summary,
 .light-theme .empty-state {
-    background-color: #1b2838;
+    background-color: #1b2838;  /* Dark blue background */
 }
+
+/* Ensure all children in light theme have consistent background */
 .light-theme .games-section * {
-    background-color: #1b2838 !important;
+    background-color: #1b2838 !important;  /* Dark blue background */
 }

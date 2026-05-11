@@ -1,691 +1,801 @@
+/* MAP PAGE - Game roadmap visualization */
+
+/* CSS VARIABLES - Dark theme color palette */
 .map-page {
-  --map-page-bg: linear-gradient(180deg, #4c5844 0%, #434f3b 100%);
-  --map-text: #eff6ee;
-  --map-muted: #a8b49e;
-  --map-panel: rgba(63, 71, 56, 0.55);
-  --map-panel-strong: rgba(63, 71, 56, 0.8);
-  --map-panel-border: rgba(128, 128, 128, 0.24);
-  --map-line: #8e8a4f;
-  --map-line-soft: rgba(232, 212, 105, 0.18);
-  --map-accent: #c2af3f;
-  --map-accent-2: #ffb07a;
-  --map-main-line: #e8d469;
-  --map-branch-line: #5eb7ea;
-  --map-side-line: #d58d5e;
-  --map-branch-soft: rgba(94, 183, 234, 0.22);
-  --map-side-soft: rgba(213, 141, 94, 0.22);
-  --map-shadow: rgba(0, 0, 0, 0.15);
-  background: var(--map-page-bg);
-  color: var(--map-text);
+  --map-page-bg: linear-gradient(180deg, #4c5844 0%, #434f3b 100%);  /* Green gradient background */
+  --map-text: #eff6ee;  /* Off-white text */
+  --map-muted: #a8b49e;  /* Muted text */
+  --map-panel: rgba(63, 71, 56, 0.55);  /* Semi-transparent panels */
+  --map-panel-strong: rgba(63, 71, 56, 0.8);  /* More opaque panels */
+  --map-panel-border: rgba(128, 128, 128, 0.24);  /* Subtle borders */
+  --map-line: #8e8a4f;  /* Line color */
+  --map-line-soft: rgba(232, 212, 105, 0.18);  /* Soft line color */
+  --map-accent: #c2af3f;  /* Yellow accent */
+  --map-accent-2: #ffb07a;  /* Orange accent */
+  --map-main-line: #e8d469;  /* Main track color (yellow) */
+  --map-branch-line: #5eb7ea;  /* Branch track color (blue) */
+  --map-side-line: #d58d5e;  /* Side track color (orange) */
+  --map-branch-soft: rgba(94, 183, 234, 0.22);  /* Branch soft color */
+  --map-side-soft: rgba(213, 141, 94, 0.22);  /* Side soft color */
+  --map-shadow: rgba(0, 0, 0, 0.15);  /* Subtle shadow */
+  background: var(--map-page-bg);  /* Apply gradient */
+  color: var(--map-text);  /* Apply text color */
 }
 
+/* LIGHT THEME VARIABLES - Alternative color scheme */
 .light-theme.map-page {
-  --map-page-bg: #2a475e;
-  --map-text: #c7d5e0;
-  --map-muted: #9fb7c5;
-  --map-panel: #1b2838;
-  --map-panel-strong: #1b2838;
-  --map-panel-border: #000000;
-  --map-line: #66c0f4;
-  --map-line-soft: rgba(102, 192, 244, 0.18);
-  --map-accent: #b77cff;
-  --map-accent-2: #7ed957;
-  --map-main-line: #b77cff;
-  --map-branch-line: #ff6b6b;
-  --map-side-line: #7ed957;
-  --map-branch-soft: rgba(255, 107, 107, 0.22);
-  --map-side-soft: rgba(126, 217, 87, 0.22);
-  --map-shadow: rgba(0, 0, 0, 0.2);
+  --map-page-bg: #2a475e;  /* Light blue background */
+  --map-text: #c7d5e0;  /* Light text */
+  --map-muted: #9fb7c5;  /* Light muted text */
+  --map-panel: #1b2838;  /* Dark panel */
+  --map-panel-strong: #1b2838;  /* Dark panel (strong) */
+  --map-panel-border: #000000;  /* Dark border */
+  --map-line: #66c0f4;  /* Light blue line */
+  --map-line-soft: rgba(102, 192, 244, 0.18);  /* Soft blue line */
+  --map-accent: #b77cff;  /* Purple accent */
+  --map-accent-2: #7ed957;  /* Green accent */
+  --map-main-line: #b77cff;  /* Purple main track */
+  --map-branch-line: #ff6b6b;  /* Red branch track */
+  --map-side-line: #7ed957;  /* Green side track */
+  --map-branch-soft: rgba(255, 107, 107, 0.22);  /* Soft red */
+  --map-side-soft: rgba(126, 217, 87, 0.22);  /* Soft green */
+  --map-shadow: rgba(0, 0, 0, 0.2);  /* Darker shadow */
 }
 
+/* MAP HEADER - Navigation header */
 .map-header {
-  border-bottom: 1px solid #282e22;
-  box-shadow: inset 0 0px 0 #282e22;
+  border-bottom: 1px solid #282e22;  /* Dark bottom border */
+  box-shadow: inset 0 0px 0 #282e22;  /* Inset shadow effect */
 }
 
+/* NAV LINKS AND BUTTONS - Navigation styling */
 .map-nav a,
 .map-nav button {
-  color: #eff6ee;
-  text-decoration: none;
-  padding: 6px 14px;
-  border-top: 1px solid #808080;
+  color: #eff6ee;  /* Off-white text */
+  text-decoration: none;  /* No underlines */
+  padding: 6px 14px;  /* Button padding */
+  border-top: 1px solid #808080;  /* Retro 3D borders */
   border-left: 1px solid #808080;
-  border-bottom: 1px solid #282e22;
+  border-bottom: 1px solid #282e22;  /* Dark borders */
   border-right: 1px solid #282e22;
-  background-color: #4c5844;
-  font: inherit;
+  background-color: #4c5844;  /* Green background */
+  font: inherit;  /* Inherit font */
 }
 
+/* MODAL OPEN - Prevent scrolling when modal open */
 .modal-open {
-  overflow: hidden;
+  overflow: hidden;  /* Hide scrolling */
 }
 
+/* ACTIVE NAV LINK - Highlight current page */
 .map-nav a[aria-current="page"] {
-  color: var(--map-accent);
-  box-shadow: inset 0 0 0 1px var(--map-line);
+  color: var(--map-accent);  /* Accent color */
+  box-shadow: inset 0 0 0 1px var(--map-line);  /* Inset line shadow */
 }
 
+/* MAP MAIN - Main content area with padding */
 .map-main {
-  padding: 0 24px 28px;
+  padding: 0 24px 28px;  /* Asymmetric padding */
 }
 
+/* MAP SHELL - Content wrapper with max width */
 .map-shell {
-  width: min(1120px, 100%);
-  margin: 0 auto;
-  padding-top: 18px;
+  width: min(1120px, 100%);  /* Maximum 1120px or full width */
+  margin: 0 auto;  /* Center on page */
+  padding-top: 18px;  /* Top padding */
 }
 
+/* SCREEN READER ONLY - Hidden from view but available to assistive tech */
 .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  border: 0;
+  position: absolute;  /* Absolute positioning */
+  width: 1px;  /* Minimal width */
+  height: 1px;  /* Minimal height */
+  padding: 0;  /* No padding */
+  margin: -1px;  /* Negative margin to hide */
+  overflow: hidden;  /* Hide overflow */
+  clip: rect(0, 0, 0, 0);  /* Legacy clip */
+  border: 0;  /* No border */
 }
 
+/* MAP STATS - Grid of statistics cards */
 .map-stats {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-  margin-bottom: 26px;
+  display: grid;  /* Grid layout */
+  grid-template-columns: repeat(4, minmax(0, 1fr));  /* Four equal columns */
+  gap: 14px;  /* Space between cards */
+  margin-bottom: 26px;  /* Space below grid */
 }
 
+/* STAT CARD - Individual statistic card */
 .stat-card {
-  min-height: 74px;
-  border: 1px solid var(--map-panel-border);
-  background: var(--map-panel);
-  padding: 16px 18px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 6px;
+  min-height: 74px;  /* Minimum height */
+  border: 1px solid var(--map-panel-border);  /* Panel border */
+  background: var(--map-panel);  /* Semi-transparent panel */
+  padding: 16px 18px;  /* Interior padding */
+  display: flex;  /* Flexbox layout */
+  flex-direction: column;  /* Stack vertically */
+  justify-content: center;  /* Center content */
+  gap: 6px;  /* Space between items */
 }
 
+/* STAT ACCENT - Alternate colored stat card */
 .stat-accent {
-  border-color: var(--map-accent-2);
+  border-color: var(--map-accent-2);  /* Alternate accent color */
 }
 
+/* TRACK LABEL - Track title with underline */
 .track-label {
-  color: var(--map-text);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  padding-top: 20px;
-  position: relative;
-  display: inline-block;
-  padding-bottom: 8px;
-  margin-top: 8px;
+  color: var(--map-text);  /* Text color */
+  font-weight: 700;  /* Bold weight */
+  letter-spacing: 0.08em;  /* Wider letter spacing */
+  padding-top: 20px;  /* Top padding */
+  position: relative;  /* For pseudo-element positioning */
+  display: inline-block;  /* Inline-block layout */
+  padding-bottom: 8px;  /* Bottom padding */
+  margin-top: 8px;  /* Top margin */
 }
 
+/* TRACK CONTROLS - Container for action buttons below track */
 .track-controls {
-  margin-top: 12px;
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  align-items: center;
+  margin-top: 12px;  /* Space above */
+  display: flex;  /* Flexbox layout */
+  gap: 8px;  /* Space between buttons */
+  justify-content: flex-end;  /* Align right */
+  align-items: center;  /* Vertically center */
 }
 
+/* TRACK GROUP - Layout for track label and content */
 .track-group {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 16px;
-  align-items: start;
-  margin-bottom: 24px;
+  display: grid;  /* Grid layout */
+  grid-template-columns: 120px 1fr;  /* Fixed label width, flexible content */
+  gap: 16px;  /* Space between columns */
+  align-items: start;  /* Align to top */
+  margin-bottom: 24px;  /* Space below group */
 }
 
+/* TRACK LABEL ADJUSTED - Flexbox layout for stacking */
 .track-label {
-  margin-top: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  margin-top: 8px;  /* Top margin */
+  display: flex;  /* Flexbox layout */
+  flex-direction: column;  /* Stack vertically */
+  gap: 8px;  /* Space between items */
 }
 
+/* TRACK CONTROLS ADJUSTED - Horizontal flex layout */
 .track-controls {
-  margin-top: 4px;
-  display:flex;
-  gap:8px;
-  justify-content:flex-start;
-  align-items: center;
+  margin-top: 4px;  /* Minimal top margin */
+  display: flex;  /* Flexbox layout */
+  gap: 8px;  /* Space between buttons */
+  justify-content: flex-start;  /* Align left */
+  align-items: center;  /* Vertically center */
 }
 
+/* BRANCH GROUP LABELS - Track label color for branch track */
 .branch-group .track-label {
-  color: var(--map-text);
+  color: var(--map-text);  /* Text color */
 }
 
+/* SIDETRACK GROUP LABELS - Track label color for side track */
 .sidetrack-group .track-label {
-  color: var(--map-text);
+  color: var(--map-text);  /* Text color */
 }
 
+/* TRACK LABEL UNDERLINE - Colored line below track label */
 .track-label::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 3px;
-  border-radius: 2px;
-  background: var(--map-main-line);
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  content: '';  /* Create pseudo-element */
+  position: absolute;  /* Absolute positioning */
+  left: 0;  /* Align left */
+  right: 0;  /* Align right */
+  bottom: 0;  /* Align bottom */
+  height: 3px;  /* Line height */
+  border-radius: 2px;  /* Rounded corners */
+  background: var(--map-main-line);  /* Main track color */
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);  /* Subtle shadow */
 }
 
+/* BRANCH GROUP UNDERLINE - Branch track underline color */
 .branch-group .track-label::after {
-  background: var(--map-branch-line);
+  background: var(--map-branch-line);  /* Branch color */
 }
 
+/* SIDETRACK GROUP UNDERLINE - Side track underline color */
 .sidetrack-group .track-label::after {
-  background: var(--map-side-line);
+  background: var(--map-side-line);  /* Side track color */
 }
 
+/* TRACK CONTENT - Container for game nodes in track */
 .track-content {
-  border-top: 1px solid var(--map-line-soft);
-  padding-top: 12px;
-  padding-bottom: 28px; /* leave room for controls so node borders remain visible */
+  border-top: 1px solid var(--map-line-soft);  /* Soft line above */
+  padding-top: 12px;  /* Top padding */
+  padding-bottom: 28px;  /* Bottom padding for controls */
 }
 
+/* BRANCH TRACK CONTENT - Border color for branch track */
 .branch-group .track-content {
-  border-top-color: rgba(94, 183, 234, 0.2);
+  border-top-color: rgba(94, 183, 234, 0.2);  /* Branch track border */
 }
 
+/* SIDETRACK CONTENT - Border color for side track */
 .sidetrack-group .track-content {
-  border-top-color: rgba(213, 141, 94, 0.2);
+  border-top-color: rgba(213, 141, 94, 0.2);  /* Side track border */
 }
 
+/* TRACK HEADING - Title within track content */
 .track-heading {
-  margin: 0 0 10px;
-  font-size: 14px;
-  color: var(--map-text);
+  margin: 0 0 10px;  /* Bottom spacing only */
+  font-size: 14px;  /* Medium size */
+  color: var(--map-text);  /* Text color */
 }
 
+/* TRACK ROW - Horizontal scrollable container for game nodes */
 .track-row {
-  display: flex;
-  gap: 14px;
-  flex-wrap: nowrap;
-  min-height: 104px;
-  max-height: none;
-  overflow-x: auto;
-  overflow-y: visible;
-  scroll-snap-type: x mandatory;
-  padding-bottom: 8px;
-  align-items: flex-start;
-  max-width: 100%;
-  /* Allow page scrolling when the cursor/wheel is over a track-row (fix Firefox behavior) */
-  overscroll-behavior: auto;
-  touch-action: auto;
+  display: flex;  /* Flexbox layout */
+  gap: 14px;  /* Space between nodes */
+  flex-wrap: nowrap;  /* Don't wrap items */
+  min-height: 104px;  /* Minimum height */
+  max-height: none;  /* No maximum height */
+  overflow-x: auto;  /* Horizontal scroll */
+  overflow-y: visible;  /* Show vertical content */
+  scroll-snap-type: x mandatory;  /* Snap scrolling */
+  padding-bottom: 8px;  /* Bottom padding */
+  align-items: flex-start;  /* Align to top */
+  max-width: 100%;  /* Full width */
+  overscroll-behavior: auto;  /* Allow page scrolling */
+  touch-action: auto;  /* Allow touch interaction */
 }
 
-/* For touch devices prefer horizontal pan behavior and native momentum scrolling */
+/* TOUCH DEVICES - Optimize for touch scrolling */
 @media (pointer: coarse) {
   .track-row {
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-x;
-    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;  /* Momentum scrolling */
+    touch-action: pan-x;  /* Allow horizontal panning */
+    overscroll-behavior: contain;  /* Prevent page scroll bounce */
   }
 }
 
+/* GAME NODE - Individual game card in roadmap */
 .game-node {
-  width: 168px;
-  min-height: 148px;
-  padding: 10px 12px;
-  border: 2px solid var(--map-main-line);
-  background: var(--map-panel-strong);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 0 0 0 1px var(--map-shadow) inset;
-  flex: 0 0 auto;
-  scroll-snap-align: start;
-  position: relative;
-  z-index: 3;
-  /* draw a full-color outline so the colored border shows on all sides */
-  outline: 2px solid var(--map-main-line);
-  outline-offset: -2px;
+  width: 168px;  /* Fixed width */
+  min-height: 148px;  /* Minimum height */
+  padding: 10px 12px;  /* Interior padding */
+  border: 2px solid var(--map-main-line);  /* Main track border color */
+  background: var(--map-panel-strong);  /* Opaque panel background */
+  display: flex;  /* Flexbox layout */
+  flex-direction: column;  /* Stack vertically */
+  justify-content: space-between;  /* Space items */
+  box-shadow: 0 0 0 1px var(--map-shadow) inset;  /* Inset shadow */
+  flex: 0 0 auto;  /* Don't grow or shrink */
+  scroll-snap-align: start;  /* Snap to start when scrolling */
+  position: relative;  /* For z-index stacking */
+  z-index: 3;  /* Above other elements */
+  outline: 2px solid var(--map-main-line);  /* Solid outline */
+  outline-offset: -2px;  /* Inset outline */
 }
 
+/* BRANCH GROUP NODES - Branch track node colors */
 .branch-group .game-node {
-  border-color: var(--map-branch-line);
-  outline-color: var(--map-branch-line);
+  border-color: var(--map-branch-line);  /* Blue border for branch */
+  outline-color: var(--map-branch-line);  /* Blue outline for branch */
 }
 
-/* Override: place track controls absolutely so they don't increase track height
-   This lets controls sit visually below the track without adding extra spacing between lines. */
+/* TRACK CONTENT POSITIONING - Reserve space for controls */
 .track-content {
-  position: relative;
-  /* reserve space for the controls so they don't overlap following content */
-  padding-bottom: 48px !important;
+  position: relative;  /* For absolute positioning of controls */
+  padding-bottom: 48px !important;  /* Reserve space for controls */
 }
+
+/* TRACK CONTROLS POSITIONING - Absolute positioning below track */
 .track-controls {
-  position: absolute;
-  right: 0;
-  bottom: 8px; /* sit inside the reserved padding */
-  margin-top: 0 !important;
-  z-index: 2;
+  position: absolute;  /* Position absolutely */
+  right: 0;  /* Align to right */
+  bottom: 8px;  /* Within reserved padding */
+  margin-top: 0 !important;  /* No top margin */
+  z-index: 2;  /* Below nodes */
 }
 
+/* SIDETRACK GROUP NODES - Side track node colors */
 .sidetrack-group .game-node {
-  border-color: var(--map-side-line);
-  outline-color: var(--map-side-line);
+  border-color: var(--map-side-line);  /* Orange border for side track */
+  outline-color: var(--map-side-line);  /* Orange outline for side track */
 }
 
+/* GAME NODE HEADING - Title text in game card */
 .game-node h4 {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.2;
-
-  font-size: 12px;
+  margin: 0;  /* Remove default margins */
+  font-size: 14px;  /* Standard size */
+  line-height: 1.2;  /* Line height */
+  font-size: 12px;  /* Adjusted size */
 }
 
+/* GAME NODE STATUS - Status label styling */
 .game-node .status {
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
+  font-size: 12px;  /* Small text */
+  font-weight: 700;  /* Bold weight */
+  text-transform: uppercase;  /* All caps */
 }
 
+/* STATUS SELECT - Dropdown for status changes */
 .status-select {
-  margin-top: 8px;
-  font-size: 12px;
-  padding: 6px 8px;
-  background: transparent;
-  color: var(--map-text);
-  border: 1px solid var(--map-panel-border);
+  margin-top: 8px;  /* Top spacing */
+  font-size: 12px;  /* Small text */
+  padding: 6px 8px;  /* Interior padding */
+  background: transparent;  /* Transparent background */
+  color: var(--map-text);  /* Text color */
+  border: 1px solid var(--map-panel-border);  /* Subtle border */
 }
 
+/* MOVE WRAP - Container for move buttons */
 .move-wrap {
-  display: flex;
-  gap: 6px;
-  margin-top: 8px;
-  align-items: center;
+  display: flex;  /* Flexbox layout */
+  gap: 6px;  /* Space between buttons */
+  margin-top: 8px;  /* Top spacing */
+  align-items: center;  /* Vertically center */
 }
 
+/* MOVE BUTTONS - Left/right arrow buttons */
 .btn.move-left,
 .btn.move-right {
-  padding: 4px 6px;
-  font-size: 12px;
-  line-height: 1;
-  width: 28px;
+  padding: 4px 6px;  /* Minimal padding */
+  font-size: 12px;  /* Small text */
+  line-height: 1;  /* Tight line height */
+  width: 28px;  /* Square buttons */
   height: 28px;
 }
 
+/* SMALL BUTTONS - Compact icon buttons */
 .btn.small {
-  padding: 0;
-  font-size: 13px;
-  width: 28px;
+  padding: 0;  /* No padding */
+  font-size: 13px;  /* Small text */
+  width: 28px;  /* Square size */
   height: 28px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-flex;  /* Flexbox layout */
+  align-items: center;  /* Center vertically */
+  justify-content: center;  /* Center horizontally */
 }
 
+/* ASSIGN SELECT - Assignment dropdown */
 .assign-select {
-  margin-top: 8px;
-  font-size: 12px;
-  padding: 6px 8px;
+  margin-top: 8px;  /* Top spacing */
+  font-size: 12px;  /* Small text */
+  padding: 6px 8px;  /* Interior padding */
 }
 
+/* COMPLETION FIELD - Completion percentage input */
 .completion-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 8px;
-  font-size: 12px;
-  color: var(--map-text);
+  display: flex;  /* Flexbox layout */
+  flex-direction: column;  /* Stack vertically */
+  gap: 6px;  /* Space between items */
+  margin-top: 8px;  /* Top spacing */
+  font-size: 12px;  /* Small text */
+  color: var(--map-text);  /* Text color */
 }
 
+/* COMPLETION INPUT - Number input styling */
 .completion-field input[type="number"] {
-  width: 100%;
-  padding: 6px 8px;
-  border: 1px solid var(--map-panel-border);
-  background: rgba(0, 0, 0, 0.12);
-  color: var(--map-text);
-  font: inherit;
+  width: 100%;  /* Full width */
+  padding: 6px 8px;  /* Interior padding */
+  border: 1px solid var(--map-panel-border);  /* Subtle border */
+  background: rgba(0, 0, 0, 0.12);  /* Dark semi-transparent background */
+  color: var(--map-text);  /* Text color */
+  font: inherit;  /* Inherit font */
 }
 
+/* PLAY BUTTON - Play button styling */
 .game-node .play-btn {
-  margin-top: 8px;
+  margin-top: 8px;  /* Top spacing */
 }
 
+/* MOVE WRAP AND SELECT - Spacing for controls */
 .game-node .move-wrap,
 .game-node .assign-select {
-  margin-top: 10px;
+  margin-top: 10px;  /* Top spacing */
 }
 
+/* STATUS COLORS - Different color for each status */
 .game-node .status {
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
+  font-size: 12px;  /* Small text */
+  font-weight: 700;  /* Bold weight */
+  text-transform: uppercase;  /* All caps */
 }
 
-.game-node.playing .status { color: #eff6ee; }
-.game-node.active .status { color: #8fd1ff; }
-.game-node.complete .status { color: #d7c56e; }
-.game-node.unplayed .status { color: var(--map-accent); }
+/* PLAYING STATUS COLOR - Currently playing game */
+.game-node.playing .status { 
+  color: #eff6ee;  /* Light color */
+}
 
+/* ACTIVE STATUS COLOR - Selected game */
+.game-node.active .status { 
+  color: #8fd1ff;  /* Light blue */
+}
+
+/* COMPLETE STATUS COLOR - Finished game */
+.game-node.complete .status { 
+  color: #d7c56e;  /* Muted yellow */
+}
+
+/* UNPLAYED STATUS COLOR - Not started game */
+.game-node.unplayed .status { 
+  color: var(--map-accent);  /* Accent color */
+}
+
+/* NODE ROW - Container for node elements */
 .node-row {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  flex-wrap: wrap;
+  display: flex;  /* Flexbox layout */
+  align-items: center;  /* Vertically center */
+  gap: 0;  /* No gap */
+  flex-wrap: wrap;  /* Allow wrapping */
 }
 
+/* NODE SPACER - Connecting line between nodes */
 .node-spacer {
-  height: 4px;
-  min-width: 56px;
-  background: var(--map-line-soft);
+  height: 4px;  /* Small height */
+  min-width: 56px;  /* Minimum width for visual connection */
+  background: var(--map-line-soft);  /* Soft line color */
 }
 
+/* BRANCH NODE SPACER - Branch track connector color */
 .branch-group .node-spacer {
-  background: var(--map-branch-soft);
+  background: var(--map-branch-soft);  /* Branch soft color */
 }
 
+/* SIDETRACK NODE SPACER - Side track connector color */
 .sidetrack-group .node-spacer {
-  background: var(--map-side-soft);
+  background: var(--map-side-soft);  /* Side track soft color */
 }
 
+/* YARD PANEL - Container for available games */
 .yard-panel {
-  margin-top: 22px;
-  padding: 18px 20px 20px;
-  border: 1px solid var(--map-panel-border);
-  background: var(--map-panel);
+  margin-top: 22px;  /* Top spacing */
+  padding: 18px 20px 20px;  /* Interior padding */
+  border: 1px solid var(--map-panel-border);  /* Subtle border */
+  background: var(--map-panel);  /* Semi-transparent panel */
 }
 
+/* YARD TITLE - "Available Games" title */
 .yard-title {
-  margin: 0 0 16px;
-  color: var(--map-accent);
-  font-size: 14px;
-  text-transform: uppercase;
+  margin: 0 0 16px;  /* Bottom margin */
+  color: var(--map-accent);  /* Accent color */
+  font-size: 14px;  /* Medium size */
+  text-transform: uppercase;  /* All caps */
 }
 
+/* YARD GRID - Three-column grid of available games */
 .yard-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  display: grid;  /* Grid layout */
+  grid-template-columns: repeat(3, minmax(0, 1fr));  /* Three equal columns */
+  gap: 14px;  /* Space between items */
 }
 
+/* YARD GRID ARTICLE - Individual available game item */
 .yard-grid article {
-  min-height: 94px;
-  padding: 16px;
-  border-top: 1px solid var(--map-panel-border);
-  border-left: 1px solid rgba(128, 128, 128, 0.18);
+  min-height: 94px;  /* Minimum height */
+  padding: 16px;  /* Interior padding */
+  border-top: 1px solid var(--map-panel-border);  /* Top border */
+  border-left: 1px solid rgba(128, 128, 128, 0.18);  /* Left border */
 }
 
+/* IGDB PANEL - Container for IGDB API integration */
 .igdb-panel {
-  margin-top: 22px;
+  margin-top: 22px;  /* Top spacing */
 }
 
+/* IGDB COPY - Description text for IGDB panel */
 .igdb-copy {
-  margin: 0 0 14px;
-  color: var(--map-muted);
+  margin: 0 0 14px;  /* Bottom margin */
+  color: var(--map-muted);  /* Muted color */
 }
 
+/* IGDB FIELD - Container for input field with label */
 .igdb-field {
-  display: grid;
-  gap: 8px;
-  margin-bottom: 14px;
+  display: grid;  /* Grid layout */
+  gap: 8px;  /* Space between label and input */
+  margin-bottom: 14px;  /* Bottom margin */
 }
 
+/* IGDB FIELD LABEL - Label text styling */
 .igdb-field span {
-  font-weight: 700;
-  color: var(--map-text);
+  font-weight: 700;  /* Bold weight */
+  color: var(--map-text);  /* Text color */
 }
 
+/* IGDB FIELD INPUT - Text input styling */
 .igdb-field input {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--map-panel-border);
-  background: rgba(0, 0, 0, 0.12);
-  color: var(--map-text);
-  font: inherit;
+  width: 100%;  /* Full width */
+  padding: 12px 14px;  /* Interior padding */
+  border: 1px solid var(--map-panel-border);  /* Subtle border */
+  background: rgba(0, 0, 0, 0.12);  /* Dark semi-transparent background */
+  color: var(--map-text);  /* Text color */
+  font: inherit;  /* Inherit font */
 }
 
+/* IGDB ACTIONS - Container for action buttons */
 .igdb-actions {
-  display: flex;
-  justify-content: flex-start;
-  margin-bottom: 12px;
+  display: flex;  /* Flexbox layout */
+  justify-content: flex-start;  /* Align left */
+  margin-bottom: 12px;  /* Bottom margin */
 }
 
+/* IGDB OUTPUT - Result display area */
 .igdb-output {
-  margin: 12px 0 0;
-  padding: 14px 16px;
-  min-height: 88px;
-  white-space: pre-wrap;
-  word-break: break-word;
-  border: 1px solid var(--map-panel-border);
-  background: rgba(0, 0, 0, 0.14);
-  color: var(--map-text);
+  margin: 12px 0 0;  /* Top margin */
+  padding: 14px 16px;  /* Interior padding */
+  min-height: 88px;  /* Minimum height */
+  white-space: pre-wrap;  /* Preserve whitespace */
+  word-break: break-word;  /* Break long words */
+  border: 1px solid var(--map-panel-border);  /* Subtle border */
+  background: rgba(0, 0, 0, 0.14);  /* Dark semi-transparent background */
+  color: var(--map-text);  /* Text color */
 }
 
+/* YARD LABEL - Label for game availability */
 .yard-label {
-  display: block;
-  color: var(--map-accent);
-  margin-bottom: 10px;
-  font-weight: 700;
+  display: block;  /* Block display */
+  color: var(--map-accent);  /* Accent color */
+  margin-bottom: 10px;  /* Bottom margin */
+  font-weight: 700;  /* Bold weight */
 }
 
+/* YARD MEDIUM LABEL - Medium-length games color */
 #yard-medium .yard-label {
-  color: #e2b43f;
+  color: #e2b43f;  /* Slightly different yellow */
 }
 
+/* YARD LONG LABEL - Long games color */
 #yard-long .yard-label {
-  color: #ff8c57;
+  color: #ff8c57;  /* Orange for long games */
 }
 
+/* MAP EMPTY - Empty state message */
 .map-empty {
-  margin-top: 18px;
-  color: var(--map-text);
+  margin-top: 18px;  /* Top margin */
+  color: var(--map-text);  /* Text color */
 }
 
+/* CONTROLS ROW - Container for control buttons */
 .controls-row {
-  margin-top: 10px;
+  margin-top: 10px;  /* Top margin */
 }
 
+/* MEDIA QUERY - TABLETS (900px and below) */
 @media (max-width: 900px) {
+  /* Two-column grid for stats and yard grid */
   .map-stats,
   .yard-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));  /* Two columns instead of four/three */
   }
 
+  /* Single column for track groups */
   .track-group {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr;  /* Single column layout */
   }
 
+  /* Remove top padding from track labels */
   .track-label {
-    padding-top: 0;
+    padding-top: 0;  /* Remove top padding */
   }
 }
 
+/* MEDIA QUERY - MOBILE (620px and below) */
 @media (max-width: 620px) {
+  /* Reduce horizontal padding on main content */
   .map-main {
-    padding: 0 12px 18px;
+    padding: 0 12px 18px;  /* Reduced padding */
   }
 
+  /* Single column for stats and yard grid */
   .map-stats,
   .yard-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr;  /* Single column */
   }
 
+  /* Responsive game node width */
   .game-node {
-    width: min(80vw, 168px);
+    width: min(80vw, 168px);  /* 80% viewport width or 168px */
   }
 }
 
+/* MEDIA QUERY - SMALL MOBILE (480px and below) */
 @media (max-width: 480px) {
+  /* Compact header with reduced padding */
   .map-header {
-    padding: 8px 4px;
-    gap: 8px;
+    padding: 8px 4px;  /* Minimal padding */
+    gap: 8px;  /* Space between header items */
   }
 
+  /* Smaller site title */
   .site-title {
-    font-size: 14px;
+    font-size: 14px;  /* Reduced size */
   }
 
+  /* Navigation bar adjustments */
   .map-nav {
-    gap: 2px;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
+    gap: 2px;  /* Minimal gap between buttons */
+    flex-wrap: wrap;  /* Allow wrapping */
+    justify-content: center;  /* Center items */
+    width: 100%;  /* Full width */
   }
 
+  /* Compact nav buttons */
   .map-nav a,
   .map-nav button {
-    padding: 6px 8px;
-    font-size: 11px;
-    border: 1px solid #808080;
+    padding: 6px 8px;  /* Reduced padding */
+    font-size: 11px;  /* Smaller font */
+    border: 1px solid #808080;  /* Standard border */
   }
 
+  /* Reduced main content padding */
   .map-main {
-    padding: 0 8px 14px;
+    padding: 0 8px 14px;  /* Minimal padding */
   }
 
+  /* Compact shell padding */
   .map-shell {
-    padding-top: 12px;
+    padding-top: 12px;  /* Reduced top padding */
   }
 
+  /* Two-column stats grid */
   .map-stats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-    margin-bottom: 18px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));  /* Two columns */
+    gap: 10px;  /* Reduced gap */
+    margin-bottom: 18px;  /* Reduced margin */
   }
 
+  /* Compact stat cards */
   .stat-card {
-    min-height: 64px;
-    padding: 12px 14px;
-    font-size: 14px;
+    min-height: 64px;  /* Reduced height */
+    padding: 12px 14px;  /* Reduced padding */
+    font-size: 14px;  /* Smaller font */
   }
 
+  /* Larger stat values */
   .stat-card strong {
-    font-size: 18px;
+    font-size: 18px;  /* Larger numbers */
   }
 
+  /* Single column track layout */
   .track-group {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    margin-bottom: 16px;
+    grid-template-columns: 1fr;  /* Single column */
+    gap: 8px;  /* Reduced gap */
+    margin-bottom: 16px;  /* Reduced margin */
   }
 
+  /* No padding on track labels */
   .track-label {
-    padding-top: 0;
-    margin-top: 0;
+    padding-top: 0;  /* Remove padding */
+    margin-top: 0;  /* Remove margin */
   }
 
+  /* Compact track content */
   .track-content {
-    border-top: none;
-    padding-top: 0;
-    padding-bottom: 40px;
+    border-top: none;  /* Remove border */
+    padding-top: 0;  /* Remove padding */
+    padding-bottom: 40px;  /* Reserve space for controls */
   }
 
+  /* Smaller track heading */
   .track-heading {
-    font-size: 13px;
-    margin: 0 0 8px;
+    font-size: 13px;  /* Smaller size */
+    margin: 0 0 8px;  /* Reduced margin */
   }
 
+  /* Smaller game nodes */
   .game-node {
-    width: min(85vw, 150px);
-    min-height: 140px;
-    padding: 8px 10px;
-    font-size: 11px;
+    width: min(85vw, 150px);  /* 85% viewport width or 150px */
+    min-height: 140px;  /* Reduced height */
+    padding: 8px 10px;  /* Reduced padding */
+    font-size: 11px;  /* Smaller font */
   }
 
+  /* Smaller game node heading */
   .game-node h4 {
-    font-size: 11px;
+    font-size: 11px;  /* Smaller size */
   }
 
+  /* Compact controls */
   .track-controls {
-    position: absolute;
-    right: 0;
-    bottom: 4px;
-    gap: 4px;
+    position: absolute;  /* Absolute positioning */
+    right: 0;  /* Align right */
+    bottom: 4px;  /* Within content */
+    gap: 4px;  /* Minimal gap */
   }
 
+  /* Smaller icon buttons */
   .btn.small {
-    width: 24px;
+    width: 24px;  /* Smaller size */
     height: 24px;
-    font-size: 12px;
+    font-size: 12px;  /* Smaller font */
   }
 
-  /* Slightly increase width/scale of the left-arrow button to visually match the right one */
+  /* Prev button alignment adjustment */
   .track-controls button[id$="-prev"].btn.small {
-    /* Keep the button box identical to the next button; glyph nudged via .glyph */
-      width: 24px;
-      height: 24px;
-      font-size: 16px; /* base font-size for button content */
-      line-height: 1;
+    width: 24px;  /* Match next button width */
+    height: 24px;  /* Match next button height */
+    font-size: 16px;  /* Base font size */
+    line-height: 1;  /* Tight line height */
   }
 
-    /* Nudge only the glyph inside the prev button so the arrow aligns with the next arrow */
-    .track-controls button[id$="-prev"] .glyph {
-      display: inline-block;
-      transform: translateY(-1px);
-      font-size: 16px;
-      line-height: 1;
-    }
+  /* Glyph nudge for prev button alignment */
+  .track-controls button[id$="-prev"] .glyph {
+    display: inline-block;  /* Inline-block display */
+    transform: translateY(-1px);  /* Slight upward nudge */
+    font-size: 16px;  /* Match button font */
+    line-height: 1;  /* Tight line height */
+  }
 
+  /* Compact yard panel */
   .yard-panel {
-    margin-top: 16px;
-    padding: 14px 12px 16px;
+    margin-top: 16px;  /* Reduced margin */
+    padding: 14px 12px 16px;  /* Reduced padding */
   }
 
+  /* Smaller yard title */
   .yard-title {
-    font-size: 13px;
-    margin: 0 0 12px;
+    font-size: 13px;  /* Smaller size */
+    margin: 0 0 12px;  /* Reduced margin */
   }
 
+  /* Single column yard grid */
   .yard-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    grid-template-columns: 1fr;  /* Single column */
+    gap: 10px;  /* Reduced gap */
   }
 
+  /* Compact yard grid items */
   .yard-grid article {
-    min-height: 80px;
-    padding: 12px;
+    min-height: 80px;  /* Reduced height */
+    padding: 12px;  /* Reduced padding */
   }
 
+  /* Compact IGDB panel */
   .igdb-panel {
-    margin-top: 16px;
-    padding: 14px 12px 16px;
+    margin-top: 16px;  /* Reduced margin */
+    padding: 14px 12px 16px;  /* Reduced padding */
   }
 
+  /* Larger IGDB input text */
   .igdb-field input {
-    padding: 10px 12px;
-    font-size: 14px;
+    padding: 10px 12px;  /* Reduced padding */
+    font-size: 14px;  /* Readable font */
   }
 
+  /* Compact IGDB output */
   .igdb-output {
-    padding: 12px 14px;
-    min-height: 80px;
-    font-size: 12px;
+    padding: 12px 14px;  /* Reduced padding */
+    min-height: 80px;  /* Reduced height */
+    font-size: 12px;  /* Smaller text */
   }
 
+  /* Adjusted nav button sizing */
   .map-nav a,
   .map-nav button {
-    padding: 6px 10px;
-    font-size: 12px;
+    padding: 6px 10px;  /* Slightly more padding */
+    font-size: 12px;  /* Slightly larger font */
   }
 
-  /* Ensure action buttons have equal min-height on very small screens */
+  /* Ensure action buttons have minimum height */
   .form-actions .btn {
-    min-height: 40px;
+    min-height: 40px;  /* Touch-friendly size */
   }
 
+  /* Compact submit button */
   .add-game-form button[type="submit"] {
-    margin-left: 0;
-    padding: 8px 12px;
-    min-width: 0;
-    min-height: 40px;
+    margin-left: 0;  /* Remove margin */
+    padding: 8px 12px;  /* Reduced padding */
+    min-width: 0;  /* No minimum width */
+    min-height: 40px;  /* Touch-friendly height */
   }
 
-  /* Make the game selector compact on small screens */
+  /* Compact form selects */
   .add-game-form select,
   #game-select,
   #game-track {
-    font-size: 12px;
-    padding: 2px 6px;
-    height: 32px;
-    line-height: 1;
-    box-sizing: border-box;
-    max-width: 100%;
-    -webkit-appearance: none;
-    appearance: none;
+    font-size: 12px;  /* Small text */
+    padding: 2px 6px;  /* Minimal padding */
+    height: 32px;  /* Compact height */
+    line-height: 1;  /* Tight line height */
+    box-sizing: border-box;  /* Include border in size */
+    max-width: 100%;  /* Full width */
+    -webkit-appearance: none;  /* Remove browser styling */
+    appearance: none;  /* Remove browser styling */
   }
 }
 

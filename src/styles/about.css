@@ -1,144 +1,165 @@
-/* About Page Styling - Retro Steam Web Aesthetic */
+/* ABOUT PAGE - Retro Steam Web Aesthetic */
 
+/* PAGE BODY - Page background and text color */
 body {
-    background-color: #4c5844;
-    color: #c7d5e0;
-    overflow: auto;
+    background-color: #4c5844;  /* Primary green */
+    color: #c7d5e0;  /* Light text */
+    overflow: auto;  /* Allow scrolling */
 }
 
+/* CONTENT CONTAINER - Main wrapper with max width and padding */
 .content-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #4c5844;
+    max-width: 800px;  /* Maximum width constraint */
+    margin: 0 auto;  /* Center on page */
+    padding: 20px;  /* Content spacing */
+    background-color: #4c5844;  /* Match body background */
 }
 
+/* HEADER SECTION - Top banner with title and tagline */
 .header-section {
-    background-color: #3f4738;
-    border-top: 1px solid #808080;
+    background-color: #3f4738;  /* Dark green background */
+    border-top: 1px solid #808080;  /* Retro 3D borders */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark borders */
     border-right: 1px solid #282e22;
-    padding: 20px;
-    margin-bottom: 20px;
-    text-align: center;
+    padding: 20px;  /* Interior spacing */
+    margin-bottom: 20px;  /* Space below section */
+    text-align: center;  /* Center all text */
 }
 
+/* HEADER TITLE - Main page heading */
 .header-section .window-title {
-    margin: 0 0 10px 0;
-    font-size: 24px;
-    color: #eff6ee;
+    margin: 0 0 10px 0;  /* Bottom spacing only */
+    font-size: 24px;  /* Large heading */
+    color: #eff6ee;  /* Off-white text */
 }
 
+/* TAGLINE - Subtitle under title */
 .tagline {
-    color: #e8d469;
-    font-size: 14px;
-    margin: 0;
-    font-style: italic;
+    color: #e8d469;  /* Yellow text */
+    font-size: 14px;  /* Medium size */
+    margin: 0;  /* No margin */
+    font-style: italic;  /* Italicized */
 }
 
+/* CONTENT SECTION - Individual information panels */
 .section {
-    background-color: #3f4738;
-    border-top: 1px solid #808080;
+    background-color: #3f4738;  /* Dark green background */
+    border-top: 1px solid #808080;  /* Retro 3D borders */
     border-left: 1px solid #808080;
-    border-bottom: 1px solid #282e22;
+    border-bottom: 1px solid #282e22;  /* Dark borders */
     border-right: 1px solid #282e22;
-    padding: 20px;
-    margin-bottom: 15px;
+    padding: 20px;  /* Interior spacing */
+    margin-bottom: 15px;  /* Space between sections */
 }
 
+/* SECTION TITLE - Heading within section */
 .section-title {
-    color: #eff6ee;
-    font-size: 16px;
-    font-weight: bold;
-    margin-top: 0;
-    margin-bottom: 12px;
-    border-bottom: 1px solid #282e22;
-    padding-bottom: 8px;
+    color: #eff6ee;  /* Off-white text */
+    font-size: 16px;  /* Medium size */
+    font-weight: bold;  /* Bold weight */
+    margin-top: 0;  /* No top margin */
+    margin-bottom: 12px;  /* Bottom spacing */
+    border-bottom: 1px solid #282e22;  /* Dark separator line */
+    padding-bottom: 8px;  /* Space below line */
 }
 
+/* SECTION PARAGRAPHS - Body text */
 .section p {
-    color: #c7d5e0;
-    font-size: 12px;
-    line-height: 1.6;
-    margin: 8px 0;
+    color: #c7d5e0;  /* Muted text */
+    font-size: 12px;  /* Small text */
+    line-height: 1.6;  /* Better readability */
+    margin: 8px 0;  /* Vertical spacing */
 }
 
+/* SECTION STRONG TEXT - Bold highlights */
 .section strong {
-    color: #eff6ee;
+    color: #eff6ee;  /* Off-white text */
 }
 
+/* SECTION EMPHASIZED TEXT - Yellow highlights */
 .section em {
-    color: #e8d469;
+    color: #e8d469;  /* Yellow text */
 }
 
+/* FEATURE LIST - Unordered list of features */
 .feature-list {
-    list-style: none;
-    padding-left: 0;
-    margin: 10px 0;
+    list-style: none;  /* Remove bullets */
+    padding-left: 0;  /* No left padding */
+    margin: 10px 0;  /* Vertical spacing */
 }
 
+/* FEATURE LIST ITEM - Individual list item with custom bullet */
 .feature-list li {
-    color: #c7d5e0;
-    font-size: 12px;
-    margin: 8px 0;
-    padding-left: 20px;
-    position: relative;
+    color: #c7d5e0;  /* Muted text */
+    font-size: 12px;  /* Small text */
+    margin: 8px 0;  /* Space between items */
+    padding-left: 20px;  /* Space for bullet */
+    position: relative;  /* For bullet positioning */
 }
 
+/* FEATURE LIST BULLET - Custom triangle bullet */
 .feature-list li:before {
-    content: "▸";
-    color: #e8d469;
-    position: absolute;
-    left: 0;
+    content: "▸";  /* Triangle symbol */
+    color: #e8d469;  /* Yellow color */
+    position: absolute;  /* Position over text */
+    left: 0;  /* Align left */
 }
 
+/* FEATURES GRID - Two-column grid for feature boxes */
 .features-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin: 15px 0;
+    display: grid;  /* Grid layout */
+    grid-template-columns: 1fr 1fr;  /* Two equal columns */
+    gap: 15px;  /* Space between boxes */
+    margin: 15px 0;  /* Vertical spacing */
 }
 
+/* FEATURE BOX - Individual feature card */
 .feature-box {
-    background-color: #4c5844;
-    border: 1px solid #282e22;
-    padding: 12px;
-    border-top: 1px solid #808080;
-    border-left: 1px solid #808080;
+    background-color: #4c5844;  /* Green background */
+    border: 1px solid #282e22;  /* Dark border */
+    padding: 12px;  /* Interior spacing */
+    border-top: 1px solid #808080;  /* Light top/left */
+    border-left: 1px solid #808080;  /* For 3D effect */
 }
 
+/* FEATURE BOX TITLE - Heading in box */
 .feature-box h3 {
-    color: #eff6ee;
-    font-size: 13px;
-    margin: 0 0 8px 0;
+    color: #eff6ee;  /* Off-white text */
+    font-size: 13px;  /* Small heading */
+    margin: 0 0 8px 0;  /* Bottom spacing only */
 }
 
+/* FEATURE BOX DESCRIPTION - Text in box */
 .feature-box p {
-    color: #c7d5e0;
-    font-size: 11px;
-    margin: 0;
-    line-height: 1.5;
+    color: #c7d5e0;  /* Muted text */
+    font-size: 11px;  /* Tiny text */
+    margin: 0;  /* No margin */
+    line-height: 1.5;  /* Line spacing */
 }
 
+/* BOTTOM SECTION - Final content panel */
 .bottom-section {
-    text-align: center;
-    background-color: #3f4738;
+    text-align: center;  /* Center text */
+    background-color: #3f4738;  /* Dark green background */
 }
 
+/* API NOTE - Footer note about API */
 .api-note {
-    color: #c7d5e0;
-    font-size: 11px;
-    margin-top: 20px;
+    color: #c7d5e0;  /* Muted text */
+    font-size: 11px;  /* Small text */
+    margin-top: 20px;  /* Space above */
 }
 
-/* Responsive design for smaller screens */
+/* RESPONSIVE - Mobile (max 600px) */
 @media (max-width: 600px) {
+    /* Stack features grid on single column */
     .features-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr;  /* Single column */
     }
     
+    /* Reduce padding on container */
     .content-container {
-        padding: 10px;
+        padding: 10px;  /* Smaller padding */
     }
 }
