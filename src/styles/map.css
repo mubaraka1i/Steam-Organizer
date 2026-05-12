@@ -597,7 +597,7 @@
 @media (max-width: 480px) {
   /* Compact header with reduced padding */
   .map-header {
-    padding: 8px 4px;  /* Minimal padding */
+    padding: 4px 4px;  /* Minimal padding */
     gap: 8px;  /* Space between header items */
   }
 
