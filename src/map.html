@@ -12,8 +12,11 @@
     <h1 class="site-title"><span aria-hidden="true">🚉</span> GuideRail</h1>
     <button id="theme-toggle" type="button">Toggle Theme</button>
     <nav class="site-nav map-nav" aria-label="Main navigation">
-      <a href="eta.html" id="eta-calculator-link">ETA Schedule</a>
+      <a href="index.html">Home</a>
       <a href="profile.html">Profile</a>
+      <a href="map.html" aria-current="page">Map</a>
+      <a href="settings.html">Settings</a>
+      <a href="about.html">About</a>
     </nav>
   </header>
 
@@ -129,13 +132,29 @@
 
         <form id="add-game-form" class="add-game-form" hidden aria-hidden="true">
           <h3>Add Game</h3>
-          <p class="helper">Select a game you already own from your library to place it on a line.</p>
-          <label>
-            Choose from your library
-            <select id="game-select" name="appid">
-              <option value="">— No games available —</option>
-            </select>
-          </label>
+          <div class="add-game-tabs">
+            <button type="button" class="tab-btn tab-active" data-tab="library">From Your Library</button>
+            <button type="button" class="tab-btn" data-tab="manual">Manual Entry</button>
+          </div>
+          
+          <div id="library-tab" class="tab-content tab-active">
+            <p class="helper">Select a game you already own from your library to place it on a line.</p>
+            <label>
+              Choose from your library
+              <select id="game-select" name="appid">
+                <option value="">— No games available —</option>
+              </select>
+            </label>
+          </div>
+
+          <div id="manual-tab" class="tab-content" hidden>
+            <p class="helper">Type a game name you want to add to your map.</p>
+            <label>
+              Game name
+              <input id="game-manual-input" type="text" placeholder="e.g., Elden Ring" autocomplete="off">
+            </label>
+          </div>
+
           <label>
             Add to line
             <select id="game-track" name="track" class="status-select">

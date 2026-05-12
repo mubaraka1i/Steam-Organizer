@@ -1023,12 +1023,41 @@ document.addEventListener('DOMContentLoaded', () => {
   const exportBtn = document.getElementById('export-games-btn');
 
   /*
+ * Handles tab switching in the add-game form
+ * between "From Your Library" and "Manual Entry"
+ */
+  function setupAddGameTabs() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const tabName = btn.getAttribute('data-tab');
+        
+        // Update active tab button
+        tabBtns.forEach((b) => b.classList.remove('tab-active'));
+        btn.classList.add('tab-active');
+        
+        // Update active tab content
+        tabContents.forEach((content) => {
+          if (content.id === `${tabName}-tab`) {
+            content.hidden = false;
+          } else {
+            content.hidden = true;
+          }
+        });
+      });
+    });
+  }
+
+  /*
  * Opens the add-game form when the user
  * wants to place a game onto a railroad line.
  */
   if (addBtn && addForm) {
     addBtn.addEventListener('click', () => {
       populateAddForm();
+      setupAddGameTabs();
       addForm.hidden = false;
       addForm.setAttribute('aria-hidden', 'false');
       const sel = document.getElementById('game-select');
@@ -1046,26 +1075,51 @@ document.addEventListener('DOMContentLoaded', () => {
 /*
  * Handles submission of the add-game form.
  *
- * This assigns a selected game
+ * This assigns a selected game (from library or manual entry)
  * to one of the railroad tracks.
  */
     addForm.addEventListener('submit', (ev) => {
       ev.preventDefault();
-      const appid = document.getElementById('game-select').value;
       const track = document.getElementById('game-track').value;
-      if (!appid) {
-        alert('Please select a game from your library first (or import your library).');
-        return;
+      const activeTab = document.querySelector('.tab-btn.tab-active');
+      const currentTab = activeTab ? activeTab.getAttribute('data-tab') : 'library';
+      
+      if (currentTab === 'library') {
+        // Library selection mode
+        const appid = document.getElementById('game-select').value;
+        if (!appid) {
+          alert('Please select a game from your library first (or import your library).');
+          return;
+        }
+        const games = loadGames();
+        const idx = games.findIndex((g) => String(g.appid) === String(appid));
+        if (idx === -1) {
+          alert('Selected game not found in library. Try importing your library.');
+          return;
+        }
+        // Assign the game to the selected railroad line
+        games[idx].track = track === 'unassigned' ? undefined : track;
+        saveGames(games);
+      } else {
+        // Manual entry mode
+        const gameName = document.getElementById('game-manual-input').value.trim();
+        if (!gameName) {
+          alert('Please enter a game name.');
+          return;
+        }
+        const games = loadGames();
+        // Create a new game object for manually entered game
+        const newGame = {
+          appid: `manual_${Date.now()}`,
+          name: gameName,
+          playtimeHours: 0,
+          track: track === 'unassigned' ? undefined : track,
+          isManualEntry: true
+        };
+        games.push(newGame);
+        saveGames(games);
       }
-      const games = loadGames();
-      const idx = games.findIndex((g) => String(g.appid) === String(appid));
-      if (idx === -1) {
-        alert('Selected game not found in library. Try importing your library.');
-        return;
-      }
-      // Assign the game to the selected railroad line
-      games[idx].track = track === 'unassigned' ? undefined : track;
-      saveGames(games);
+      
       addForm.reset();
       addForm.hidden = true;
       addForm.setAttribute('aria-hidden', 'true');
