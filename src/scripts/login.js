@@ -63,7 +63,7 @@ const PROFILE_STORAGE_KEY = 'team03_guideRail_profile';
 const GAMES_STORAGE_KEY = 'team03_guideRail_games';
 const ACCOUNT_LIST_KEY = 'team03_guideRail_account_list';
 const APPROXI_PROXY_BASE = 'https://approxi--approxi-65847.us-east4.hosted.app/p/aliappleton-project?url=';
-const APPROXI_PROXY_TOKEN = '68b1d5ba4cde33c593522d9dc0c0ac9898dd023bad0b33a0';
+const APPROXI_PROXY_TOKEN = 'fc4ad495d79dcd63805091a8971fcc0771c9b49bd688d131';
 
 function getApproxiToken() {
   try {

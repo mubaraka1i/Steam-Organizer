@@ -31,7 +31,7 @@ const ETA_WEEKLY_STORAGE_KEY = 'team03_guideRail_eta_weekly';
 
 const IGDB_BASE = 'https://api.igdb.com/v4';
 const APPROXI_PROXY_BASE = 'https://approxi--approxi-65847.us-east4.hosted.app/p/aliappleton-project?url=';
-const APPROXI_PROXY_TOKEN = '68b1d5ba4cde33c593522d9dc0c0ac9898dd023bad0b33a0';
+const APPROXI_PROXY_TOKEN = 'fc4ad495d79dcd63805091a8971fcc0771c9b49bd688d131';
 
 /*
  * Returns the secure proxy token used
